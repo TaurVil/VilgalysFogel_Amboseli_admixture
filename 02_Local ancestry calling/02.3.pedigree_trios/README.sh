@@ -1,7 +1,7 @@
 # This directory contains multiple scripts for evaluating the quality of local ancestry calls from LCLAE using known parent-offspring trios from the Amboseli baboons (Supplementary Methods 7.3).
 
 #############################################################################################################################
-# Get pedigree inconsistences for the pedigree inconsistencies model.
+# Get pedigree inconsistences for the pedigree inconsistencies model (scripts labelled 1-3...).
 #############################################################################################################################
 
 # In R, run 1prep_for_pedigree_inconsistencies.R which generates two R data files (local_ancestry_pedigree_trios_maskedSNPRCref.Rd and local_ancestry_pedigree_trios_unmaskedWallref.Rd) containing tracts, pedigree trio info, list of pedigree individuals, and genomic positions for evaluating the consistent of ancestry calls within pedigree trios for two sets of ancestry tracts (one generated using the SNPRC reference panel, one generated using the Wall et al. 2016 Molecular Ecology low coverage reference panel). These R data files can then uploaded to a computing cluster for parallelization across chromosomes (which will make things run much faster).
@@ -52,12 +52,13 @@ sbatch --mem=1G  3get_ped_inconsistencies_SNPRCref.R
 sbatch --mem=1G  3get_ped_inconsistencies_Wallref.R
 
 #############################################################################################################################
-# Covariates for the pedigree inconsistencies models.
+# Covariates for the pedigree inconsistencies models (scripts labelled with a 4...)
 #############################################################################################################################
 
-# For each genomic window, we would also like to get information on the number of ancestry informative markers, FST, and recombination rate which we will include as covariates in our models of pedigree inconsistencies
+# For each genomic window, we would also like to get information on the number of ANCESTRY INFORMATIVE MARKERS, FST, and RECOMBINATION RATE which we will include as covariates in our models of pedigree inconsistencies
 # For the number of ancestry informative markers, run the R script 4apos_AIM_count.sh using the command below in order to generate chromosome-specific scripts.
-for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g 4apos_AIM_count.sh > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
+for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g 4aAIM_count_SNPRCref.R > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
+for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g 4aAIM_count_Wallref.R > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
 
 # Get first four columns (chrom, pos, start_window, end_window)
 awk '{print $1,$2,$3,$4}' indiv.pos_AIM_count_1kbwin_HAP.txt >> tmp
@@ -71,7 +72,7 @@ sbatch --mem=500 4bfst_Wallref.sh
 # For recombination rate, use the script XXXXTAURAS DIRECTORYXXX modified for the positions and genomic windows for this analysis (in the positions data frame).
 
 #############################################################################################################################
-# Results from the pedigree inconsistencies models.
+# Results from the pedigree inconsistencies models (script labelled with a 5...)
 #############################################################################################################################
 
 
