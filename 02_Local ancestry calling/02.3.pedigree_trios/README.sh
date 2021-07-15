@@ -56,7 +56,7 @@ awk '{print $1,$2,$3,$4}' indiv.pos_AIM_count_1kbwin_HAP.txt >> tmp
 for f in `ls indiv.pos_AIM_count_1kbwin_*`; do awk '{print $5}' $f >> tmp1.$f; echo $f; done
 for f in `ls tmp1.indiv.pos_AIM_count_1kbwin_*`; do paste $f >> tmp1.$f; echo $f; done
 
-# For FST, run the script
+# For FST, use the scripts 
 
 # check Ns in chr7
 # perl -ne 'chomp;if( />(.*)/){$head = $1; $i=0; next};@a=split("",$_); foreach(@a){$i++; if($_ eq "N" && $s ==0 ){$z=$i-1; print "$head\t$z"; $s =1}elsif($s==1 && $_ ne "N"){$j=$i-1;print "\t$j\n";$s=0}}' chr7.test.fa >> check_Ns
