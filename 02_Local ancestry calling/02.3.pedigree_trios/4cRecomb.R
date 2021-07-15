@@ -24,13 +24,15 @@ for (k in 1:20) { #For each chromosome
   
   rcr_chrom <- subset(empty_windows, empty_windows$chr == paste("chr",k,sep=""))
   rcr_chrom$n24_anubis <- NA
-  
+  rcr_chrom$length_used <- NA
+   
   for (i in 1:nrow(rcr_chrom)) {
     
     subset(RCR, RCR$left_snp <= rcr_chrom$end[i] & RCR$right_snp > rcr_chrom$start[i]) -> tmp2
     tmp2$left_snp[tmp2$left_snp < rcr_chrom$start[i]] <- rcr_chrom$start[i]
     tmp2$right_snp[tmp2$right_snp > rcr_chrom$end[i]] <- rcr_chrom$end[i]
     tmp2$l <- tmp2$right_snp - tmp2$left_snp
+    rcr_chrom$length[i] <- sum(tmp2$l)
     rcr_chrom$n24_anubis[i] <- sum(tmp2$mean*tmp2$l)/sum(tmp2$l); rm(tmp2)
   }; rm(RCR,i)
   
