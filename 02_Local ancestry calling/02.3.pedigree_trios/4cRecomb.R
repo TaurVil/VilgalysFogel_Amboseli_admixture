@@ -1,0 +1,43 @@
+#!/bin/env Rscript
+
+# calculate recombination rates for genomic windows
+library(data.table)
+
+load("local_ancestry_pedigree_trios_maskedSNPRCref.Rd", verbose=T) 
+
+# we only need the positions data frame so remove all other loaded data frames
+rm(indiv_list, tracts2, trios)
+
+# need to create a data frame of empty_windows (chrom, start, end) to calculate, for each chromosome and each window within a chromosome, the mean recombination rate for a window
+wind=250000 # use 250 kb as our window size (even though our focal sites are 35 kb apart, this size would generate too noisy of a mean recombination rate 
+positions$start <- positions$pos-(wind/2)
+positions$end <- positions$pos+(wind/2)
+
+empty_windows <- positions
+rm(positions)
+
+rcr<- NULL
+for (k in 1:20) { #For each chromosome
+  # n24 SW anubis recombination rates 
+  name=paste("/data/tunglab/asf40/wgs_data/MedGenome_ftp/recombination_rates/anubisSW.",k,".txt",sep="")
+  fread(name) -> RCR; c(colnames(RCR)[-1],"fill") -> colnames(RCR); rm(name)
+  
+  rcr_chrom <- subset(empty_windows, empty_windows$chr == paste("chr",k,sep=""))
+  rcr_chrom$n24_anubis <- NA
+  
+  for (i in 1:nrow(rcr_chrom)) {
+    
+    subset(RCR, RCR$left_snp <= rcr_chrom$end[i] & RCR$right_snp > rcr_chrom$start[i]) -> tmp2
+    tmp2$left_snp[tmp2$left_snp < rcr_chrom$start[i]] <- rcr_chrom$start[i]
+    tmp2$right_snp[tmp2$right_snp > rcr_chrom$end[i]] <- rcr_chrom$end[i]
+    tmp2$l <- tmp2$right_snp - tmp2$left_snp
+    rcr_chrom$n24_anubis[i] <- sum(tmp2$mean*tmp2$l)/sum(tmp2$l); rm(tmp2)
+  }; rm(RCR,i)
+  
+  print(c(nrow(rcr_chrom),"chrom", k))
+  
+  rbind(rcr,rcr_chrom) -> rcr; rm(rcr_chrom)
+}; rm(k)
+
+rm(empty_windows, wind)
+save(rcr, file="for_pedigree_trios_250kbwin_recombination.Rd")
