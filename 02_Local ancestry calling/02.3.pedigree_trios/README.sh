@@ -48,7 +48,7 @@ sbatch --mem=1G  3get_ped_inconsistencies_SNPRCref.R
 sbatch --mem=1G  3get_ped_inconsistencies_Wallref.R
 
 # For each genomic window, we would also like to get information on the number of ancestry informative markers, FST, and recombination rate which we will include as covariates in our models of pedigree inconsistencies
-# For the number of ancestry informative markers, run the R script 3apos_AIM_count.sh using the command below in order to generate chromosome-specific scripts.
+# For the number of ancestry informative markers, run the R script 4apos_AIM_count.sh using the command below in order to generate chromosome-specific scripts.
 for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g 4apos_AIM_count.sh > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
 
 # Get first four columns (chrom, pos, start_window, end_window)
@@ -56,7 +56,9 @@ awk '{print $1,$2,$3,$4}' indiv.pos_AIM_count_1kbwin_HAP.txt >> tmp
 for f in `ls indiv.pos_AIM_count_1kbwin_*`; do awk '{print $5}' $f >> tmp1.$f; echo $f; done
 for f in `ls tmp1.indiv.pos_AIM_count_1kbwin_*`; do paste $f >> tmp1.$f; echo $f; done
 
-# For FST, use the scripts 
+# For FST, use the scripts 4bfst_SNPRCref.sh and 4bfst_Wallref.sh to calculate FST using vcftools with 35 kb windows and 500 bp step size
+sbatch --mem=500 4bfst_SNPRCref.sh
+sbatch --mem=500 4bfst_Wallref.sh
 
 # check Ns in chr7
 # perl -ne 'chomp;if( />(.*)/){$head = $1; $i=0; next};@a=split("",$_); foreach(@a){$i++; if($_ eq "N" && $s ==0 ){$z=$i-1; print "$head\t$z"; $s =1}elsif($s==1 && $_ ne "N"){$j=$i-1;print "\t$j\n";$s=0}}' chr7.test.fa >> check_Ns
