@@ -69,7 +69,7 @@ for f in `ls tmp1.indiv.pos_AIM_count_1kbwin_*`; do paste $f >> tmp1.$f; echo $f
 sbatch --mem=500 4bFST_SNPRCref.sh
 sbatch --mem=500 4bFST_Wallref.sh
 
-# For recombination rate, run the R script from 4cRecomb.R which is almost identical to the code XXXX in (XXX TPV DIRECTORY), but modified for the positions in this analysis (in the positions data frame).
+# For recombination rate, run the R script from 4cRecomb.R which is almost identical to the code XXXX in (XXX TPV DIRECTORY), but modified for the input for this analysis, the positions in this analysis (in the positions data frame), and the output (we want the lengths used).
 sbatch --mem=200 4cRecomb.R
 
 #############################################################################################################################
