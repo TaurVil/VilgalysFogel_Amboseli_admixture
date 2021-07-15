@@ -32,7 +32,7 @@ for (k in 1:20) { #For each chromosome
     tmp2$left_snp[tmp2$left_snp < rcr_chrom$start[i]] <- rcr_chrom$start[i]
     tmp2$right_snp[tmp2$right_snp > rcr_chrom$end[i]] <- rcr_chrom$end[i]
     tmp2$l <- tmp2$right_snp - tmp2$left_snp
-    rcr_chrom$length[i] <- sum(tmp2$l)
+    rcr_chrom$length_used[i] <- sum(tmp2$l)
     rcr_chrom$n24_anubis[i] <- sum(tmp2$mean*tmp2$l)/sum(tmp2$l); rm(tmp2)
   }; rm(RCR,i)
   
