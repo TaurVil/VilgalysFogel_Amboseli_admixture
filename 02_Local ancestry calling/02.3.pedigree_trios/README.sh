@@ -69,7 +69,8 @@ for f in `ls tmp1.indiv.pos_AIM_count_1kbwin_*`; do paste $f >> tmp1.$f; echo $f
 sbatch --mem=500 4bfst_SNPRCref.sh
 sbatch --mem=500 4bfst_Wallref.sh
 
-# For recombination rate, use the script XXXXTAURAS DIRECTORYXXX modified for the positions and genomic windows for this analysis (in the positions data frame).
+# For recombination rate, run the R script XXXXTAURAS DIRECTORYXXX modified for the positions and genomic windows for this analysis (in the positions data frame).
+sbatch --mem=200 4cRecomb.R
 
 #############################################################################################################################
 # Results from the pedigree inconsistencies models (script labelled with a 5...)
