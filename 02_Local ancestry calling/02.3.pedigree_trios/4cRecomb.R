@@ -9,7 +9,7 @@ load("local_ancestry_pedigree_trios_maskedSNPRCref.Rd", verbose=T)
 rm(indiv_list, tracts2, trios)
 
 # need to create a data frame of empty_windows (chrom, start, end) to calculate, for each chromosome and each window within a chromosome, the mean recombination rate for a window
-wind=250000 # use 250 kb as our window size (even though our focal sites are 35 kb apart, this size would generate too noisy of a mean recombination rate 
+wind=250000 # use 250 kb as our window size (even though our focal sites are 35 kb apart - a 35 kb window size for mean recombination rate would generate too noisy of an estimate)
 positions$start <- positions$pos-(wind/2)
 positions$end <- positions$pos+(wind/2)
 
