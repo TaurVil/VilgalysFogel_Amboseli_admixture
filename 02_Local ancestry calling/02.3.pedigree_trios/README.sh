@@ -43,7 +43,7 @@ wc -l all*
 #73976 all.ancestry_calls_maskedSNPRCref_pedigree_trios_35kbpos.txt
 #73976 all.ancestry_calls_unmaskedWallref_pedigree_trios_35kbpos.txt
 
-# In the same directory on a computing cluster, run the R scripts
+# In the same directory on a computing cluster, run the R scripts 3get_ped_inconsistencies_SNPRCref.R and 3get_ped_inconsistencies_Wallref.R to identify inconsistent ancestry calls
 sbatch --mem=1G  3get_ped_inconsistencies_SNPRCref.R
 sbatch --mem=1G  3get_ped_inconsistencies_Wallref.R
 
