@@ -66,10 +66,10 @@ for f in `ls indiv.pos_AIM_count_1kbwin_*`; do awk '{print $5}' $f >> tmp1.$f; e
 for f in `ls tmp1.indiv.pos_AIM_count_1kbwin_*`; do paste $f >> tmp1.$f; echo $f; done
 
 # For FST, use the scripts 4bfst_SNPRCref.sh and 4bfst_Wallref.sh to calculate FST using vcftools with 35 kb windows and 500 bp step size
-sbatch --mem=500 4bfst_SNPRCref.sh
-sbatch --mem=500 4bfst_Wallref.sh
+sbatch --mem=500 4bFST_SNPRCref.sh
+sbatch --mem=500 4bFST_Wallref.sh
 
-# For recombination rate, run the R script XXXXTAURAS DIRECTORYXXX modified for the positions and genomic windows for this analysis (in the positions data frame).
+# For recombination rate, run the R script from 4cRecomb.R which is almost identical to the code XXXX in (XXX TPV DIRECTORY), but modified for the positions in this analysis (in the positions data frame).
 sbatch --mem=200 4cRecomb.R
 
 #############################################################################################################################
