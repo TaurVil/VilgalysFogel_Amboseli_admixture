@@ -9,27 +9,45 @@ for f in `cat autosomes.list`; do sed -e s/CHROMOSOME/$f/g 2get_ancestry_calls_W
 # can check that all scripts ran by looking for "done" written in the output files
 grep "done" slurm* | wc -l #40 = the number of total scripts we ran so everything ran to completion
 
-# Concatenate the output of the chromosome-specific files into a single file for set of ancestry calls (i.e., SNPRC or Wall et al. reference panels)
+# Concatenate the output of the chromosome-specific files into a single file for each set of ancestry calls (i.e., SNPRC or Wall et al. reference panels)
+# SNPRC
 for file in ancestry_calls_maskedSNPRCref*
 do
      tail -n +2 "$file" >> "nohead.$file.txt" 
 done
 
 # Grab the header from one of the files
-head -1 local_ancestry_calls_maskedfullref_pedigree_35kbpos_chr1.txt >> header
+head -1 ancestry_calls_maskedSNPRCref_pedigree_trios_35kbpos_chr1.txt >> header
 # Add the header to the concatenated file
 cat header nohead.local_ancestry_calls_maskedfullref_pedigree_35kbpos_chr* >> all.local_ancestry_calls_maskedfullref_pedigree_35kbpos.txt
 rm *head*
 
-# we can also check that we have the expected number of total lines per set of ancestry calls (should equal the total number of positions = 73975)
+# Wall
+or file in ancestry_calls_unmaskedWallref*
+do
+     tail -n +2 "$file" >> "nohead.$file.txt" 
+done
+
+# Grab the header from one of the files
+head -1 ancestry_calls_unmaskedWallref_pedigree_trios_35kbpos_chr1.txt >> header
+# Add the header to the concatenated file
+cat header nohead.local_ancestry_calls_maskedfullref_pedigree_35kbpos_chr* >> all.local_ancestry_calls_maskedfullref_pedigree_35kbpos.txt
+rm *head*
+
+# Delete chromsome-specific files as these results are now stored in either the all files generated above
+rm ancestry*
+
+# Check that we have the expected number of total lines per set of ancestry calls (should equal the total number of positions = 73975)
 wc -l all*
 
 
 # get pedigree inconsistencies
-sbatch --mem=1G run.02.ped_inconsistencies.sh
+sbatch --mem=1G 3ped_inconsistencies.sh
 
-# get AIM count
-for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g 3pos_AIM_count.sh > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
+# For each genomic window, we would also like to get information on the number of ancestry informative markers, FST, and recombination rate which we will include as covariates in our models of pedigree inconsistencies
+# Run the R script 3apos_AIM_count.sh using the command below in order to generate chromosome-specific scripts.
+for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g 3apos_AIM_count.sh > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
+
 
 
 
