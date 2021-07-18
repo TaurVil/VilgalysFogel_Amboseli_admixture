@@ -71,7 +71,7 @@ grep "done" slurm* | wc -l #40 = the number of total scripts we ran so everythin
 cat for_pedigree_trios_AIM_count_maskedSNPRCref_pedigree_trios_chr* >> all.for_pedigree_trios_AIM_count_maskedSNPRCref_pedigree_trios.txt
 
 # Check that we have the expected number of total lines per set of ancestry calls (should equal the total number of positions = 73975)
-wc -l all*
+wc -l all.for_pedigree_trios_AIM_count*
 #73975 all.for_pedigree_trios_AIM_count_maskedSNPRCref_pedigree_trios.txt
 
 # Remove chromosome-specific files
