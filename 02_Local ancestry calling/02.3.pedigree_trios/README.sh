@@ -70,13 +70,15 @@ grep "done" slurm* | wc -l #40 = the number of total scripts we ran so everythin
 
 # Concatenate the output of the chromosome-specific files into a single file for each set of ancestry calls (i.e., SNPRC or Wall et al. reference panels)
 cat for_pedigree_trios_AIM_count_maskedSNPRCref_pedigree_trios_chr* >> all.for_pedigree_trios_AIM_count_maskedSNPRCref_pedigree_trios.txt
+cat for_pedigree_trios_AIM_count_unmaskedWallref_pedigree_trios_chr* >> all.for_pedigree_trios_AIM_count_unmaskedWallref_pedigree_trios.txt
 
 # Check that we have the expected number of total lines per set of ancestry calls (should equal the total number of positions = 73975)
 wc -l all.for_pedigree_trios_AIM_count*
 #73975 all.for_pedigree_trios_AIM_count_maskedSNPRCref_pedigree_trios.txt
-
+#73975 all.for_pedigree_trios_AIM_count_unmaskedWallref_pedigree_trios.txt
+  
 # Remove chromosome-specific files
-rm for_pedigree_trios_AIM_count_maskedSNPRCref_pedigree_trios_chr*
+rm for_pedigree_trios_AIM_count*
 
 # (2) FST
 # For FST, use the scripts 4bfst_SNPRCref.sh and 4bfst_Wallref.sh to calculate FST using vcftools with 35 kb windows and 500 bp step size
