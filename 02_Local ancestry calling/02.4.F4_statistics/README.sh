@@ -110,6 +110,16 @@ bgzip final.chrX.baboon.to.macam.recode.vcf
 tabix final.chrX.baboon.to.macam.recode.vcf.gz
 
 # we now need to convert our vcf into eigenstrat format by way of the plink format
+# plink/eigenstrat is does not like weird chromosome names so rename chr02a and chr02b to chr20 and chr21 respectively
+echo "chr02a chr20" >> chr02a_names
+echo "chr02b chr21" >> chr02b_names
+module load bcftools
+module load tabix
+bcftools annotate --rename-chrs chr02a_names final.baboon.to.macam.n51.chr02a.vcf.gz | bgzip > final.baboon.to.macam.n51.chr02a.rename.vcf.gz
+bcftools annotate --rename-chrs chr02b_names final.baboon.to.macam.n51.chr02b.vcf.gz | bgzip > final.baboon.to.macam.n51.chr02b.rename.vcf.gz
+tabix final.baboon.to.macam.n51.chr02a.rename.vcf.gz 
+tabix final.baboon.to.macam.n51.chr02b.rename.vcf.gz 
+
 # first convert to plink, then add population info to plink ped file, then convert to eigenstrat
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat >> my.par.ped.eigenstrat.$f; done # create chromosome specific my.par.ped.eigenstrat files
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.05.get_eigenstrat_format.sh >> $f.sh; sbatch $f.sh; done
