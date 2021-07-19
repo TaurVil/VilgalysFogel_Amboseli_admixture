@@ -1,3 +1,5 @@
+## ARIELLE, IF WE UPLOAD MAJ RULE CALLS, MAKE SURE COLUMN ORDER MATCHES 4a SCRIPTS
+
 # This directory contains multiple scripts for evaluating the quality of local ancestry calls from LCLAE using known parent-offspring trios from the Amboseli baboons (Supplementary Methods 7.3).
 
 #############################################################################################################################
