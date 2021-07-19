@@ -122,7 +122,10 @@ tabix final.baboon.to.macam.n51.chr02b.rename.vcf.gz
 
 # first convert to plink, then add population info to plink ped file, then convert to eigenstrat
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat >> my.par.ped.eigenstrat.$f; done # create chromosome specific my.par.ped.eigenstrat files
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.05.get_eigenstrat_format.sh >> $f.sh; sbatch $f.sh; done
+for f in `cat MacaM_autosome_list_nochr2 `; do sed -e s/CHROM/$f/g run.05.get_eigenstrat_format.sh >> $f.sh; sbatch $f.sh; done # for all autosomes except chr02a and chr02b
+
+grep "chr02" MacaM_autosome_list >> MacaM_autosome_list_chr02s
+for f in `cat MacaM_autosome_list_chr02s`; do sed -e s/CHROM/$f/g run.05.get_eigenstrat_format_chr02s.sh >> $f.sh; sbatch $f.sh; done # for renamed chr02a and chr02b
 
 # chromosome conversion between Rogers et al. 2006 Genomics linkage (see Table 1 linkage map) map/genome assembly and Zimin et al. 2014 Biol Direct (MacaM)
 https://www.ncbi.nlm.nih.gov/genome/guide/rhesus_macaque/rhesuschrtable.html
