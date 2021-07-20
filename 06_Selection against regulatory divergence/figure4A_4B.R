@@ -20,6 +20,8 @@ ggplot(gene) +
   scale_x_discrete(name="", labels=c("0" = "homozygous\nyellow", "1" = "heterozygous", "2" = "homozygous\nanubis")) + scale_y_continuous(name="normalized, residual\ngene expression") +
   theme_classic() + theme(legend.position = "none", axis.text = element_text(colour = "black"), text=element_text(size=20))
 
+ggsave("fig4A_main.png")
+
 # inset
 # TAURAS CODE HERE
 
@@ -36,3 +38,5 @@ ggplot(data=results) +
   xlab("proportion of genes") + ylab("Spearman's rho") +
   coord_cartesian(ylim=c(0,0.2)) +
   theme_classic() +  theme(text=element_text(size=20), axis.text = element_text(color="black")) + xlab(label = "proportion of genes") # asterisks denoting significance were added later in keynote
+
+ggsave("fig4B.png")
