@@ -1,5 +1,5 @@
 # Script for recreating figure 4A and 4B
-# Note that the cartoon gen expression drawings beneath 4A and distribution in 4B were created in Keynote 8.1
+# Note that the cartoon gene expression drawings beneath 4A and cartoon distribution in 4B were created in Keynote 8.1
 
 # Load R libraries
 library(ggplot2)
