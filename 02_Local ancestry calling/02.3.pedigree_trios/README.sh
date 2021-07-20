@@ -80,7 +80,7 @@ wc -l all.for_pedigree_trios_AIM_count*
 #73975 all.for_pedigree_trios_AIM_count_unmaskedWallref_pedigree_trios.txt
   
 # Remove chromosome-specific files
-rm for_pedigree_trios_AIM_count*
+rm for_pedigree_trios_AIM_count*txt
 
 # (2) FST
 # For FST, use the scripts 4bfst_SNPRCref.sh and 4bfst_Wallref.sh to calculate FST using vcftools with 35 kb windows and 500 bp step size
