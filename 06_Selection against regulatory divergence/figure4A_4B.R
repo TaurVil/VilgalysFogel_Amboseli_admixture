@@ -30,7 +30,7 @@ ggsave("fig4A_main.png")
 #############################################################################################################################
 
 # Load Figure 4B results
-results <- read.table("fig4BC_final_data/bootstrap_rho_results.txt", header=T)
+results <- read.table("bootstrap_rho_results.txt", header=T)
 
 ggplot(data=results) +
   geom_pointrange(aes(x=quantile, y=rho_DE, ymin=low_DE, ymax=hi_DE), fill="#366B7D", color="#366B7D",alpha=0.8, size=1, shape=21, stroke=1.5) +
