@@ -9,7 +9,7 @@ library(tidyr)
 #############################################################################################################################
 
 # Load 4C results
-results <- read.delim("fig4BC_final_data/fig4_glmnet_results.txt", header=T)
+results <- read.delim("glmnet_results.txt", header=T)
 
 # Convert data from wide to long format for easier plotting
 results2 <- results %>% pivot_longer(everything(), names_to=c("predictor"), values_to=c("estimate"))
