@@ -30,13 +30,23 @@ ggsave("fig4A_main.png")
 #############################################################################################################################
 
 # Load Figure 4B results
-results <- read.table("bootstrap_rho_results.txt", header=T)
+results <- read.table("fig4BC_final_data/bootstrap_rho_results.txt", header=T)
+
+# change 95% CI to standard error
+results$high_se_DE <- results$rho_DE + results$sd_DE
+results$low_se_DE <- results$rho_DE - results$sd_DE
+results$high_se_nDE <- results$rho_nDE + results$sd_nDE
+results$low_se_nDE <- results$rho_nDE - results$sd_nDE
 
 ggplot(data=results) +
-  geom_pointrange(aes(x=quantile, y=rho_DE, ymin=low_DE, ymax=hi_DE), fill="#366B7D", color="#366B7D",alpha=0.8, size=1, shape=21, stroke=1.5) +
-  geom_pointrange(aes(x=quantile+0.01, y=rho_nDE, ymin=low_nDE, ymax=hi_nDE), fill="#5C438A", color="#5C438A",alpha=0.8, size=1, shape=21, stroke=1.5) +
+  geom_pointrange(aes(x=quantile, y=rho_DE, ymin=low_se_DE, ymax=high_se_DE), fill="#366B7D", color="#366B7D",alpha=0.8, size=1, shape=21, stroke=1.5) +
+  geom_pointrange(aes(x=quantile+0.01, y=rho_nDE, ymin=low_se_nDE, ymax=high_se_nDE), fill="#5C438A", color="#5C438A",alpha=0.8, size=1, shape=21, stroke=1.5) +
   xlab("proportion of genes") + ylab("Spearman's rho") +
   coord_cartesian(ylim=c(0,0.2)) +
   theme_classic() +  theme(text=element_text(size=20), axis.text = element_text(color="black")) + xlab(label = "proportion of genes") # asterisks denoting significance were added later in keynote
+
+# quantiles to add asterisks to in keynote
+subset(results, bootstrap_pval<0.05)$quantile
+# 0.15 0.20
 
 ggsave("fig4B.png")
