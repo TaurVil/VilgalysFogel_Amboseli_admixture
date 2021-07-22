@@ -53,6 +53,9 @@ wc -l all*
 sbatch --mem=1G  3get_ped_inconsistencies_SNPRCref.R
 sbatch --mem=1G  3get_ped_inconsistencies_Wallref.R
 
+# can check that all scripts ran by looking for "done" written in the output files
+grep "done" slurm* | wc -l #2 = the number of total scripts we ran so everything ran to completion
+
 #############################################################################################################################
 # Covariates for the pedigree inconsistencies models (scripts labelled with a 4...)
 #############################################################################################################################
@@ -95,5 +98,4 @@ sbatch --mem=200 4cRecomb.R
 # Results from the pedigree inconsistencies models (script labelled with a 5...)
 #############################################################################################################################
 
-
-# Finally, in R, run 5pedigree_inconsistencies_results.R which XXXXX
+# Finally, in a directory containing all files generated from scripts 3-5, in R, run 5pedigree_inconsistencies_results.R which XXXXX
