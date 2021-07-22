@@ -17,5 +17,5 @@
 ./03.glmnet_results.R
 ## a summary of the glmnet results produced by 02.run_glmnet.R. This file includes statistics in the text and outputs the data table for Fig. 4C (glmnet_results.txt). 
 
-figure4C.R
+./04.figure4C.R
 ## produces fig 4C
