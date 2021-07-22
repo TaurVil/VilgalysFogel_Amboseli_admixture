@@ -7,4 +7,12 @@
 ./01.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
 
 ## For each protein coding gene, we calculate the ancestry of each gene, we calculate the ancestry 
+./02.assign_gene_ancestry.R
 
+## Run linear models
+
+## Test for non-additive effects
+
+## Apply mash to independent analyses of each dataset
+
+## Selection against genes with greater regulatory divergence
