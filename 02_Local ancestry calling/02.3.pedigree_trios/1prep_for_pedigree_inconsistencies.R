@@ -24,12 +24,12 @@ colnames(tmp3) <- c("indiv")
 tmp4 <- rbind(tmp, tmp2, tmp3)
 # Get list of unique individuals across all moms, dads, and kids
 indiv_list <- tmp4 %>% distinct(indiv)
-nrow(indiv_list) # 211 unique individuals
+nrow(indiv_list) # 181 unique individuals
 
 # Merge tracts with unique individuals across the pedigree trios so we only retain tracts from individuals we'll work with in this analysis
 tmp2 <- merge(indiv_list, tracts, by.x=c("indiv"), by.y = c("table_s1_id"))
 
-# Check to make we have tract data for all 211 individuals
+# Check to make we have tract data for all 181 individuals
 nrow(distinct(tmp2, indiv))==nrow(indiv_list) # TRUE
 
 # Grab only columns we'll need (indiv, chrom, start of the tract, end of the tract, ancestry state of the tract)
@@ -51,11 +51,9 @@ chrom_sizes$end_chrom <- chrom_sizes$length-(50000+(wind/2))
 
 # Grab only the columns we'll need (i.e., only the chromosome name, start of chromosome, and end of chromosome so exclude the chromosome length column)
 chrom_sizes <- chrom_sizes[c(1,3:4)]
-#chrom_sizes$chrom <- droplevels(chrom_sizes$chrom)
 
 # Get a list of the chromosomes we'll look at (chromosomes 1-20)
 chrom_list <- chrom_sizes[c(1)]
-#chrom_list$chrom <- droplevels(chrom_list$chrom)
 
 # Generate list of positions along the genome where positions are 35 kb apart along each chromosome starting 50 kb from the beginning of the chromosome and ending at least 50 kb from the end of the chromosome)
 for (i in 1:nrow(chrom_list)) {
@@ -76,7 +74,7 @@ for (i in 1:nrow(chrom_list)) {
 nrow(positions) # 73975 
 
 # Check to confirm that 73975 is the correct number of total positions 
-sum(floor(((chrom_sizes$end_chrom-chrom_sizes$start_chrom)/size)+1))==nrow(positions) # TRUE
+sum(floor(((chrom_sizes$end_chrom-chrom_sizes$start_chrom)/wind)+1))==nrow(positions) # TRUE
 # Now we have all of the positions where we want evaluate consistences of ancestry calls in the pedigree trios
 
 # Save dataframes for upload to the computing cluster for parallelization 
@@ -85,7 +83,8 @@ save(indiv_list, tracts2, positions, trios, file="local_ancestry_pedigree_trios_
 # We also want to compare consistencies of ancestry calls using the masked SNPRC reference panel with the low coverage reference panel from Wall et al. 2016 Molecular Ecology
 rm(tracts, tracts2) # remove tracts using the masked SNPRC reference panel but keep the indiv_list, trios, and positions data frames
 
-# Load ancestry tracts generated using unmasked Wall et al. individuals for the reference panel available in the Duke Data Repository at XXX
+# Load ancestry tracts generated using unmasked Maasai Mara and Mikumi individuals for the reference panel available in the Duke Data Repository at XXX
+# Note that throughout the code, this panel is referred to as "Wallref" but it includes not only the low-coverage reference panel used by Wall et al. but is also supplemented with high coverage Mikumi samples (10 new and one from Rogers et al. 2019)
 tracts <- read.table("amboseli.tracts.unmaskedWallref.txt", header=T)
 
 # Remove tracts <1 kb in length
@@ -95,7 +94,7 @@ tracts <- tracts[tracts$length2>1000,]
 # Merge tracts with unique individuals across the pedigree trios so we only retain tracts from individuals we'll work with in this analysis
 tmp2 <- merge(indiv_list, tracts, by.x=c("indiv"), by.y = c("table_s1_id"))
 
-# Check to make we have tract data for all 211 individuals
+# Check to make we have tract data for all 181 individuals
 nrow(distinct(tmp2, indiv))==nrow(indiv_list) # TRUE
 
 # Grab only columns we'll need (indiv, chrom, start of the tract, end of the tract, ancestry state of the tract)
