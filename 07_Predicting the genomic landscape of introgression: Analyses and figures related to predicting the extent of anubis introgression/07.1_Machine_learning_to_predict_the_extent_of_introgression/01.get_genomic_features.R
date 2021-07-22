@@ -107,7 +107,14 @@ data$gene_exp_in_blood_length[is.na(data$gene_exp_in_blood_length)] <- 0
 data$gene_DE_length[is.na(data$gene_DE_length)] <- 0
 data$presence_DE <- 0; data$presence_DE[data$gene_DE >= 1] <- 1
 
-## cleanup
+############################
+## cleanup & save RData object
+############################
 rm(sig, mash_res, distance, genes, k, ped)
 
+data -> including_windows
+colnames(data)[24:26] <- c('perc_GC', 'num_cpg_islands', 'perc_cpg_islands')
+data[,-c(1:3, 23)] -> data # remove window labels
+data$gene_length[data$gene_number == 0] <- 0
 
+save.image("./ancestry_and_features.RData")
