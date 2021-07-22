@@ -7,7 +7,7 @@ This repository contains materials used to analyze the data from, and recreate t
 
 ### 02 Local ancestry calling: Local ancestry calling, including verifying our approach through simulation and quality control measures. 
 
-### 03 Genomic resources for baboons: Functional annotation of the baboon genome expanding upon Batra et al. 2020. 
+### 03 Genomic resources for baboons: Annotation of the baboon genome, expanding upon Batra et al. 2020. 
 In particular, this folder includes code and references for a liftover file between the human genome (hg19) and baboon genome (Panubis1.0), recombination rates (using data from Robinson et al. 2019), a measure of background selection (B values: McVicker et al. 2009), the annotation of CpG islands, and a liftover of human enhancers to the baboon genome. 
 
 ### 04 Structure of the baboon hybrid zone: Analyses and figures related to the extent of admixture beyond the Amboseli hybrid zone. 
