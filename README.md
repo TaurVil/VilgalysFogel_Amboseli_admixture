@@ -19,6 +19,6 @@ In particular, this folder includes code and references for a liftover file betw
 ### 07 Predicting the genomic landscape of introgression: Analyses and figures related to predicting the extent of anubis introgression. 
 There are two sub-sections here: (i) machine learning to identify genomic features predicting the extent of introgression and (ii) longitudinal analysis of changes in ancestry over time across the genome. 
 
-Finally, we include here a RData file (VilgalysFogel_main_data_file.RData) which contains estimates of mean anubis ancestry for 250kb windows and genes across the baboon genome. This data file can be produced from the code and information available in sections 01-03, and is used for analyses in sections 04-07. 
+Finally, we include here a RData file (VilgalysFogel_main_data_file.250kb.RData) which contains estimates of mean anubis ancestry for 250kb windows and genes across the baboon genome. This data file can be produced from the code and information available in sections 01-03, is produced by code in section 05, and is used for analyses in sections 05-07. 
 
 For additional assistance, please contact Tauras Vilgalys (taur.vil@gmail.com) and Arielle Fogel (afogel29@gmail.com). 
