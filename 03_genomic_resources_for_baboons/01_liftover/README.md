@@ -2,7 +2,7 @@
 Generating a liftover file between Panubis1 and the human genome. These scripts are based on the UCSC pipelines
 
 # Sets of scripts
-There are two sets of scripts in this file. First, there is a large script "crossSpeciesLiftover" which contains the entire process. However, this is unwieldly to run, so we made and use the 4 "liftover_XX.sh" scripts for most practical computing. These scripts were initially written for the UCSF cluster, which has some different systems than HARDAC at Duke. Some tweaking might be necessary to get everything to run smoothly.
+The process to create a liftover file is divided over 4 scripts, run in sequential order. The second file calls a subscript which is also included in this directory. These scripts were initially written for the UCSF cluster, which has some different systems than HARDAC at Duke. Some tweaking might be necessary to get everything to run smoothly.
 
 The files 1-4 refer to instructions to make the liftover from hg38 to panubis1. The 1b-4b are files to make the liftover for panubis1 to hg38. 
  
