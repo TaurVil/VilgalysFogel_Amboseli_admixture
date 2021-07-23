@@ -3,11 +3,13 @@
 
 ## We began with expression data summarized as read counts per gene and individual, provided here as "expression_data.txt" with accompanying metadata "expression_metadata.txt"
 
-## We process each dataset to normalize and control for covariates. 
-./01.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
+## For each protein coding gene, we calculate the ancestry of each gene, we calculate the mean anubis ancestry per individual in the population. 
+./01.assign_gene_ancestry.R
+# Calls a file of chromosome lengths, the Panubis1 gtf file, and the file of Amboseli ancestry calls
+# Produces genes_ancestry.RData, which also contains the mean anubis ancestry and the nean recombination rate per gene
 
-## For each protein coding gene, we calculate the ancestry of each gene, we calculate the ancestry 
-./02.assign_gene_ancestry.R
+## We process each dataset to normalize and control for covariates. 
+./02.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
 
 ## Run linear models
 
