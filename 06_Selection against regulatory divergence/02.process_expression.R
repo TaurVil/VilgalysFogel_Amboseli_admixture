@@ -32,6 +32,10 @@ info$mean_ancestry <- NA; for (i in 1:nrow(info)) {
   if (nrow(tmp) == 1) {info$mean_ancestry[i] <- tmp$genome_wide_anubis_ancestryd }
 }; rm(i, tmp)
 
+## Samples are ordered by "Order" in the info column
+colnames(expr) <- paste("order",info$Order,sep="")
+info$Order2 <- paste("order",info$Order,sep="")
+
 ## Read in file of protein coding genes and gene lengths (sum of exonic sequence) profiled in the expression data
 ## this information was extracted from the NCBI genome annotation for Panubis1: GCF_008728515.1_Panubis1.0_genomic.gtf
 ## gtf <- read.gtf("./GCF_008728515.1_Panubis1.0_genomic.gtf"); genes <- subset(gtf, gtf$feature == "gene" & gtf$gene_biotype == "protein_coding"); exons <- subset(gtf, gtf$feature == "exon" & gtf$gene_id %in% genes$gene_id)
@@ -98,7 +102,7 @@ lane <- interaction(info$dataset, info$year)
 mm <- model.matrix(~1 + info$mean_ancestry + info$age + info$sex)
 # The above specifies a model where each coefficient corresponds to a group mean
 # Voom
-y <- voom(d, mm, plot = T); rm(d, data)
+y <- voom(d, mm, plot = F); rm(d, data)
 # plotMDS(y$E, col = as.numeric(lane))
 
 #######################################
@@ -116,14 +120,15 @@ if (dataset == "TruCulture") {
   rm(metadata2, info)
   t -> metadata; rm(t) 
   # Impute missing cell composition data
-  impute.knn(as.matrix(metadata[,11:15]), rowmax = 1, colmax = 1) -> imp_cellcomp
+  impute.knn(as.matrix(metadata[,12:16]), rowmax = 1, colmax = 1) -> imp_cellcomp
   # Get PCs of cell composition; colnames(metadata[,34:38])
   pc_comp <- prcomp(imp_cellcomp$data, scale. = T); rm(imp_cellcomp)
   metadata$pc1 <- pc_comp$x[,1]; metadata$pc2 <- pc_comp$x[,2]; metadata$pc3 <- pc_comp$x[,3]; rm(pc_comp)
 } else {info -> metadata; rm(info)}
 # plotMDS(y$E, col = as.numeric(as.factor(metadata$yr)))
 # plotMDS(y$E, col = as.numeric(as.factor(metadata$sex)))
-
+metadata <- metadata[order(metadata$Order),]
+         
 ## use LIMMA to get residuals 
 # Construct design matrix to get the residuals
 options(na.action='na.pass')
@@ -133,8 +138,8 @@ covariate_models <- lmFit(y, design = design_to_reg_out)
 residuals <- residuals.MArrayLM(object = covariate_models, y = y$E)
 rm(covariate_models, design_to_reg_out)
 
-plotMDS(residuals, col = as.numeric(as.factor(metadata$yr)))
-plotMDS(residuals, col = as.numeric(as.factor(metadata$sex)))
+# plotMDS(residuals, col = as.numeric(as.factor(metadata$yr)))
+# plotMDS(residuals, col = as.numeric(as.factor(metadata$sex)))
 
 #######################################
 ## add in a genetic covariance matrix, called from RNA sequencing data
@@ -144,17 +149,60 @@ read.delim("./rnaseq_covariance.txt") -> gt; library(data.table)
 g <- as.data.frame(gt); row.names(g) <- colnames(g)
 for (i in 1:nrow(metadata)) {
   as.data.frame(g[, colnames(g) == metadata$studyid[i]])  -> tmp
+  colnames(tmp)[1] <- metadata$Order2[i]
   if (i > 1) {cbind(gt2,tmp) -> gt2}
   if (i == 1) {tmp -> gt2}
 }
 row.names(gt2) <- row.names(g)
 for (i in 1:nrow(metadata)) {
-  as.data.frame(gt2[row.names(gt2) == metadata$sname[i], ])  -> tmp
+  as.data.frame(gt2[row.names(gt2) == metadata$studyid[i], ])  -> tmp
+  rownames(tmp)[1] <- metadata$Order2[i]
   if (i > 1) {rbind(gt3,tmp) -> gt3}
   if (i == 1) {tmp -> gt3}
 }
 gt3 -> gt_cov2
 rm(gt, g, gt2,gt3, tmp, i)
          
+#######################################
+## add in ancestry per gene, which we generated in step 01
+#######################################
+
+load("./Genes_ancestry.RData"); rm(genes, n, features_genes)
+
+## get just the genes we both calculated ancestry and measured expression for
+subset(ancestry_genes, ancestry_genes$gene_id %in% row.names(residuals)) -> ancestry; rm(ancestry_genes)
+subset(gene_lengths, gene_lengths$gene_ID %in% ancestry$gene_id) -> gene_lengths
+
+## get ancestry matrix for just the target individuals, in the correct order
+ancestry -> ancestry_all
+for (i in 1:nrow(metadata)) {
+  keep <- colnames(ancestry_all) == metadata$studyid[i]
+  tmp <- ancestry_all[,keep]
+  if (i == 1) {as.data.frame(matrix(ncol=1, data=tmp)) -> ancestry}
+  if (i > 1) {cbind(ancestry, tmp) -> ancestry}
+  colnames(ancestry)[i] <- metadata$studyid[i]
+}; rm(i, tmp, keep)
+apply(ancestry, 1, sd) -> sd_ancestry; #hist(sd_ancestry); hist(rowMeans(ancestry, na.rm=T))
+
+## remove genes for which ancestry is largely invariant
+row.names(ancestry) <- ancestry_all$gene_id
+loc_anc <- subset(ancestry, rowMeans(ancestry, na.rm=T) < 1.8 & rowMeans(ancestry, na.rm=T) > 0.2 & sd_ancestry > 0.4)
+loc_anc <- loc_anc[order(row.names(loc_anc)),]
+rm(sd_ancestry, ancestry, ancestry_all) # head(loc_anc[,1:7])
+
+## limit to genes where we have ancestry information (removes X genes, which is why the structure changes here to show no sex effects)
+subset(gene_lengths, gene_lengths$gene_ID %in% row.names(loc_anc)) -> gene_lengths
+subset(residuals, row.names(residuals) %in% row.names(loc_anc)) -> residuals
+colnames(loc_anc) <- metadata$Order2
+
+## add design matrix, each individual represented once in the covariance
+Z=diag(ncol(loc_anc))
          
-save.image(paste("./expression_data_", dataset, ".RData", sep=""))
+#######################################
+## cleanup and save image for analyses
+#######################################
+metadata$sex <- as.factor(metadata$sex)
+rm(y, mm, ids)
+         
+save.image(paste("./expression_data_for_models.", dataset, ".RData", sep=""))
+
