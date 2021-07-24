@@ -10,11 +10,15 @@
 
 ## We process each dataset to normalize and control for covariates. 
 ./02.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
+# this outputs RData files which can be used for modeling title "expression_data_for_models.DATASET.RData"
 
 ## Run linear models
-./03.model_express.R
+./03.model_expression.R
+# Includes 50 permutations of local and global ancestry
+# Outputs a data file "expression_results.DATASET.RData" which is not included here due to file-size considerations. 
 
 ## Test for non-additive effects
+
 
 ## Apply mash to independent analyses of each dataset
 
