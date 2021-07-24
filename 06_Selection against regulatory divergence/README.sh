@@ -10,11 +10,13 @@
 
 ## We process each dataset to normalize and control for covariates. 
 ./02.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
+# Calls "expression_data.txt", "expression_metadata.txt", "gene_lengths.txt", "amboseli_ids.txt", "rnaseq_covariance.txt", and "TruCulture_flow_cytometry.txt" included in this folder. Also loads "Genes_ancestry.RData" produced by the previous step. 
 # this outputs RData files which can be used for modeling title "expression_data_for_models.DATASET.RData"
 
 ## Run linear models
-./03.model_expression.R
+./03.model_expression.R ## run with dataset="eLife" and dataset="TruCulture"
 # Includes 50 permutations of local and global ancestry
+# Calls "expression_data_for_models.DATASET.RData" which is returned in step 2 and included here. 
 # Outputs a data file "expression_results.DATASET.RData" which is not included here due to file-size considerations. 
 
 ## Test for non-additive effects
