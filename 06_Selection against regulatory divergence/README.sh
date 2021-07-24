@@ -12,6 +12,7 @@
 ./02.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
 
 ## Run linear models
+./03.model_express.R
 
 ## Test for non-additive effects
 
