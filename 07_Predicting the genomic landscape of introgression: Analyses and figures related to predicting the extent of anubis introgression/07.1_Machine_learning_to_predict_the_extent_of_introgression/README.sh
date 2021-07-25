@@ -3,7 +3,7 @@
 ## we expand upon the genomic features available in Section 5 and VilgalysFogel_main_data_file.RData, to include other possible predictors of anubis ancestry such as gene and enhancer content. 
 
 ./01.get_genomic_features.R
-## this script produces ancestry_and_features.RData
+## this script produces ancestry_and_features.RData. It calls the main data file, files from the resources folder, and publicly available baboon annotations from NCBI. 
 
 ## step 2: run glmnet
 ## in R, load the previous matrix and fit elastic net regression using the R package glmnet (Friedman, Hastie, & Tibshirani, 2010). 
