@@ -29,7 +29,9 @@
 
 ## Apply mash to independent analyses of each dataset
 ./05.mash_linear_models.R ## integrate expression data from the two datasets, and refine effect size estimates
- 
+# Calls "expression_results.DATASET.RData" from step 3
+
+
 # Calls "expression_results.DATASET.RData"
 
 ## Selection against genes with greater regulatory divergence
