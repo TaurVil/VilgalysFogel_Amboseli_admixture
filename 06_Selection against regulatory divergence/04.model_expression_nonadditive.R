@@ -117,6 +117,6 @@ if (dataset == "eLife") {
   loc_anc -> la_eLife; rm(loc_anc)
 }
 
-save.image(paste("./expression_piecewise_", dataset, ".RData", sep=""))
+save.image(paste("./expression_piecewise.", dataset, ".RData", sep=""))
 
 
