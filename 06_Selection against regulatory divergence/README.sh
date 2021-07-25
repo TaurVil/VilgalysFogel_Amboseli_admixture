@@ -18,6 +18,7 @@
 # Includes 50 permutations of local and global ancestry
 # Calls "expression_data_for_models.DATASET.RData" which is returned in step 2 and included in this directory. 
 # Outputs a data file "expression_results.DATASET.RData" which is not included here due to file-size considerations but can be generated using this script or is available upon request. 
+./03b.global_ancestry_results.R ## integrate expression data for global ancestry effects, which finds no significant associations. Local ancestry effects, where there is an enrichment, will be integrated in step 5.
 
 ## Test for non-additive effects
 ## Note we only analyze data for which there is at least 10 indivuals with homozygous and heterozygous ancestry
@@ -27,5 +28,8 @@
 ./04b.nonadditive_results.R ## summarize model results, using results from 04 
 
 ## Apply mash to independent analyses of each dataset
+./05.mash_linear_models.R ## integrate expression data from the two datasets, and refine effect size estimates
+ 
+# Calls "expression_results.DATASET.RData"
 
 ## Selection against genes with greater regulatory divergence
