@@ -17,12 +17,14 @@
 ./03.model_expression.R ## run with dataset="eLife" and dataset="TruCulture"
 # Includes 50 permutations of local and global ancestry
 # Calls "expression_data_for_models.DATASET.RData" which is returned in step 2 and included in this directory. 
-# Outputs a data file "expression_results.DATASET.RData" which is not included here due to file-size considerations but is available upon request. 
+# Outputs a data file "expression_results.DATASET.RData" which is not included here due to file-size considerations but can be generated using this script or is available upon request. 
 
 ## Test for non-additive effects
+## Note we only analyze data for which there is at least 10 indivuals with homozygous and heterozygous ancestry
 ./04.model_expression_nonadditive.R ## run with dataset="eLife" and dataset="TruCulture"
 # Calls "expression_data_for_models.DATASET.RData" which is returned in step 2 and included in this directory. 
-# Produces "expression_piecewise.DATASET.RData"
+# Produces "expression_piecewise.DATASET.RData" which is used in 04b, but not included here due to file size considerations although it can be generated or is available upon request.
+./04b.nonadditive_results.R ## summarize model results, using results from 04 
 
 ## Apply mash to independent analyses of each dataset
 
