@@ -95,7 +95,7 @@ sbatch --mem=500 4bFST_Wallref.sh
 sbatch --mem=200 4cRecomb.R
 
 #############################################################################################################################
-# Results from the pedigree inconsistencies models (script labelled with a 5...)
+# Results from the pedigree inconsistencies (script labelled with a 5...)
 #############################################################################################################################
 
-# Finally, in a directory containing all files generated from scripts 3-5, in R, run 5pedigree_inconsistencies_results.R which XXXXX
+# Finally, in a directory containing all files generated from scripts 3-5, in R, run 5pedigree_inconsistencies_results.R which calculates, compares, and plots the proportion of ancestry state inconsistencies using ancestry calls from two reference panels. It also runs a model to evaluate what predicts ancestry state inconsistencies across sites. Finally, it evaluates the proportion of ancestry state inconsistencies per pedigree trio and whether the minimum coverage of individuals in the trio might contribute to it. 
