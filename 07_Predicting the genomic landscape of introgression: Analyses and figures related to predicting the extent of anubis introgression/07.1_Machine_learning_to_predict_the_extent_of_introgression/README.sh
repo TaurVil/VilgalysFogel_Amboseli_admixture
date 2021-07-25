@@ -12,7 +12,7 @@
 ./02.run_glmnet.R
 ## this script produces a summary file called glmnet_model_results.RData. It also saves a data file (glmnet_windows.txt) that is presented as Supplementary Table 5. 
 
-## step 3: analyze values
+## steps 3 and 4: analyze resulting models
 
 ./03.glmnet_results.R
 ## a summary of the glmnet results produced by 02.run_glmnet.R. This file includes statistics in the text and outputs the data table for Fig. 4C (glmnet_results.txt). 
