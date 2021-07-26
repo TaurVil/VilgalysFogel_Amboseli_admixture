@@ -107,13 +107,13 @@ for (qqq in res$quantile) {
   set.seed(42)
   boot_DE <- NULL; for (i in 1:10000) {
     tmp_DE <- DE[sample(1:nrow(DE), nrow(DE), replace=T),]
-    tmp_rho <- summary(lm(rank(tmp_DE$historical_ancestry)~rank(tmp_DE$n24_anubis)))
+    tmp_rho <- summary(lm(rank(tmp_DE$historical_ancestry)~rank(tmp_DE$recombination_rate)))
     c(boot_DE, tmp_rho$coefficients[2,1]) -> boot_DE
   }; rm(tmp_DE, tmp_rho, i)
   
   boot_nDE <- NULL; for (i in 1:10000) {
     tmp_nDE <- nDE[sample(1:nrow(nDE), nrow(nDE), replace=T),]
-    tmp_rho <- summary(lm(rank(tmp_nDE$historical_ancestry)~rank(tmp_nDE$n24_anubis)))
+    tmp_rho <- summary(lm(rank(tmp_nDE$historical_ancestry)~rank(tmp_nDE$recombination_rate)))
     c(boot_nDE, tmp_rho$coefficients[2,1]) -> boot_nDE
   }; rm(tmp_nDE, tmp_rho, i)
   
