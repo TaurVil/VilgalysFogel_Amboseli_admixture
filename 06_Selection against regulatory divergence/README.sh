@@ -8,7 +8,7 @@
 # Calls a file of chromosome lengths (downloaded from NCBI), the Panubis1 gtf file (downloaded from NCBI), Amboseli ancestry calls (Zenodo), and recombination rates per chromosome (03_Resources)
 # Produces "genes_ancestry.RData", which also contains the mean anubis ancestry and the mean recombination rate per gene
 
-## Script used to process the expression data per dataset. We make the results of this step available as "expression_data_for_models.DATASET.RData", although the analyses can be reproduced from raw sequence data. 
+## Script used to process the expression data per dataset. We make the results of this step available as "expression_data_for_models.DATASET.RData", although the analyses can be reproduced from the count and meta data provided in the sub folder within this directory. 
 ./02.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
 
 ## Run linear models
