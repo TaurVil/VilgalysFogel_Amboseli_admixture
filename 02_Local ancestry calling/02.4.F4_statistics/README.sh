@@ -122,6 +122,7 @@ tabix final.baboon.to.macam.n51.chr02b.rename.vcf.gz
 
 # first convert to plink, then add population info to plink ped file, then convert to eigenstrat
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat >> my.par.ped.eigenstrat.$f; done # create chromosome specific my.par.ped.eigenstrat files
+# note that macaque is specified as the sample id so that reference/alternate alleles are always determined by macaque which will have a count of 2 (note that if you don't specify this, you'll stil get the same f4 results because it doesn't matter which is allele is called reference/alternative)
 for f in `cat MacaM_autosome_list_nochr2 `; do sed -e s/CHROM/$f/g run.05.get_eigenstrat_format.sh >> $f.sh; sbatch $f.sh; done # for all autosomes except chr02a and chr02b
 
 grep "chr02" MacaM_autosome_list >> MacaM_autosome_list_chr02s
