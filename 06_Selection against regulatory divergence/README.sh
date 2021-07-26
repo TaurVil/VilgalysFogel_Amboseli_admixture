@@ -35,3 +35,6 @@
 # Calls "mash_results.txt" and "genes_ancestry.RData" from earlier in this directory. 
 # Produces tables with the reduction of anubis ancestry in genes with ancestry-associated expression ("reduced_ancestry_in_DE_genes.txt") and Spearman's rho between ancestry and recombination for the genes with the highest vs the lowest effects of ancestry on expression ("bootstrap_rho_results.txt").
 
+## Produce figure 4A and 4B
+./07.figure4A_4B.R
+# Calls expression data for one gene, the distribution of p-values, and bootstrap_rho_results.txt to produce the first two panels of Fig 4
