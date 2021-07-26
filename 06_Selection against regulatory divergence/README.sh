@@ -6,7 +6,7 @@
 ## For each protein coding gene, we calculate the ancestry of each gene, we calculate the mean anubis ancestry per individual in the population. 
 ./01.assign_gene_ancestry.R
 # Calls a file of chromosome lengths (downloaded from NCBI), the Panubis1 gtf file (downloaded from NCBI), Amboseli ancestry calls (Zenodo), and recombination rates per chromosome (03_Resources)
-# Produces genes_ancestry.RData, which also contains the mean anubis ancestry and the mean recombination rate per gene
+# Produces "genes_ancestry.RData", which also contains the mean anubis ancestry and the mean recombination rate per gene
 
 ## We process each dataset to normalize and control for covariates. 
 ./02.process_expression.R ## run with dataset="eLife" and dataset="TruCulture"
@@ -30,8 +30,10 @@
 ## Apply mash to independent analyses of each dataset
 ./05.mash_linear_models.R ## integrate expression data from the two datasets, and refine effect size estimates
 # Calls "expression_results.DATASET.RData" from step 3
-
-
-# Calls "expression_results.DATASET.RData"
+# Produces statistics for the main text, SI, and "mash_results.txt"
 
 ## Selection against genes with greater regulatory divergence
+./06.selection_against_introgressed_regulatory_variation.R
+# Calls "mash_results.txt" and "genes_ancestry.RData" from earlier in this directory. 
+# Produces tables with the reduction of anubis ancestry in genes with ancestry-associated expression ("reduced_ancestry_in_DE_genes.txt") and Spearman's rho between ancestry and recombination for the genes with the highest vs the lowest effects of ancestry on expression ("bootstrap_rho_results.txt").
+
