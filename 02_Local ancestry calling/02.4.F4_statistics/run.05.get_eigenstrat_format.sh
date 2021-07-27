@@ -17,9 +17,9 @@ vcftools --gzvcf final.baboon.to.macam.n51.CHROM.vcf.gz --plink --out CHROM.n51
 
 module load plink
 
-plink --file CHROM.n51 --update-ids updatepop.n51.txt --recode --out updated.n51.CHROM
+plink --file CHROM.n51 --update-ids updatepop.n51.txt --keep-allele-order --recode --out updated.n51.CHROM
 
-plink --file updated.n51.CHROM --make-pheno names.pheno.txt '*' --allow-no-sex --recode --out updated2.n51.CHROM # names.pheno.txt is just the first two columns of updatepop.n51.txt
+plink --file updated.n51.CHROM --make-pheno names.pheno.txt '*' --allow-no-sex --keep-allele-order --recode --out updated2.n51.CHROM # names.pheno.txt is just the first two columns of updatepop.n51.txt
 
 # second, convert plink format to eigenstrat format using the parameter file you set up
 /data/tunglab/tpv/Programs/EIG-6.1.4/bin/convertf -p my.par.ped.eigenstrat.CHROM
