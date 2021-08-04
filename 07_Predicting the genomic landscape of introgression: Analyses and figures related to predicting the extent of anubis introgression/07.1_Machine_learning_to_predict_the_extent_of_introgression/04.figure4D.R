@@ -1,15 +1,15 @@
-# Script for recreating figure 4C
+# Script for recreating figure 4D
 
 # Load R libraries
 library(ggplot2)
 library(tidyr)
 
 #############################################################################################################################
-# Figure 4C
+# Figure 4D
 #############################################################################################################################
 
 # Load 4C results
-results <- read.delim("glmnet_results.txt", header=T)
+results <- read.table("fig4BC_final_data/glmnet_results.txt", header=T)
 
 # Convert data from wide to long format for easier plotting
 results2 <- results %>% pivot_longer(everything(), names_to=c("predictor"), values_to=c("estimate"))
@@ -26,8 +26,8 @@ ggplot(data = results2, aes(x=reorder(predictor, estimate), y=estimate)) +
   geom_hline(yintercept = 0, color="grey", linetype="longdash", size=1.5) + 
   geom_jitter(fill="grey60", color="grey50", size=3, alpha=0.3, shape=21, stroke=1.5) +
   geom_boxplot(width=0.3, size=0.75, outlier.color = NA) +
-  scale_x_discrete(labels=c("number.of.SNVs" = "number of SNVs", "recombination.rate" = "recombination rate", "highly.differentiated.sites" = "highly differentiated sites", "B" = "B statistic")) + scale_y_continuous(name="standardized\neffect size", reaks = seq(-0.03,0.03, by=0.01)) +
-  theme_classic() + theme(text=element_text(size=25), axis.text = element_text(color="black"), axis.title.y = element_blank()) +
-  coord_flip()
+  scale_x_discrete(labels=c("number.of.SNVs" = "number of SNVs", "recombination.rate" = "recombination rate", "highly.differentiated.sites" = "highly differentiated sites", "B" = "B statistic")) + scale_y_continuous(name="standardized\neffect size", breaks = seq(-0.03,0.03, by=0.01)) +
+  theme_classic() + theme(text=element_text(size=20), axis.text = element_text(color="black"), axis.title.y = element_blank(), axis.text.y = element_text(size=15)) +
+  coord_flip() -> d
 
-ggsave("fig4C.png")
+ggsave("fig4D.png")
