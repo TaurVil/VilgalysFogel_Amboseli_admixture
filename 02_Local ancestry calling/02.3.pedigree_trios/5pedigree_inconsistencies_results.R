@@ -215,9 +215,9 @@ ggsave("figS3D.png")
 # Model predicting a site's proportion of ancestry state inconsistencies across pedigree trios.
 #############################################################################################################################
 
-summary(lm(prop_inconsistent~AIM_count + WEIGHTED_FST +  log(n24_anubis), data=inconsistent_maskedSNPRCref))
+summary(lm(prop_inconsistent~AIM_count + WEIGHTED_FST +  log10(n24_anubis), data=inconsistent_maskedSNPRCref))
 
-write.csv(summary(lm(prop_inconsistent~AIM_count + WEIGHTED_FST +  log(n24_anubis), data=inconsistent_maskedSNPRCref))$coef, "tableS7_results.csv")
+write.csv(summary(lm(prop_inconsistent~AIM_count + WEIGHTED_FST + log10(n24_anubis), data=inconsistent_maskedSNPRCref))$coef, "tableS7_results.csv")
 
 #############################################################################################################################
 # Proportion of ancestry state inconsistencies per pedigree trio.
