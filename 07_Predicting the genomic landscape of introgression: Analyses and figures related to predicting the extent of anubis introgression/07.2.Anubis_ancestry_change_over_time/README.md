@@ -5,4 +5,4 @@
 * **amboseli.demographic.info.txt**: contains demographic data for Amboseli individuals with confirmed ids, including the starting and endings years they were present in the population. Note that other demographic data used in other scripts are also included in this data frame but which we won't use here (their sex, entry type (B = born into a study group, O = first observed in a new study group, or I = immigrating into a study group), genome_wide_anubis_ancestry)
 
 #### The R script also requires estimates of FST. 
-* **FST**: to get these estimates, use the script 4bFST_SNPRCref.sh in "VilgalysFogel_Amboseli_admixture/02_Local ancestry calling/02.3.pedigree_trios/" but substituting 00000 for window size --fst-window-size in place of 35000.
+* **FST**: to get these estimates, use the script 4bFST_SNPRCref.sh in "VilgalysFogel_Amboseli_admixture/02_Local ancestry calling/02.3.pedigree_trios/" but substituting 100000 for window size --fst-window-size in place of 35000.
