@@ -38,24 +38,21 @@ echo $(cat ref_yellow3) >> ref_yellow.h
 sed -i -e 's/^/24 /' ref_anubis.h
 sed -i -e 's/^/7 /' ref_yellow.h
 
-# Run LCLAE's filtbaboon3c and geno_lik2 to call local ancestry for each individual using a sliding window approach (here, 35 kb) (run 2LCLAE_get_ancestry.sh)
-# Individual should correspond to the number of the individual in the vcf file (1, 2, 3, ..., 508)
-for f in `seq 1 508`; do sed -e s/NUMBER/$f/g run.04a.get_ancestry_calls_masked_fullref.sh > r.04_$f.sh; sbatch --array=1-20%1 --mem=30000 r.04_$f.sh; done
-rm r.04_*.sh
-# Returns an ancestry call at each ancestry informative SNP, based on the surrounding 35kb window. 
+# Run LCLAE's filtbaboon3c and geno_lik2 to call local ancestry for each chromosome for each individual using a sliding window approach (here, 35 kb) (run 2LCLAE_get_ancestry.sh)
+# "NUMBER" corresponds to the number of the individual in the vcf file (1, 2, 3, ..., XXX total number of individuals)
+# The array/index specifies the chromosome
+# For example, if we want to call local ancestry for all 20 chromosomes for the first 10 individuals in the vcf, we would run:
+for f in `seq 1 10`; do sed -e s/NUMBER/$f/g 2LCLAE_get_ancestry_calls.sh > r.$f.sh; sbatch --array=1-20 --mem=30000 r.$f.sh; done
+rm r.$f.sh
+# Returns an ancestry call at each ancestry informative SNP (minimum 20% allele frequency difference between the two reference populations), based on the surrounding genomic window (here, 35 kb). 
 
-# fig 1, use:
-for f in `seq 1 126`; do sed -e s/NUMBER/$f/g run.04a.get_ancestry_calls_masked_SWref_and_unmasked_ref.sh > r.04_$f.sh; sbatch --array=1-20%3 --mem=30000 r.04_$f.sh; done
-rm r.04_*.sh
-
-## LCLAE sometimes fails, returning a "Segmentation Fault" error. If it works, the output will have a single output line with the sample number and the chromosome. 
-## If not successful, there will be 4 rows. 
-## We must identify the individual-chromosome files that failed, put those failed files into "redo2", and then re-run those individual-chromosome files.
-
-## DO NOT RUN THIS UNTIL ALL JOBS HAVE FINISHED!!!
+# LCLAE sometimes fails, returning a "Segmentation Fault" error. If it works, the output (here, slurm-[job_id_#].out) will have a single output line with the sample number and the chromosome. 
+# If not successful, there will be 4 rows. 
+# To identify the individual-chromosome files that failed, put those failed files into "redo2", and then re-run those individual-chromosome files.
+# DO NOT RUN THIS UNTIL ALL JOBS HAVE FINISHED!
 wc -l slurm* | grep ' 4 ' > redo; sed -i 's/[ ]*4 //g' redo; wc -l redo; for f in `cat redo`; do head -1 $f >> redo2; done; rm slurm*; wc -l redo2
 tmp=`wc -l redo2 | awk '{print $1}'`
-for i in `seq 1 $tmp`; do sed "${i}q;d" redo2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/NUMBER/$f/g run.04b.rerun.sh | sed -e s/CHROMOSOME/$g/g > g.$f.$g.sh; sbatch g.$f.$g.sh; rm g.$f.$g.sh; done; 
+for i in `seq 1 $tmp`; do sed "${i}q;d" redo2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/NUMBER/$f/g rerun.2LCLAE_get_ancestry_calls.sh | sed -e s/CHROMOSOME/$g/g > g.$f.$g.sh; sbatch g.$f.$g.sh; rm g.$f.$g.sh; done; 
 rm redo*; rm tmp2
 ## Each time, wait for all jobs to finish (!) and then repeat above step until all jobs successfully run (`wc -l redo` == 0).
 
