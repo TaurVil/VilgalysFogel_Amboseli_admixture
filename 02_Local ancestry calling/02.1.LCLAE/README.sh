@@ -42,7 +42,7 @@ sed -i -e 's/^/7 /' ref_yellow.h
 # "NUMBER" corresponds to the number of the individual in the vcf file (1, 2, 3, ..., XXX total number of individuals)
 # The array/index specifies the chromosome
 # For example, if we want to call local ancestry for all 20 chromosomes for the first 10 individuals in the vcf, we would run:
-for f in `seq 1 10`; do sed -e s/NUMBER/$f/g 2LCLAE_get_ancestry_calls.sh > r.$f.sh; sbatch --array=1-20 --mem=30000 r.$f.sh; done
+for f in `seq 1 10`; do sed -e s/NUMBER/$f/g 2LCLAE_get_ancestry.sh > r.$f.sh; sbatch --array=1-20 --mem=30000 r.$f.sh; done
 rm r.$f.sh
 # Returns an ancestry call at each ancestry informative SNP (minimum 20% allele frequency difference between the two reference populations), based on the surrounding genomic window (here, 35 kb). 
 
@@ -52,22 +52,11 @@ rm r.$f.sh
 # DO NOT RUN THIS UNTIL ALL JOBS HAVE FINISHED!
 wc -l slurm* | grep ' 4 ' > redo; sed -i 's/[ ]*4 //g' redo; wc -l redo; for f in `cat redo`; do head -1 $f >> redo2; done; rm slurm*; wc -l redo2
 tmp=`wc -l redo2 | awk '{print $1}'`
-for i in `seq 1 $tmp`; do sed "${i}q;d" redo2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/NUMBER/$f/g rerun.2LCLAE_get_ancestry_calls.sh | sed -e s/CHROMOSOME/$g/g > g.$f.$g.sh; sbatch g.$f.$g.sh; rm g.$f.$g.sh; done; 
+for i in `seq 1 $tmp`; do sed "${i}q;d" redo2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/NUMBER/$f/g rerun.2LCLAE_get_ancestry.sh | sed -e s/CHROMOSOME/$g/g > g.$f.$g.sh; sbatch g.$f.$g.sh; rm g.$f.$g.sh; done; 
 rm redo*; rm tmp2
-## Each time, wait for all jobs to finish (!) and then repeat above step until all jobs successfully run (`wc -l redo` == 0).
+# Each time, wait for all jobs to finish (!) and then repeat above step until all jobs successfully run (`wc -l redo` == 0).
 
-# arielle, can we remove this later - it's for you!
-for k in `seq 1 508`; do for file in g.$k.*.sh; do sbatch $file; rm $file; done; done
-
-# for fig 1,
-wc -l slurm* | grep ' 4 ' > redo; sed -i 's/[ ]*4 //g' redo; wc -l redo; for f in `cat redo`; do head -1 $f >> redo2; done; rm slurm*; wc -l redo2
-tmp=`wc -l redo2 | awk '{print $1}'`
-for i in `seq 1 $tmp`; do sed "${i}q;d" redo2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/NUMBER/$f/g run.04b.rerun_2.sh | sed -e s/CHROMOSOME/$g/g > g.$f.$g.sh; sbatch g.$f.$g.sh; rm g.$f.$g.sh; done; 
-rm redo*; rm tmp2
-## Each time, wait for all jobs to finish (!) and then repeat above step until all jobs successfully run (`wc -l redo` == 0).
-for k in `seq 1 126`; do for file in g.$k.*.sh; do sbatch $file; rm $file;
-
-# If you get 0 redo, do this check as well:
+# If you get 0 redo, do this as a second check to make sure all individual-chromosome files ran successfully
 wc -l *35kb*txt > n_calls # get number of calls per chromosome
 sed -i 's/^[ \t]*//' n_calls # fixes formatting of n_calls
 grep '^0' n_calls > no_calls
@@ -77,7 +66,7 @@ wc -l no_calls
 rm *n*calls
 
 ## Add chromosome names to each file, merge all chromosomes for each individual, and replace the individual's sample number with the individual's original file name (from 03_vcf_sample_order.list). 
-for f in `seq 1 508`; do sed -e s/NUMBER/$f/g run.07_attach_chrom_names.sh > g.$f.sh; sbatch --mem=16000 g.$f.sh; rm g.$f.sh; done
+for f in `seq 1 508`; do sed -e s/NUMBER/$f/g 3attach_chrom_names.sh > g.$f.sh; sbatch --mem=16000 g.$f.sh; rm g.$f.sh; done
 for h in `seq 1 508`; do cat $h.35kb.d2.* > $h.35kb.d2.txt; done # can also use run.07 run.07_concatenate_chrom_files.sh
 for h in `seq 1 508`; do tmp=`head -$h 04_vcf_sample_order.list | tail -1`; mv $h.35kb.d2.txt $tmp.35kb.d2.txt; done
 ## Add column with the individual ID
