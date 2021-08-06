@@ -16,7 +16,6 @@ fread("./INDIV.35kb.d2.masked.SNPRCref.txt") -> indv
 colnames(indv) <- c('chrom', 'snp', 'call', 'indiv')
 
 # Create list of chromosomes to run
-# Tauras, can we avoid them have to using the fai file? 
 # updated to Panubis1.0, and only return chromosomes for which LCLAE was run
 read.delim("/data/tunglab/shared/genomes/panubis1/Panubis1.0.fa.fai", header=F) -> chroms
 #subset(chroms, chroms$V1 %in% unique(indv$chrom)) -> chroms # This needs to be commented out when dealing without the "chr" in the chromosome names, because otherwise they don't match at all
