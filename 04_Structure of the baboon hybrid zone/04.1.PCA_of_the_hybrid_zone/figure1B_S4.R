@@ -6,7 +6,7 @@ library(dplyr)
 library(data.table)
 
 # Load genotype data needed for PCA 
-load("for_pca_from_TPV_23Nov2020.RData", verbose=T) # TPV will change file here
+load("for_pca_from_TPV_23Nov2020.RData", verbose=T) # Tauras will provide updated file here with an updated names file with updated individual ids and clearer source names - AMB should be Amboseli, BGP should be either BGDP or the apropriate Mikumi or SNPRCanubis_nonfounder designation, SW should be SNPRC, Tul should be WNPRC), will likely be able to simplify this code considerably
 
 #############################################################################################################################
 # Figure 1B
@@ -64,7 +64,7 @@ ggsave("fig1B.png")
 # Figure S4
 #############################################################################################################################
 # Load data genotype data to run PCA analysis on high coverage and all samples
-load("for_pca_from_TPV_23Nov2020.RData", verbose=T) # TPV will change file here
+load("for_pca_from_TPV_23Nov2020.RData", verbose=T) # Tauras will provide updated file here with an updated names file with updated individual ids and clearer source names - AMB should be Amboseli, BGP should be either BGDP or the apropriate Mikumi or SNPRCanubis_nonfounder designation, SW should be SNPRC, Tul should be WNPRC), will likely be able to simplify this code considerably
 
 # remove sites where we have missing data from any individual
 m2 <- rowSums(is.na(d)) # look at the missing data per row
