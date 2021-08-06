@@ -6,15 +6,16 @@ module load bcftools
 bcftools query -l analyzed_sites.masked_and_unmasked_refpanel.1.vcf.gz >> 04_vcf_sample_order.masked.list 
 
 # For each chromosome (1-20), format vcf for LCLAE and then use LCLAE's filtbaboon1b to get genotype likelihoods
-sbatch --array=1-20 --mem=100 run.03.LCLAE.get_genolik.sh
+mkdir genotype_likelihoods_maskedref # make directory where we will store all of our genotype likelihood files
+sbatch --array=1-20 --mem=100 1LCLAE_get_genolik.sh
 # Note: make sure the number after filtbaboon1b in run.04.get_genolik.sh is correct (the total number of individuals in the vcf)
 
-# using the entire ref panel
-# remove pcyn_16098 from 00_yel.list since they are a duplicate of Mik_07 according to Tauras
-grep -v "pcyn_16098" 00_yel.list.nodup >> 00_yel.list.nodup.no16098
-# get the order of each reference individual in the vcf file
- for i in `cat 00_anu.list`; do grep -n $i 04_vcf_sample_order.list >> fullref_anubis; done
- for i in `cat 00_yel.list.nodup.no16098`; do grep -n $i 04_vcf_sample_order.list >> fullref_yellow; done
+# After generating genotype likelihood files, we'll call local ancestry using LCLAE's filtbaboon2c and geno_lik2 functions
+# Before running filtbaboon3c and geno_lik2, we need to define our reference individuals
+# For the two reference populations, separately get the order of each reference individual in the vcf file (e.g., are they individuals #1, #3, and #5?)
+# Here, we'll use the SNPRC yellow and anubis baboon founders as our reference individuals for yellow and anubis baboon ancestry, respectively
+for i in `cat 00_anu.list`; do grep -n $i 04_vcf_sample_order.masked.list  >> fullref_anubis; done
+for i in `cat 00_yel.list.nodup.no16098`; do grep -n $i 04_vcf_sample_order.masked.list >> fullref_yellow; done
 
 # how many individuals in each ref panel? need this for later
 wc -l fullref_*
