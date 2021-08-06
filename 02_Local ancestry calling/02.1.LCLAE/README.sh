@@ -79,19 +79,7 @@ sbatch 5add_indiv_id.sh # add column with the individual ID
 # If you generated ancestry calls for all individuals in the vcf and now want to use majority rule for ancestry assignment and tracts, do:
 for f in `cat 00_vcf_sample_order.masked.list`; do cat 7majcalls_tracts.R  | sed -e s/INDIV/$f/g > g.$f.sh; sbatch --mem=45000 g.$f.sh; done
 
-
-
-## Merge all calls into a single file
-touch all.1kb.tracts.fullref.txt; for f in `ls *1kb.d2.*`; do sed '1d' $f >> all.1kb.tracts.fullref.txt; done
-
-# for fig 1,
-touch all.majrule.maskedSWref_and_unmaskedref.txt; for f in `ls *Maj*`; do sed '1d' $f >>  all.majrule.maskedSWref_and_unmaskedref.txt; done
-
-for f in `cat 00_amboseli.list`; do mv $f*.d2*txt ancestry_usingfullref/amboseli_indiv/; done
-for f in `cat 00_allref.list`; do mv $f*d2*txt ancestry_usingfullref/refpanel_indiv/; done
-
-# In amboseli_indiv directory, merge majority rule call and tract files
-touch amb.tracts.txt; for f in `ls *tracts.d2.*`; do sed '1d' $f >> amb.tracts.txt; done
-touch amb.majrule.txt; for f in `ls *Maj*`; do sed '1d' $f >> amb.majrule.txt; done
-
-## Clean up step: get rid of genotype likelihoods, r.06_*, calls by chromosome, and any other intermediate files. ## clean up the tmp2.INDIV.txt files, leaving just the majority rule files and the tracts. 
+# Can merge all tracts for all individuals into a single file
+touch all.tracts.txt; for f in `ls *tracts.d2.*`; do sed '1d' $f >> all.tracts.txt; done
+# Can merge all majority rule calls for all individuals into a single file
+touch all.majrule.txt; for f in `ls *Maj*`; do sed '1d' $f >> all.majrule.txt; done
