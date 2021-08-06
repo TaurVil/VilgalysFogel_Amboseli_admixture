@@ -5,7 +5,7 @@
 module load bcftools
 bcftools query -l analyzed_sites.masked_and_unmasked_refpanel.1.vcf.gz >> 00_vcf_sample_order.masked.list 
 
-# For each chromosome (1-20), format vcf for LCLAE and then use LCLAE's filtbaboon1b to get genotype likelihoods
+# For each chromosome (1-20), format vcf for LCLAE and then use LCLAE's filtbaboon1b to get genotype likelihoods (run 1LCLAE_get_genolik.sh)
 mkdir genotype_likelihoods_maskedref # make directory where we will store all of our genotype likelihood files
 sbatch --array=1-20 --mem=100 1LCLAE_get_genolik.sh
 # Note: make sure the number after filtbaboon1b in run.04.get_genolik.sh is correct (the total number of individuals in the vcf)
@@ -38,37 +38,8 @@ echo $(cat ref_yellow3) >> ref_yellow.h
 sed -i -e 's/^/24 /' ref_anubis.h
 sed -i -e 's/^/7 /' ref_yellow.h
 
-
-sed -i -e 's/^/24 /' SWref_anubis.h
-sed -i -e 's/^/7 /' SWref_yellow.h 
-
-## using the SW ref panel for figure 1
-# masked SW individuals will be our reference but we're interested in plotting the ancestry of the calls of the unmasked ref individuals
-sed -e s/^/masked_\/g 00_anu_SW.list >> 00_anu_SW.list2
-sed -e s/^/masked_\/g 00_yel_SW.list >> 00_yel_SW.list2
-
-for i in `cat 00_anu_SW.list2`; do grep -w -n $i 04_vcf_sample_order.masked_and_unmasked_ref.list >> SWref_anubis; done
-for i in `cat 00_yel_SW.list2`; do grep -w -n $i 04_vcf_sample_order.masked_and_unmasked_ref.list >> SWref_yellow; done
-
-wc -l SWref_*
-#24 SWref_anubis
-# 7 SWref_yellow
-
-sed -e s/\:.*//g SWref_anubis >> SWref_anubis2
-sed -e s/\:.*//g SWref_yellow >> SWref_yellow2
-
-# sort numerically
-sort -n SWref_anubis2 >> SWref_anubis3
-sort -n SWref_yellow2 >>  SWref_yellow3
-
-echo $(cat SWref_anubis3) >> maskedSWref_anubis_2.h
-echo $(cat SWref_yellow3) >> maskedSWref_yellow_2.h
-
-sed -i -e 's/^/24 /' maskedSWref_anubis_2.h
-sed -i -e 's/^/7 /' maskedSWref_yellow_2.hh 
-
-## Use LCLAE to call local ancestry for each individual using a sliding window (35 kb) approach
-## Individual should correspond to the number of the individual in the vcf file (1, 2, 3, ..., 508)
+# Run LCLAE's filtbaboon3c and geno_lik2 to call local ancestry for each individual using a sliding window approach (here, 35 kb) (run 2LCLAE_get_ancestry.sh)
+# Individual should correspond to the number of the individual in the vcf file (1, 2, 3, ..., 508)
 for f in `seq 1 508`; do sed -e s/NUMBER/$f/g run.04a.get_ancestry_calls_masked_fullref.sh > r.04_$f.sh; sbatch --array=1-20%1 --mem=30000 r.04_$f.sh; done
 rm r.04_*.sh
 # Returns an ancestry call at each ancestry informative SNP, based on the surrounding 35kb window. 
