@@ -6,7 +6,7 @@ printf "`echo NUMBER` `echo $chrom` \n"
 
 number=NUMBER
 
-cat ./genotype_likelihoods_maskedref/genolik.$chrom.genolik | LCLAE/filtbaboon2c XXX ref_anubis.h ref_yellow.h $number | LCLAE/geno_lik2 .2 35000 > $number.35kb.d2.$chrom.maskedSWref.txt
+cat ./genotype_likelihoods_maskedref/genolik.$chrom.genolik | LCLAE/filtbaboon2c XXX ref_anubis.h ref_yellow.h $number | LCLAE/geno_lik2 .2 35000 > $number.35kb.d2.$chrom.masked.SNPRCref.txt
 
 # Same as 2LCLAE_get_ancestry.sh script
 # LCLAE/filtbaboon2c XXX <-- XXX specifies the total number of individuals in file (e.g., if there are 100 individuals including reference and admixed individuals, put 100 in place of XXX)
