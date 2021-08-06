@@ -1,7 +1,7 @@
-genotypename:    plink.n46.ped
-snpname:         plink.n46.map # or example.map, either works
-indivname:       plink.n46.ped # or example.ped, either works
+genotypename:    plink.ref.ped
+snpname:         plink.ref.map # or example.map, either works
+indivname:       plink.ref.ped # or example.ped, either works
 outputformat:    ANCESTRYMAP
-genotypeoutname: n46.ancestrymapgeno
-snpoutname:      n46.snp
-indivoutname:    n46.ind
+genotypeoutname: ref.ancestrymapgeno
+snpoutname:      ref.snp
+indivoutname:    ref.ind
