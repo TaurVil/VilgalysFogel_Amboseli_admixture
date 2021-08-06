@@ -31,4 +31,4 @@ for (i in unique(snp$V2)) {
 	print(i)
 }
 #s2$GP <- s2$PP/1e6
-write.table(s3, "n46.v2.snp", row.names=F, col.names=F, sep="\t", quote=F)
+write.table(s3, "ambo.v2.snp", row.names=F, col.names=F, sep="\t", quote=F)
