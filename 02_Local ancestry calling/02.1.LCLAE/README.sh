@@ -1,20 +1,13 @@
-# Get list of individuals in the vcf file in the order that they appear in the vcf file (all chromosome vcf files have 509 individuals so just grab the list of ordered individuals from chromosome 1)
+### This folder contains instructions and scripts for generating local ancestry calls/tracts from genotype calls using LCLAE (Wall et al. 2016 Molecular Ecology: https://doi.org/10.1111/mec.13684, https://github.com/jdwall02/LCLAE ###
+
+# Use vcfs (split by chromosome) masked for putative introgression available at XXXX
+# Get list of individuals in the vcf file in the order that they appear in the vcf file (all chromosome vcf files have the same set of individuals so just grab the list of ordered individuals from chromosome 1)
 module load bcftools
-bcftools query -l 04.merged_shared.1.vcf.gz >> 04_vcf_sample_order.list
-bcftools query -l analyzed_sites.masked_and_unmasked_refpanel.1.vcf.gz >> 04_vcf_sample_order.masked_and_unmasked_ref.list
+bcftools query -l analyzed_sites.masked_and_unmasked_refpanel.1.vcf.gz >> 04_vcf_sample_order.masked.list 
 
-## Format vcf files for LCLAE from Wall et al. 2016 (https://github.com/jdwall02/LCLAE)
-## The order of file names in the vcf file are in 04_vcf_sample_order.list
-
-## Split vcf into chromosomes and get genotype likelihoods.
-## There are 20 autosomes, an X, and a Y so should get 22 genotype likelihood files. Note that there's no mitochondrial genome in this assembly.
-## Right now, only do autosomes
+# For each chromosome (1-20), format vcf for LCLAE and then use LCLAE's filtbaboon1b to get genotype likelihoods
 sbatch --array=1-20 --mem=100 run.03.LCLAE.get_genolik.sh
-# Note: make sure the number after filtbaboon1b in run.04.get_genolik.sh is correct (the total number of individuals in the vcf). If not, everything gets screwed up. 
-# Right now, this is 508 which is correct given our current dataset 
-
-# for Figure 1, 
-sbatch --array=1-20 --mem=100 run.03.LCLAE.get_genolik_3.sh 
+# Note: make sure the number after filtbaboon1b in run.04.get_genolik.sh is correct (the total number of individuals in the vcf)
 
 # using the entire ref panel
 # remove pcyn_16098 from 00_yel.list since they are a duplicate of Mik_07 according to Tauras
