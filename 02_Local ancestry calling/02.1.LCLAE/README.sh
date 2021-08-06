@@ -69,11 +69,10 @@ rm *n*calls
 # For example, if we want to call local ancestry for all 20 chromosomes for the first 10 individuals in the vcf, we would run:
 # As above, "NUMBER" corresponds to the number of the individual in the vcf file (1, 2, 3, ..., XXX total number of individuals)
 # For example, if we called local ancestry for the first 10 individuals in the vcf, we would run:
-for f in `seq 1 10`; do sed -e s/NUMBER/$f/g 3add_chrom_number.sh > g.$f.sh; sbatch --mem=16000 g.$f.sh; rm g.$f.sh; done
-for h in `seq 1 10`; do cat $h.35kb.d2.* > $h.35kb.d2.txt; done # can also use run.07 run.07_concatenate_chrom_files.sh
-for h in `seq 1 10`; do tmp=`head -$h 04_vcf_sample_order.list | tail -1`; mv $h.35kb.d2.txt $tmp.35kb.d2.txt; done
-## Add column with the individual ID
-for f in `cat 04_vcf_sample_order.list`; do awk 'BEGIN {OFS="\t"} {print $0,FILENAME}' $f.35kb.d2.*txt > tmp.$f.txt; mv tmp.$f.txt $f.35kb.d2.txt; sed -i 's/.35kb.d2.txt//g' $f.35kb.d2.txt; done # can also use sbatch run.07b.add_indiv_ids.sh 
+for f in `seq 1 10`; do sed -e s/NUMBER/$f/g 3add_chrom_number.sh > g.$f.sh; sbatch --mem=16000 g.$f.sh; rm g.$f.sh; done # adds column with chromosome number to each file
+sbatch 4concatenate_files_per_indiv.sh # concatenates all chromosome files for each individual into a single file per individual
+for h in `seq 1 10`; do tmp=`head -$h 00_vcf_sample_order.masked.list  | tail -1`; mv $h.35kb.d2.masked.SWref.txt $tmp.35kb.d2.masked.SWref.txt; done
+# Add column with the individual ID
 
 ## Clean up step: get rid of genotype likelihoods, r.06_*, calls by chromosome, and any other intermediate files. 
 
@@ -86,7 +85,6 @@ for f in `cat 04_vcf_sample_order.list`; do awk 'BEGIN {OFS="\t"} {print $0,FILE
 for f in `cat 04_vcf_sample_order.list`; do cat run.08.mode_tracts.R | sed -e s/INDIV/$f/g > g.$f.sh; sbatch --mem=45000 g.$f.sh; done
 ## clean up the tmp2.INDIV.txt files, leaving just the majority rule files and the tracts. 
 
-for f in `awk 'FNR>200 && FNR<=350' 04_vcf_sample_order.list`; do cat run.08.mode_tracts.R | sed -e s/INDIV/$f/g > g.$f.sh; sbatch --mem=45000 g.$f.sh; done
 
 ## Merge all calls into a single file
 touch all.1kb.tracts.fullref.txt; for f in `ls *1kb.d2.*`; do sed '1d' $f >> all.1kb.tracts.fullref.txt; done
