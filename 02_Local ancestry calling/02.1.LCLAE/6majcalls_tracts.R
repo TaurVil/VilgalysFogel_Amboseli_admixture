@@ -12,7 +12,7 @@ getmode <- function(v) {
 }
 
 #get data for the sample
-fread("./INDIV.35kb.d2.maskedSNPRCref.txt") -> indv
+fread("./INDIV.35kb.d2.masked.SNPRCref.txt") -> indv
 colnames(indv) <- c('chrom', 'snp', 'call', 'indiv')
 
 # Create list of chromosomes to run
@@ -124,5 +124,5 @@ if (nrow(i1) > 0) {
 }
 }
 
-write.table(maj_rule, "INDIV_MajorityRule.d2.min50.txt", row.names=F, col.names=T, quote=F, sep="\t")
-write.table(tracts, "INDIV_tracts.d2.35kb.txt", row.names=F, col.names=T, quote=F, sep="\t")
+write.table(maj_rule, "INDIV_MajorityRule.d2.min50.masked.SNPRCref.txt", row.names=F, col.names=T, quote=F, sep="\t")
+write.table(tracts, "INDIV_tracts.d2.35kb.masked.SNPRCref.txt", row.names=F, col.names=T, quote=F, sep="\t")
