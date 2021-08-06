@@ -1,5 +1,5 @@
 # VilgalysFogel_Amboseli_admixture
-## Selection against introgression and gene regulatory divergence in Amboseli baboons
+## Selection against admixture and gene regulatory divergence in a long-term primate field study
 
 This repository contains materials used to analyze the data from, and recreate the results in, Vilgalys, Fogel, et al. currently under review. These scripts include: 
 
