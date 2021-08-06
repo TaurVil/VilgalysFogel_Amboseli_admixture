@@ -65,10 +65,13 @@ wc -l no_calls
 #0 no_calls
 rm *n*calls
 
-## Add chromosome names to each file, merge all chromosomes for each individual, and replace the individual's sample number with the individual's original file name (from 03_vcf_sample_order.list). 
-for f in `seq 1 508`; do sed -e s/NUMBER/$f/g 3attach_chrom_names.sh > g.$f.sh; sbatch --mem=16000 g.$f.sh; rm g.$f.sh; done
-for h in `seq 1 508`; do cat $h.35kb.d2.* > $h.35kb.d2.txt; done # can also use run.07 run.07_concatenate_chrom_files.sh
-for h in `seq 1 508`; do tmp=`head -$h 04_vcf_sample_order.list | tail -1`; mv $h.35kb.d2.txt $tmp.35kb.d2.txt; done
+# Add chromosome number to each file, merge all chromosomes for each individual, and replace the individual's sample number with the individual's original file name (from 00_vcf_sample_order.masked.list)
+# For example, if we want to call local ancestry for all 20 chromosomes for the first 10 individuals in the vcf, we would run:
+# As above, "NUMBER" corresponds to the number of the individual in the vcf file (1, 2, 3, ..., XXX total number of individuals)
+# For example, if we called local ancestry for the first 10 individuals in the vcf, we would run:
+for f in `seq 1 10`; do sed -e s/NUMBER/$f/g 3add_chrom_number.sh > g.$f.sh; sbatch --mem=16000 g.$f.sh; rm g.$f.sh; done
+for h in `seq 1 10`; do cat $h.35kb.d2.* > $h.35kb.d2.txt; done # can also use run.07 run.07_concatenate_chrom_files.sh
+for h in `seq 1 10`; do tmp=`head -$h 04_vcf_sample_order.list | tail -1`; mv $h.35kb.d2.txt $tmp.35kb.d2.txt; done
 ## Add column with the individual ID
 for f in `cat 04_vcf_sample_order.list`; do awk 'BEGIN {OFS="\t"} {print $0,FILENAME}' $f.35kb.d2.*txt > tmp.$f.txt; mv tmp.$f.txt $f.35kb.d2.txt; sed -i 's/.35kb.d2.txt//g' $f.35kb.d2.txt; done # can also use sbatch run.07b.add_indiv_ids.sh 
 
