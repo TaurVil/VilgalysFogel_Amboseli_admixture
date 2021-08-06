@@ -3,7 +3,7 @@
 # Use vcfs (split by chromosome) masked for putative introgression available at XXXX
 # Get list of individuals in the vcf file in the order that they appear in the vcf file (all chromosome vcf files have the same set of individuals so just grab the list of ordered individuals from chromosome 1)
 module load bcftools
-bcftools query -l analyzed_sites.masked_and_unmasked_refpanel.1.vcf.gz >> 04_vcf_sample_order.masked.list 
+bcftools query -l analyzed_sites.masked_and_unmasked_refpanel.1.vcf.gz >> 00_vcf_sample_order.masked.list 
 
 # For each chromosome (1-20), format vcf for LCLAE and then use LCLAE's filtbaboon1b to get genotype likelihoods
 mkdir genotype_likelihoods_maskedref # make directory where we will store all of our genotype likelihood files
@@ -14,68 +14,30 @@ sbatch --array=1-20 --mem=100 1LCLAE_get_genolik.sh
 # Before running filtbaboon3c and geno_lik2, we need to define our reference individuals
 # For the two reference populations, separately get the order of each reference individual in the vcf file (e.g., are they individuals #1, #3, and #5?)
 # Here, we'll use the SNPRC yellow and anubis baboon founders as our reference individuals for yellow and anubis baboon ancestry, respectively
-for i in `cat 00_anu.list`; do grep -n $i 04_vcf_sample_order.masked.list  >> fullref_anubis; done
-for i in `cat 00_yel.list.nodup.no16098`; do grep -n $i 04_vcf_sample_order.masked.list >> fullref_yellow; done
+for i in `cat 00_anubis_SNPRC.list`; do grep -n $i 00_vcf_sample_order.masked.list  >> ref_anubis; done
+for i in `cat 00_yellow_SNPRC.list`; do grep -n $i 00_vcf_sample_order.masked.list >> ref_yellow; done
 
-# how many individuals in each ref panel? need this for later
-wc -l fullref_*
-#41 fullref_anubis
-#22 fullref_yellow
+# Confirm that we have the number of expected individuals in each reference panel (we will need these two numbers later)
+wc -l ref_*
+#24 ref_anubis
+#7 ref_yellow
 
-# just grab the order # and not the individual name
-sed -e s/\:.*//g fullref_anubis >> fullref_anubis2 
-sed -e s/\:.*//g fullref_yellow >> fullref_yellow2
+# Grab the individual's order # (we do need their id anymore)
+sed -e s/\:.*//g ref_anubis >> ref_anubis2 
+sed -e s/\:.*//g ref_yellow >> ref_yellow2
 
-# sort numerically
-sort -n fullref_anubis2 >> fullref_anubis3
-sort -n fullref_yellow2 >> fullref_yellow3
+# Sort the order #s numerically
+sort -n ref_anubis2 >> ref_anubis3
+sort -n ref_yellow2 >> ref_yellow3
 
-# put output all into one line
-echo $(cat fullref_anubis3) >> fullref_anubis.h
-echo $(cat fullref_yellow3) >> fullref_yellow.h
+# Output all numbers into a single line
+echo $(cat ref_anubis3) >> ref_anubis.h
+echo $(cat ref_yellow3) >> ref_yellow.h
 
-# add number of individuals per reference panel as first entry 
- sed -i -e 's/^/41 /' fullref_anubis.h
- sed -i -e 's/^/22 /' fullref_yellow.h 
+# Add the number of individuals per reference panel as the first entry in each line
+sed -i -e 's/^/24 /' ref_anubis.h
+sed -i -e 's/^/7 /' ref_yellow.h
 
-## using the wall ref panel
-for i in `cat 00_anu_wall.list`; do grep -n $i 04_vcf_sample_order.list >> wallref_anubis; done
-for i in `cat 00_yel_wall.list.nodup`; do grep -n $i 04_vcf_sample_order.list >> wallref_yellow; done 
-
-wc -l wallref_*
-#13 wallref_anubis
-#15 wallref_yellow
-
-sed -e s/\:.*//g wallref_anubis >> wallref_anubis2
-sed -e s/\:.*//g wallref_yellow >> wallref_yellow2
-
-# sort numerically
-sort -n wallref_anubis2 >> wallref_anubis3
-sort -n wallref_yellow2 >>  wallref_yellow3
-
-echo $(cat wallref_anubis3) >> wallref_anubis.h
-echo $(cat wallref_yellow3) >> wallref_yellow.h
-
-sed -i -e 's/^/13 /' wallref_anubis.h
-sed -i -e 's/^/15 /' wallref_yellow.h 
-
-## using the SW ref panel
-for i in `cat 00_anu_SW.list`; do grep -n $i 04_vcf_sample_order.list >> SWref_anubis; done
-for i in `cat 00_yel_SW.list`; do grep -n $i 04_vcf_sample_order.list >> SWref_yellow; done 
-
-wc -l SWref_*
-#24 SWref_anubis
-# 7 SWref_yellow
-
-sed -e s/\:.*//g SWref_anubis >> SWref_anubis2
-sed -e s/\:.*//g SWref_yellow >> SWref_yellow2
-
-# sort numerically
-sort -n SWref_anubis2 >> SWref_anubis3
-sort -n SWref_yellow2 >>  SWref_yellow3
-
-echo $(cat SWref_anubis3) >> SWref_anubis.h
-echo $(cat SWref_yellow3) >> SWref_yellow.h
 
 sed -i -e 's/^/24 /' SWref_anubis.h
 sed -i -e 's/^/7 /' SWref_yellow.h 
