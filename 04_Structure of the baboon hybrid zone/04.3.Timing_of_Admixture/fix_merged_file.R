@@ -4,7 +4,7 @@
 library(data.table); fread("family_packed.snp") -> snp
 fread("ambo.v2.snp") -> tst
 tst$V3/100 -> tst$V3 # switch from cM to M 
-subset(tst, tst$V1 %in% snp$V1) -> t2
+subset(tst, tst$V1 %in% snp$V1) -> t2 # only include SNPs called in Amboseli
 t2$V3 -> snp$V3; rm(t2,tst)
 
 snp$V1 <- paste("snp",row.names(snp),sep="")
