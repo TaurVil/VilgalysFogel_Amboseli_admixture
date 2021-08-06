@@ -65,25 +65,20 @@ wc -l no_calls
 #0 no_calls
 rm *n*calls
 
-# Add chromosome number to each file, merge all chromosomes for each individual, and replace the individual's sample number with the individual's original file name (from 00_vcf_sample_order.masked.list)
+# Add chromosome number to each file, merge all chromosomes for each individual, and replace the individual's sample number with the individual's original file name (from 00_vcf_sample_order.masked.list) - note that there are several ways one could do these steps but below are the basic steps
 # For example, if we want to call local ancestry for all 20 chromosomes for the first 10 individuals in the vcf, we would run:
 # As above, "NUMBER" corresponds to the number of the individual in the vcf file (1, 2, 3, ..., XXX total number of individuals)
 # For example, if we called local ancestry for the first 10 individuals in the vcf, we would run:
 for f in `seq 1 10`; do sed -e s/NUMBER/$f/g 3add_chrom_number.sh > g.$f.sh; sbatch --mem=16000 g.$f.sh; rm g.$f.sh; done # adds column with chromosome number to each file
 sbatch 4concatenate_files_per_indiv.sh # concatenates all chromosome files for each individual into a single file per individual
-for h in `seq 1 10`; do tmp=`head -$h 00_vcf_sample_order.masked.list  | tail -1`; mv $h.35kb.d2.masked.SWref.txt $tmp.35kb.d2.masked.SWref.txt; done
-# Add column with the individual ID
+for h in `seq 1 10`; do tmp=`head -$h 00_vcf_sample_order.masked.list  | tail -1`; mv $h.35kb.d2.masked.SWref.txt $tmp.35kb.d2.masked.SWref.txt; done # change file name so it corresponds to the actual individual's id and not their number in the vcf file
+sbatch 5add_indiv_id.sh # add column with the individual ID
 
-## Clean up step: get rid of genotype likelihoods, r.06_*, calls by chromosome, and any other intermediate files. 
+# Finally, for each ancestry informative SNP, use majority rule to assign the likely ancestry state using all SNPs within 35kb of that site, and assemble ancestry tracts by combining contiguous SNPs that have the same ancestry assignment
+# Run R script 7majcalls_tracts.R for each individual
+# If you generated ancestry calls for all individuals in the vcf and now want to use majority rule for ancestry assignment and tracts, do:
+for f in `cat 00_vcf_sample_order.masked.list`; do cat 7majcalls_tracts.R  | sed -e s/INDIV/$f/g > g.$f.sh; sbatch --mem=45000 g.$f.sh; done
 
-## For each individual, [Tauras, not sure what you were planning on adding here?]
-## For each ancestry informative SNP, use majority rule to assign the likely ancestry state using all SNPs within 35kb of that site.
-## Note: majority rule requires that that call be at least 50% of calls in that window; no call will be made for a site without consensus. 
-## Form ancestry tracts by combining continguous SNPs that have the same ancestry assignment
-## Remove ancestry tracts of < 1kb, and output again. 
-## Must module load R first before running run.08.mode_tracts.R script --> R/3.6.1-gcb03
-for f in `cat 04_vcf_sample_order.list`; do cat run.08.mode_tracts.R | sed -e s/INDIV/$f/g > g.$f.sh; sbatch --mem=45000 g.$f.sh; done
-## clean up the tmp2.INDIV.txt files, leaving just the majority rule files and the tracts. 
 
 
 ## Merge all calls into a single file
@@ -98,3 +93,5 @@ for f in `cat 00_allref.list`; do mv $f*d2*txt ancestry_usingfullref/refpanel_in
 # In amboseli_indiv directory, merge majority rule call and tract files
 touch amb.tracts.txt; for f in `ls *tracts.d2.*`; do sed '1d' $f >> amb.tracts.txt; done
 touch amb.majrule.txt; for f in `ls *Maj*`; do sed '1d' $f >> amb.majrule.txt; done
+
+## Clean up step: get rid of genotype likelihoods, r.06_*, calls by chromosome, and any other intermediate files. ## clean up the tmp2.INDIV.txt files, leaving just the majority rule files and the tracts. 
