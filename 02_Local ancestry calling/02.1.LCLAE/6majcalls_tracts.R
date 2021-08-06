@@ -16,6 +16,7 @@ fread("./INDIV.35kb.d2.masked.SNPRCref.txt") -> indv
 colnames(indv) <- c('chrom', 'snp', 'call', 'indiv')
 
 # Create list of chromosomes to run
+# Tauras, can we avoid them have to using the fai file? 
 # updated to Panubis1.0, and only return chromosomes for which LCLAE was run
 read.delim("/data/tunglab/shared/genomes/panubis1/Panubis1.0.fa.fai", header=F) -> chroms
 #subset(chroms, chroms$V1 %in% unique(indv$chrom)) -> chroms # This needs to be commented out when dealing without the "chr" in the chromosome names, because otherwise they don't match at all
@@ -30,8 +31,8 @@ mode_n=0.5 #minimum proportion of calls for majority rule
 min_n=20 #minimum number of nearby ancestry-informative sites to retain an ancestry call
 exclude=50000 ## new option to not return the first/last X bp of each chromosome
 
-##Run a for-loop for each chromosome (excludes sex chromosomes for now)
-for (j in 1:20) {  ## This is 1-20 because we don't want to deal with X or Y
+##Run a for-loop for each chromosome
+for (j in 1:20) {  ## Chromosomes 1-20
   subset(indv, indv$chrom == j) -> tmp
   ## -1 calls occur when LCLAE is not able to assign a most likely ancestry for a ancestry-informative marker (e.g. two ancestry states are equally likely)
   ## Alternatively, these sites can be removed previously using `grep -v '-1' ./INDIV.35kb.d2.txt` {tpv: this is the appraoch I've used recently}
