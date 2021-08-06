@@ -6,7 +6,7 @@ library(dplyr)
 library(data.table)
 
 # Load genotype data needed for PCA 
-load("for_pca_from_TPV_23Nov2020.RData", verbose=T) # Tauras will provide updated file here with an updated names file with updated individual ids and clearer source names - AMB should be Amboseli, BGP should be either BGDP or the apropriate Mikumi or SNPRCanubis_nonfounder designation, SW should be SNPRC, Tul should be WNPRC), will likely be able to simplify this code considerably
+load("for_pca.RData", verbose=T) 
 
 #############################################################################################################################
 # Figure 1B
@@ -17,17 +17,11 @@ load("for_pca_from_TPV_23Nov2020.RData", verbose=T) # Tauras will provide update
 names$V1[-c(34:46,58:60,65)]
 length(names$V1[-c(34:46,58:60,65)])==55 # TRUE - should equal 55
 
-d2 <- d[,-c(34:46,58:60,65)] # exclude the low coverage individuals
-m2 <- rowSums(is.na(d2)) # look at the missing data per row
-cov(scale(d2[m2==0,], center=T, scale=T), use="pairwise") -> covgeno_highcov # get the covariance matrix from the scaled and centered genotype matrix only for rows with no missing data (i.e. m2 is 0)
-
-save(covgeno_highcov,file="covgeno_highcov_4Aug2021.Rd") # save the covariance matrix in case we want to use it later and do not want to regenerate it (because it takes a few seconds)
-
 pcrat <- prcomp(covgeno_highcov,scale.=T) # perform PCA on genotype covariance using only high coverage individuals
 
 tmp <- as.data.frame(pcrat$x)
 
-# BGDP anubis individuals are made up of wild caught Aberdares individuals (panu_30877, panu_30977) and SW individuals (panu_L142,  panu_LIV5); BGDP yellow individual is from Mikumi
+# BGDP anubis individuals are made up of wild caught Aberdares individuals (panu_30877, panu_30977) and SNPRC individuals (panu_L142,  panu_LIV5); BGDP yellow individual is from Mikumi
 names_tmp <- names
 
 # find the row numbers of the BGDP individuals you want to relabel
