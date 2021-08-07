@@ -8,7 +8,7 @@ library(tidyr)
 # Load IBDmix results for putative yellow individuals (Mikumi, SNPRC yellow) 
 mikumi_SNPRCyellow_ibd <- read.table("yellow_ancestry_for_Fig1C.txt", header=T) # Tauras will provide file (population = Southwest should be corrected to SNPRCyellow, aberdare column should be removed, individual ids should all be checked) and explain what's in the file here 
 # Load IBDmix results for high coverage Amboseli individuals
-amboseli_ibd <- read.table("amboseli_ibdmix_estimates.txt", header=T) # Tauras will provide file (with updated Amboseli ids, aberdare removed, sw_yellow and sw_anubis column changed to SNPRC_yellow and SNPRC_anubis - may also want to get rid of other columns we don't use) and explain what's in the file here
+amboseli_ibd <- read.table("amboseli_ibdmix_estimates.txt", header=T) 
 
 #############################################################################################################################
 # Figure 1C
