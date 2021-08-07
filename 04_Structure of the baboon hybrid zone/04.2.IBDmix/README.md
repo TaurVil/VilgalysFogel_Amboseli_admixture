@@ -30,15 +30,43 @@ We run IBDmix in parallel across chromosomes. For each run, we first grab genoty
 sbatch --array=1-20 --mem=16G run_IBDmix.sh
 ```
 
-### Merge genotypes for the high coverage samples we will be using
-Following suggestions in Chen et al., we filter for tracts of IBD at least 50kb in length and with a LOD score greater than 10.  
+### Estimate the mean proportion of the genome IBD between each test individual and source population
+Following suggestions in Chen et al., we filter for tracts of IBD at least 50kb in length and with a LOD score greater than 10 in order to estimate the proportion of the genome shared between yellow and anubis baboons. 
+
+.  When looking for overlap between multiple source individuals we use the more conservative thresholds of 
 
 ```console
+library(data.table); library(ggplot2)
+min_length <- 50000; min_lod <- 10
+
+read.delim("~/genomes/panubis1/chromInfo.txt", header=F) -> chroms; colnames(chroms)[1:2] <- c("name", "length") # Read in chromosome file 
+
+#### read in file of test and source individuals ###############
+read.delim("./IBDmix/00_yellow_sources.list", header=F) -> yel_source; read.delim("./IBDmix/00_yel.list", header=F) -> yel
+read.delim("./IBDmix/00_anubis_sources.list", header=F) -> anu_source; read.delim("./IBDmix/00_anu.list", header=F) -> anu
+
+# For each source individual, and each chromosome within a source individual, read in the resulting data file. These files are available upon request or can be generated from the above scripts. 
+IBD_yellow <- NULL; for (i in 1:nrow(yel_source)) { tmp <- NULL; for (chrom in 1:20) {
+    name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/yellow.relative_to_",yel_source[i,1],".",chrom,".txt",sep="")
+    fread(name) -> data; data$length <- data$end - data$start; data$source <- yel_source[i,1]
+    data <- subset(data, data$length >= 1000 & data$slod >= 4); rbind(tmp,data) -> tmp }
+  rbind(IBD_yellow,tmp) -> IBD_yellow; rm(tmp); print(i) }; rm(i, chrom, data, name)
+IBD_yellow <- IBD_yellow[order(IBD_yellow$ID,IBD_yellow$source,IBD_yellow$chrom,IBD_yellow$start),]
+
+IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL; for (chrom in 1:20) {
+    name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/anubis.relative_to_",anu_source[i,1],".",chrom,".txt",sep="")
+    fread(name) -> data; data$length <- data$end - data$start; data$source <- anu_source[i,1]
+    data <- subset(data, data$length >= 1000 & data$slod >= 4); rbind(tmp,data) -> tmp; rm(data)
+  }
+  rbind(IBD_anubis,tmp) -> IBD_anubis; rm(tmp); print(i)
+}; rm(i, chrom, name)
+IBD_anubis <- IBD_anubis[order(IBD_anubis$ID,IBD_anubis$source,IBD_anubis$chrom,IBD_anubis$start),]
+
 
 ```
 
 ### For comparison to the SNPRC "yellow" founders, estimate IBD between Amboseli and all baboon species
-We repeated the above process for nine high coverage Amboseli baboons to serve as a positive control of what , using all baboon species profiled as possible sources of ancestry. The files to run IBDmix are included here as `00_amboseli.list`, `00_amboseli_sources.list`, and `run_IBDmix_amboseli.sh`. Allele sharing between Amboseli baboons and each population was estimating using the follow R code. 
+We repeated the above process for nine high coverage Amboseli baboons to serve as a positive control of what , using all baboon species profiled as possible sources of ancestry. The files to run IBDmix are included here as `00_amboseli.list`, `00_amboseli_sources.list`, and `run_IBDmix_amboseli.sh`. Allele sharing between Amboseli baboons and each population was estimating using the follow R code. Unlike above, we don't collect where in the genome these tracts are located but rather simply estimate a mean proportion of the genome which is IBD between each Amboseli baboon and other baboon species. 
 
 ```console
 library(data.table); library(ggplot2)
