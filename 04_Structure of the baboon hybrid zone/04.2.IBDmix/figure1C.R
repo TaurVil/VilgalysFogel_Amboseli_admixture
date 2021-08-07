@@ -5,8 +5,8 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-# Load IBDmix results for putative yellow individuals (Mikumi, SNPRC yellow) 
-mikumi_SNPRCyellow_ibd <- read.table("yellow_ancestry_for_Fig1C.txt", header=T) # Tauras will provide file (population = Southwest should be corrected to SNPRCyellow, aberdare column should be removed, individual ids should all be checked) and explain what's in the file here 
+# Load IBDmix results for putative yellow individuals (Mikumi, SNPRC yellow). First column flags the individual ID and second column the population which the individual is from. Each other column represents the mean estimated IBD between the individual (row) and the population (column name). 
+mikumi_SNPRCyellow_ibd <- read.table("ibdmix_yellow_estimates.txt", header=T) 
 # Load IBDmix results for high coverage Amboseli individuals
 amboseli_ibd <- read.table("ibdmix_amboseli_estimates.txt", header=T) 
 
