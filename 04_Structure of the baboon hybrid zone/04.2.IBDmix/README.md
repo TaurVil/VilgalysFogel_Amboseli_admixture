@@ -39,7 +39,8 @@ Following suggestions in Chen et al., we filter for tracts of IBD at least 50kb 
 ./01_mean_IBD.R
 ```
 
-### I
+### Identify tracks of introgressed ancestry 
+Next we sought to leverage IBDmix and LCLAE to remove putatively introgressed ancestry from our reference panels. To begin, we search for tracts of ancestry that are IBD with many putatively unadmixed source individuals (SNPRCanubis for yellow baboons; Mikumi for anubis baboons), reasoning that these sites are likely to be due to recent introgression events. 
 
 Next we sought to identify the overlap between shared ancestry identified using LCLAE and IBDmix. 
 
