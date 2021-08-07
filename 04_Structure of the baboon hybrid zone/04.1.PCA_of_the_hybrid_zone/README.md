@@ -22,20 +22,17 @@ names$source <- c(rep("Amboseli",9), rep("SNPRCanubis_founders",24), rep("Mara",
 
 # missing <- rowSums(is.na(d)); hist(missing) # plot amount of missing data per site
 
-## covariance of all genotype data, using sites called in almost all individuals (we will allow 1 sample missing each site)
+## covariance of all individuals, using sites called in almost all individuals (we will allow 1 sample missing each site)
 cov(scale(d[missing<=1,], center=T, scale=T), use="pairwise") -> covgeno
 
-## covariance of all high coverage genomes (no missing data)
+## covariance of high coverage individuals, using sites with no missing data
 d2 <- d[,-c(34:46,58:60,65)] # exclude the low coverage individuals
 m2 <- rowSums(is.na(d2)) # look at the missing data per row
 covgeno_highcov <- cov(scale(d2[m2==0,], center=T, scale=T), use="pairwise")  # get the covariance matrix from the scaled and centered genotype matrix only for rows with no missing data (i.e. m2 is 0)
 
-
-
 # remove large files of genotype calls, retaining just the covariance matrices and sample data
-rm(d, d2)
+rm(d, d2, missing, m2)
 save.image("for_pca.RData")
 ```
-
 
 Finally, we will produce Figures 1B and S4. The data file needed to reproduce these figures is included here (`for_pca.RData`) and the code is in `figure1B_S4.R`
