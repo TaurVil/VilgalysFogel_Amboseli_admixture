@@ -33,7 +33,7 @@ sbatch --array=1-20 --mem=16G run_IBDmix.sh
 ### Estimate the mean proportion of the genome IBD between each test individual and source population
 Following suggestions in Chen et al., we filter for tracts of IBD at least 50kb in length and with a LOD score greater than 10 in order to estimate the proportion of the genome shared between yellow and anubis baboons. 
 
-.  When looking for overlap between multiple source individuals we use the more conservative thresholds of 
+
 
 ```console
 library(data.table); library(ggplot2)
@@ -49,21 +49,68 @@ read.delim("./IBDmix/00_anubis_sources.list", header=F) -> anu_source; read.deli
 IBD_yellow <- NULL; for (i in 1:nrow(yel_source)) { tmp <- NULL; for (chrom in 1:20) {
     name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/yellow.relative_to_",yel_source[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- yel_source[i,1]
-    data <- subset(data, data$length >= 1000 & data$slod >= 4); rbind(tmp,data) -> tmp }
+    data <- subset(data, data$length >= min_length & data$slod >= min_lod); rbind(tmp,data) -> tmp }
   rbind(IBD_yellow,tmp) -> IBD_yellow; rm(tmp); print(i) }; rm(i, chrom, data, name)
 IBD_yellow <- IBD_yellow[order(IBD_yellow$ID,IBD_yellow$source,IBD_yellow$chrom,IBD_yellow$start),]
 
-IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL; for (chrom in 1:20) {
+IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL;  for (chrom in 1:20) {
     name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/anubis.relative_to_",anu_source[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- anu_source[i,1]
-    data <- subset(data, data$length >= 1000 & data$slod >= 4); rbind(tmp,data) -> tmp; rm(data)
-  }
-  rbind(IBD_anubis,tmp) -> IBD_anubis; rm(tmp); print(i)
-}; rm(i, chrom, name)
+    data <- subset(data, data$length >= min_length & data$slod >= min_lod); rbind(tmp,data) -> tmp; rm(data) }
+  rbind(IBD_anubis,tmp) -> IBD_anubis; rm(tmp); print(i) }; rm(i, chrom, name)
 IBD_anubis <- IBD_anubis[order(IBD_anubis$ID,IBD_anubis$source,IBD_anubis$chrom,IBD_anubis$start),]
 
+#### For each individual, calculate the proportion ancestry for each source individual ############
+colnames(yel) <- colnames(yel_source) <- "name"
+for (i in yel$name) { for (j in yel_source$name) {
+    subset(IBD_yellow, IBD_yellow$ID == i & IBD_yellow$source == j) -> tmp
+    yel[[paste(j)]][yel$name == i] <- sum(tmp$length)/sum(chroms$length) } }; rm(tmp, i,j)
+colnames(anu) <- colnames(anu_source) <- "name"
+for (i in anu$name) { for (j in anu_source$name) {
+    subset(IBD_anubis, IBD_anubis$ID == i & IBD_anubis$source == j) -> tmp
+    anu[[paste(j)]][anu$name == i] <- sum(tmp$length)/sum(chroms$length) } }; rm(tmp, i,j)
 
+# Get mean IBD between each yellow baboon and possible source populations
+yel2 <- yel[,1:2]; colnames(yel2) <- c("individual", "population")
+yel2$population[c(1:10,18)] <- 'Mikumi'; yel2$population[11:17] <- 'SNPRCyellow'
+yel2$SNPRCanubis <- rowMeans(yel[,c(3:25,28:29)])
+yel2$guinea <- rowMeans(yel[,35:36])
+yel2$hamadryas <- rowMeans(yel[,30:31])
+yel2$aberdares <- rowMeans(yel[,26:27])
+# yel2$sd_sw <- apply(yel[,c(3:25,28:29)], 1, sd)/sqrt(length(c(3:25,28:29)))
+# yel2$sd_aberdare <- apply(yel[,26:27], 1, sd)/sqrt(length(26:27))
+# yel2$sd_ham <- apply(yel[,30:31], 1, sd)/sqrt(length(30:31))
+# yel2$sd_gui <- apply(yel[,35:36], 1, sd)/sqrt(length(35:36))
+
+# Report numbers for mean shared ancestry between yellow and anubis baboons, split by the yellow population. We use SNPRCanubis rather than anubis from the Aberdares because at least one indivdual in the Aberdares is predicted to contain considerable yellow ancestry (Rogers et al. 2019). 
+mean(unlist(yel[yel2$population == "Mikumi", colnames(yel2) == "SNPRCanubis"]), na.rm=T)
+sd(unlist(yel[yel2$population == "Mikumi", colnames(yel2) == "SNPRCanubis"]), na.rm=T)
+mean((yel2[yel2$population == "SNPRCyellow", colnames(yel2) == "SNPRCanubis"]), na.rm=T)
+sd((yel2[yel2$population == "SNPRCyellow", colnames(yel2) == "SNPRCanubis"]), na.rm=T)
+
+# Get mean IBD between each anubis baboon and possible source populations
+anu2 <- anu[,1:2]; colnames(anu2) <- c("individual", "population")
+anu2$population <- "SNPRCanubis"; anu2$population[25:26] <- 'Aberdares'
+anu2$SNPRCyellow <- rowMeans(anu[,12:18])
+anu2$mikumi <- rowMeans(anu[,c(2:11,19)])
+anu2$kinda <- rowMeans(anu[,c(22:24)])
+anu2$chacma <- rowMeans(anu[,27:28])
+
+# Report numbers for anubis individual estimated to contain recent anubis ancestry by Rogers et al. 2019, and for all other anubis baboons. 
+mean(anu2[anu2$individual == "panu_30877", colnames(anu2) == "mikumi"])
+mean(anu2[!anu2$individual == "panu_30877", colnames(anu2) == "mikumi"])
+sd(anu2[!anu2$individual == "panu_30877", colnames(anu2) == "mikumi"])
+
+write.table(yel2, "./ibdmix_yellow_estimates.txt", row.names=T, col.names=T, quote=F, sep="\t") # used for figure 1C and in the SI tables
+write.table(anu2, "./ibdmix_anubis_estimates.txt", row.names=T, col.names=T, quote=F, sep="\t") # used in the SI tables
 ```
+
+### I
+
+Next we sought to identify the overlap between shared ancestry identified using LCLAE and IBDmix. 
+
+.  When looking for overlap between multiple source individuals we applied more liberal thresholds for calling a region of the genome IBD, specifically tracts longer than 1000bp and LOD score greater than 4. While these criteria likely retain false positives, 
+
 
 ### For comparison to the SNPRC "yellow" founders, estimate IBD between Amboseli and all baboon species
 We repeated the above process for nine high coverage Amboseli baboons to serve as a positive control of what , using all baboon species profiled as possible sources of ancestry. The files to run IBDmix are included here as `00_amboseli.list`, `00_amboseli_sources.list`, and `run_IBDmix_amboseli.sh`. Allele sharing between Amboseli baboons and each population was estimating using the follow R code. Unlike above, we don't collect where in the genome these tracts are located but rather simply estimate a mean proportion of the genome which is IBD between each Amboseli baboon and other baboon species. 
@@ -112,8 +159,8 @@ amboseli$kinda <- rowMeans(samples[,c(50:52)])
 amboseli$guinea <- rowMeans(samples[,c(53:54)])
 amboseli$chacma <- rowMeans(samples[,c(55:56)])
 amboseli$aberdare <- rowMeans(samples[,c(26:27)])
-amboseli$sw_yellow <- rowMeans(samples[,c(40:46)])
-amboseli$sw_anubis <- rowMeans(samples[,c(2:25,28:29)])
+amboseli$SNPRCyellow <- rowMeans(samples[,c(40:46)])
+amboseli$SNPRCanubis <- rowMeans(samples[,c(2:25,28:29)])
 
 write.table(amboseli, "./ibdmix_amboseli_estimates.txt", row.names=F, col.names=T, sep="\t", quote=F)
 
