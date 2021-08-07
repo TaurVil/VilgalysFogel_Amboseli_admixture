@@ -27,18 +27,17 @@ names_tmp <- names
 # find the row numbers of the BGDP individuals you want to relabel
 # BGDP individiduals from SW
 rownames(names_tmp)[names_tmp$V1 %like% "panu_L"] # 49,50
-# BGDP individuals from Mikumi
-rownames(names_tmp)[names_tmp$V1 %like% "pcyn_16066"] # 72
 # BGDP individuals from Aberdares
 rownames(names_tmp)[names_tmp$V1 %like% "panu_3"] # 47,48
 
-names_tmp$source[c(49:50)] <- "SW"
+names_tmp$source <- c(rep("Amboseli",9), rep("SNPRC",24), rep("Mara", 7), rep("WNPRC",6), rep("BGDPanubis",4), rep("SNPRC",7), rep("Mikumi",15))
+
+names_tmp$source[c(49:50)] <- "SNPRC"
 names_tmp$source[c(47:48)] <- "Aberdares"
-names_tmp$source[c(72)] <- "Mik"
 
 summary(pcrat)
 
-names_tmp$source2 <- factor(names_tmp$source, levels=c("AMB", "Mik", "Aberdares", "SW")) 
+names_tmp$source2 <- factor(names_tmp$source, levels=c("Amboseli", "Mikumi", "Aberdares", "SNPRC")) 
 
 b <- ggplot(data=tmp) + geom_point(aes(PC1, PC2,  col=factor(names_tmp$source2[-c(34:46,58:60,65)]), fill=factor(names_tmp$source2[-c(34:46,58:60,65)])), shape=21, size=4, alpha=0.8, stroke=1.5) + theme_classic() + theme(text=element_text(size=18), legend.position = "none", axis.text = element_text(color="black"))  + scale_fill_manual(values = c("AMB"="darkorange2", "Aberdares"="#009E73", "SW"="grey70", "Mik"="gold1")) + scale_color_manual(values = c("AMB"="darkorange2", "Aberdares"="springgreen4", "SW"="grey55", "Mik"="gold2")) + scale_x_continuous(name="PC1 (84% variance explained)") + scale_y_continuous(name="PC2 (2% variance explained)"); b
 # get legend
@@ -83,9 +82,9 @@ rownames(names_tmp)[names_tmp$V1 %like% "panu_3"] # 47,48
 
 names_tmp$source[c(49:50)] <- "SW"
 names_tmp$source[c(47:48)] <- "Aberdares"
-names_tmp$source[c(72)] <- "Mik"
 
 summary(pcrat)
+
 
 names_tmp$source2 <- factor(names_tmp$source, levels=c("AMB", "Mik", "Aberdares", "Mara", "Tul", "SW")) 
 # assign low and high coverage
