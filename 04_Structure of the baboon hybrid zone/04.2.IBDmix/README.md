@@ -60,7 +60,7 @@ IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL;  for (chrom in 
   rbind(IBD_anubis,tmp) -> IBD_anubis; rm(tmp); print(i) }; rm(i, chrom, name)
 IBD_anubis <- IBD_anubis[order(IBD_anubis$ID,IBD_anubis$source,IBD_anubis$chrom,IBD_anubis$start),]
 
-#### For each individual, calculate the proportion ancestry for each source individual ############
+# For each individual, calculate the proportion ancestry for each source individual
 colnames(yel) <- colnames(yel_source) <- "name"
 for (i in yel$name) { for (j in yel_source$name) {
     subset(IBD_yellow, IBD_yellow$ID == i & IBD_yellow$source == j) -> tmp
@@ -77,10 +77,6 @@ yel2$SNPRCanubis <- rowMeans(yel[,c(3:25,28:29)])
 yel2$guinea <- rowMeans(yel[,35:36])
 yel2$hamadryas <- rowMeans(yel[,30:31])
 yel2$aberdares <- rowMeans(yel[,26:27])
-# yel2$sd_sw <- apply(yel[,c(3:25,28:29)], 1, sd)/sqrt(length(c(3:25,28:29)))
-# yel2$sd_aberdare <- apply(yel[,26:27], 1, sd)/sqrt(length(26:27))
-# yel2$sd_ham <- apply(yel[,30:31], 1, sd)/sqrt(length(30:31))
-# yel2$sd_gui <- apply(yel[,35:36], 1, sd)/sqrt(length(35:36))
 
 # Report numbers for mean shared ancestry between yellow and anubis baboons, split by the yellow population. We use SNPRCanubis rather than anubis from the Aberdares because at least one indivdual in the Aberdares is predicted to contain considerable yellow ancestry (Rogers et al. 2019). 
 mean(unlist(yel[yel2$population == "Mikumi", colnames(yel2) == "SNPRCanubis"]), na.rm=T)
@@ -158,7 +154,7 @@ amboseli$hamadryas <- rowMeans(samples[,c(48:49)])
 amboseli$kinda <- rowMeans(samples[,c(50:52)])
 amboseli$guinea <- rowMeans(samples[,c(53:54)])
 amboseli$chacma <- rowMeans(samples[,c(55:56)])
-amboseli$aberdare <- rowMeans(samples[,c(26:27)])
+amboseli$aberdares <- rowMeans(samples[,c(26:27)])
 amboseli$SNPRCyellow <- rowMeans(samples[,c(40:46)])
 amboseli$SNPRCanubis <- rowMeans(samples[,c(2:25,28:29)])
 
