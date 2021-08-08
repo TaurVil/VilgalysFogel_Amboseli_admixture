@@ -32,22 +32,22 @@ ls i*output.txt | sed 's/.output.txt//g' > 00names
 for f in `ls i*output.txt`; do grep -v '^#' $f | grep -v -P "\t4\t" > tmp; mv tmp $f; done
 
 ##We must convert ancestry output from two haplotypes into a 0/1/2 ancestry calls
-mkdir tracts; module load R; for f in `cat 00names `; do sed -e s/NAME/$f/g run.get_tracts.R > s.$f.sh; sbatch s.$f.sh; rm s.$f.sh; done
+mkdir tracts; module load R; for f in `cat 00names `; do sed -e s/NAME/$f/g run.01.SELAM_to_tracts.R > s.$f.sh; sbatch s.$f.sh; rm s.$f.sh; done
 ## There are checks in place to make sure each call is biallelic and length > 0
 ## Cleanup
 mv i*.txt tracts/; mv slurm-* tracts/
 
 ##Generate a vcf file for each sample
-# creat example header to use
-zcat /data/tunglab/tpv/panubis1_genotypes/calls_unadmixed/02.yel.20.recode.vcf.gz | grep '^#' | tail -1 > vcf_example_header
+# creat example header to use. This comes from a partial file in 01.2 Genotype Filtering
+zcat ./calls_unadmixed/02.yel.20.recode.vcf.gz | grep '^#' | tail -1 > vcf_example_header
 # manually edit to create 1 name only ("SAMPLE")
 
 # get yellow and anubis allele frequencies: this time only from the SW panel
 module load vcftools; cd /data/tunglab/tpv/panubis1_genotypes/calls_unadmixed; for f in `seq 17 20`; do vcftools --gzvcf 02.yel.$f.recode.vcf.gz --keep ../00_yel_SW.list --freq --out chr$f.yellow; sed -i '1d' chr$f.yellow.frq; sed -i 's/:/\t/g' chr$f.yellow.frq; vcftools --gzvcf 02.anu.$f.recode.vcf.gz --keep ../00_anu_SW.list --freq --out chr$f.anubis; sed -i '1d' chr$f.anubis.frq; sed -i 's/:/\t/g' chr$f.anubis.frq; done
-mkdir /data/tunglab/tpv/local_ancestry/sim_v2/a_priori_frequencies/; mv chr*frq /data/tunglab/tpv/local_ancestry/sim_v2/a_priori_frequencies/; cd /data/tunglab/tpv/local_ancestry/sim_v2/; 
+mkdir ./a_priori_frequencies/; mv chr*frq ./a_priori_frequencies/ 
 
 # get a simplified vcf file for each sample
-mkdir simulated_vcfs; module load R; for f in `cat 00names`; do for g in `cat 00chroms`; do cat run.get_sample_vcf.R | sed -e s/NAME/$f/g | sed -e s/SCAF/$g/g > g.$f.$g.R; sbatch g.$f.$g.R; rm g.$f.$g.R; done; done 
+mkdir simulated_vcfs; module load R; for f in `cat 00names`; do for g in `cat 00chroms`; do cat run.02.create_sample_vcf.R | sed -e s/NAME/$f/g | sed -e s/SCAF/$g/g > g.$f.$g.R; sbatch g.$f.$g.R; rm g.$f.$g.R; done; done 
 rm slurm*
 
 # We need to add the full vcf header to each sample, which we'll do with this and within the for loop below 
