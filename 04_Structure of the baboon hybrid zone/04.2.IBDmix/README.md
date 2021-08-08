@@ -68,5 +68,13 @@ We repeated the above process for nine high coverage Amboseli baboons to serve a
 ```console
 ./01b_mean_IBD_amboseli.R
 
+```
+
+### For comparison to the SNPRC "yellow" founders, estimate IBD between Amboseli and all baboon species
+Figure 1C and Fig SXXX can be reproduced from the processed results in this section, basedon the raw code and data which have been made available. 
+
+```console
 ./figure1C.R
+
+./figureSXXX
 ```
