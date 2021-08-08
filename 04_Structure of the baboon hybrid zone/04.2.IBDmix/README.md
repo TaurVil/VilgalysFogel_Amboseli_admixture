@@ -33,18 +33,33 @@ sbatch --array=1-20 --mem=16G run_IBDmix.sh
 ### Estimate the mean proportion of the genome IBD between each test individual and source population
 Following suggestions in Chen et al., we filter for tracts of IBD at least 50kb in length and with a LOD score greater than 10 in order to estimate the proportion of the genome shared between yellow and anubis baboons. For each baboon, we then estimate the proportion of the genome which is IBD with each possible source indivdual, and summarize these data for each baboon as the mean amount of IBD with each potential source population. These data are used in Fig 1C and Supplementary Tables, and are stored as `ibdmix_anubis_estimates.txt` and `ibdmix_yellow_estimates.txt`. 
 
-
-
 ```console
 ./01_mean_IBD.R
 ```
 
 ### Identify tracks of introgressed ancestry 
-Next we sought to leverage IBDmix and LCLAE to remove putatively introgressed ancestry from our reference panels. To begin, we search for tracts of ancestry that are IBD with many putatively unadmixed source individuals (SNPRCanubis for yellow baboons; Mikumi for anubis baboons), reasoning that these sites are likely to be due to recent introgression events. 
+Next we sought to leverage IBDmix and LCLAE to remove putatively introgressed ancestry from our reference panels. To begin, we search for tracts of ancestry that are IBD with many putatively unadmixed source individuals (SNPRCanubis for yellow baboons; Mikumi for anubis baboons), reasoning that these sites are likely to be due to recent introgression events. While identifying these regions, we used more liberal thresholds for calling regions of the genome IBD, specifically tracks larger than 1000bp with a LOD score greater than 4. While these criteria likely retain false positives, we reasoned patterns of sharing across indivdiuals would add additional confidence and that it would be more harmful to retain true cases of introgression than mask excess variation. 
+
+After identifying shared regions, we then investigated the overlap between LCLAE and IBDmix tracts. 
+
+We then formed a masked version of our , which excluded regions of the genome which potentially include admixture (the union of IBDmix and LCLAE results). 
 
 Next we sought to identify the overlap between shared ancestry identified using LCLAE and IBDmix. 
 
 .  When looking for overlap between multiple source individuals we applied more liberal thresholds for calling a region of the genome IBD, specifically tracts longer than 1000bp and LOD score greater than 4. While these criteria likely retain false positives, 
+
+```console
+
+## get the tracts that are IBD for each 
+./02a_concensus_IBD_tracts.R
+# saved as an RData object (`./IBDmix_tracts.RData`) and six text files (`./IBDmix/ibdmix_tracts.SPECIES.THRESHOLD.txt`), with species as "anubis" or "yellow" and thresholds of 30, 50, and 70% of possible source individuals. 
+
+
+## integrate with LCLAE results to get the overlap between the two approaches
+
+
+
+```
 
 
 ### For comparison to the SNPRC "yellow" founders, estimate IBD between Amboseli and all baboon species
@@ -52,4 +67,6 @@ We repeated the above process for nine high coverage Amboseli baboons to serve a
 
 ```console
 ./01b_mean_IBD_amboseli.R
+
+./figure1C.R
 ```
