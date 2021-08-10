@@ -4,6 +4,8 @@ In addition to estimating admixture using a local ancestry approach (e.g., LCLAE
 
 Details can be found in Supplementary Methods Section 8.
 
+XXX Once ASF gets SRR file names for new data, can update a few files below XXXX
+
 ```console
 
 # Data needed:
@@ -13,10 +15,10 @@ Details can be found in Supplementary Methods Section 8.
 # Fastq files for hamadryas, Guinea, and the gelada monkey from the Baboon Genome Sequencing Consortium available in the NCBI Sequence Read Archive (SRA) under BioProject accession numbers PRJNA20425, PRJNA54003, PRJNA251424, respectively (see Table S1 for accession numbers for each sample).
 
 # Map these data to the rhesus macaque genome (MacaM; Zimin et al. 2014 Biology Direct) using bowtie2
-for f in `cat XXXOnce you get SRR numbersXXX`; do sed -e s/NAME/$f/g 01a.bowtie2_map_macam.SRRs1.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
+for f in `cat XXXOnce you get SRR numbersXXX`; do sed -e s/NAME/$f/g 01a.bowtie2_map_macam.SRRs1.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; done; rm $f.sh # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
 
 cat SRR_list_BGDP SRR_list_SNPRC_amboseli_published SRR_list_SNPRC_anubis_founders >> SRR_tmp
-for f in `cat SRR_tmp`; do sed -e s/NAME/$f/g 01a.bowtie2_map_macam.SRRs2.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; rm SRR_tmp; done # for all other data where paired-end reads are labeled as _1 and _2
+for f in `cat SRR_tmp`; do sed -e s/NAME/$f/g 01a.bowtie2_map_macam.SRRs2.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; done; rm $f.sh; rm SRR_tmp # for all other data where paired-end reads are labeled as _1 and _2
 
 # Make directory to store mapped bams and move all these files to this directory
 mkdir bams
@@ -24,69 +26,47 @@ mv map* bams/
 
 # Merge multiple bams from the same individual into one bam per individual
 # Must first sort before merging
-for f in `cat SRRs_AMB_310`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
-for f in `cat SRRs_1X1126`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
-for f in `cat SRRs_1X1765`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
-for f in `cat SRR_list_BGDP`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
+for f in `cat SRRs_AMB_310`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done; rm $f.sh
+for f in `cat SRRs_1X1126`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done; rm $f.sh
+for f in `cat SRRs_1X1765`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done; rm $f.sh
+for f in `cat SRR_list_BGDP`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done; rm $f.sh
 
 # For individuals with two bams to merge (listed in fastqs_per_indiv2 where the first column is the individual's id which will be used as the new name of the merged file and the remaining columns are the bams to be merged), run:
-for i in `seq 1 2`; do sed "${i}q;d" fastqs_per_indiv2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_2.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh; sed -e s/SAMPLE3/$h/g  g.$f.$g.sh > 2.$f.$g.$h.sh; sbatch --mem=10G 2.$f.$g.$h.sh; rm 2.$f.$g.$h.sh; done
+for i in `seq 1 2`; do sed "${i}q;d" fastqs_per_indiv2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_2.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh; sed -e s/SAMPLE3/$h/g  g.$f.$g.sh > 2.$f.$g.$h.sh; sbatch --mem=10G 2.$f.$g.$h.sh; done; rm 2.$f.$g.$h.sh
 
 # For individuals with three bams to merge (listed in fastqs_per_indiv3 where the first column is the individual's id which will be used as the new name of the merged file and the remaining columns are the bams to be merged), run:
-for i in `seq 1`; do sed "${i}q;d" fastqs_per_indiv3 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; k=`awk '{print $4}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_3.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh;  sed -e s/SAMPLE4/$k/g g.$f.$g.$h.sh > 3.$f.$g.$h.$k.sh; sbatch --mem=10G 3.$f.$g.$h.$k.sh; done # note that we added the species name "Gelada" in front of the id to help distinguish individuals from different species
+for i in `seq 1 3`; do sed "${i}q;d" fastqs_per_indiv3 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; k=`awk '{print $4}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_3.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh;  sed -e s/SAMPLE4/$k/g g.$f.$g.$h.sh > 3.$f.$g.$h.$k.sh; sbatch --mem=10G 3.$f.$g.$h.$k.sh; done; rm 3.$f.$g.$h.$k.sh # note that we added the species name "Gelada" in front of the id # in fastqs_per_indiv3 to help distinguish individuals from different species and because all other ids from the Baboon Sequencing Genome Consortion have species as part of the id
 
-# merge 4 samples from the same individual
-for i in `seq 1 3`; do sed "${i}q;d" fastqs_per_indiv4 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; j=`awk '{print $4}' tmp2`; k=`awk '{print $5}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.merge_4.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh; sed -e s/SAMPLE4/$j/g g.$f.$g.$h.sh > g.$f.$g.$h.$j.sh;  sed -e s/SAMPLE5/$k/g g.$f.$g.$h.$j.sh > 4.$f.$g.$h.$j.$k.sh; sbatch --mem=10G  4.$f.$g.$h.$j.$k.sh; done
-# merge 5 samples from the same individual
-for i in `seq 1 5`; do sed "${i}q;d" fastqs_per_indiv5 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; j=`awk '{print $4}' tmp2`; k=`awk '{print $5}' tmp2`; l=`awk '{print $6}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.merge_5.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh; sed -e s/SAMPLE4/$j/g g.$f.$g.$h.sh > g.$f.$g.$h.$j.sh;  sed -e s/SAMPLE5/$k/g g.$f.$g.$h.$j.sh > g.$f.$g.$h.$j.$k.sh; sed -e s/SAMPLE6/$l/g g.$f.$g.$h.$j.$k.sh > 5.$f.$g.$h.$j.$k.$l.sh; sbatch --mem=20G  5.$f.$g.$h.$j.$k.$l.sh; done
-# merge 8 samples from the same individual
-for i in `seq 1`; do sed "${i}q;d" fastqs_per_indiv8 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; j=`awk '{print $4}' tmp2`; k=`awk '{print $5}' tmp2`; l=`awk '{print $6}' tmp2`; m=`awk '{print $7}' tmp2`; n=`awk '{print $8}' tmp2`; o=`awk '{print $9}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.merge_5.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh; sed -e s/SAMPLE4/$j/g g.$f.$g.$h.sh > g.$f.$g.$h.$j.sh;  sed -e s/SAMPLE5/$k/g g.$f.$g.$h.$j.sh > g.$f.$g.$h.$j.$k.sh; sed -e s/SAMPLE6/$l/g g.$f.$g.$h.$j.$k.sh > g.$f.$g.$h.$j.$k.$l.sh; sed -e s/SAMPLE7/$m/g g.$f.$g.$h.$j.$k.$l.sh > g.$f.$g.$h.$j.$k.$l.$m.sh; sed -e s/SAMPLE8/$n/g g.$f.$g.$h.$j.$k.$l.$m.sh > g.$f.$g.$h.$j.$k.$l.$m.$n.sh; sed -e s/SAMPLE9/$o/g g.$f.$g.$h.$j.$k.$l.$m.$n.sh > 8.$f.$g.$h.$j.$k.$l.$m.$n.$o.sh; sbatch --mem=20G 8.$f.$g.$h.$j.$k.$l.$m.$n.$o.sh; done
+# For individuals with four bams to merge (listed in fastqs_per_indiv4 where the first column is the individual's id which will be used as the new name of the merged file and the remaining columns are the bams to be merged), run:
+for i in `seq 1 4`; do sed "${i}q;d" fastqs_per_indiv4 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; j=`awk '{print $4}' tmp2`; k=`awk '{print $5}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_4.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh; sed -e s/SAMPLE4/$j/g g.$f.$g.$h.sh > g.$f.$g.$h.$j.sh;  sed -e s/SAMPLE5/$k/g g.$f.$g.$h.$j.sh > 4.$f.$g.$h.$j.$k.sh; sbatch --mem=10G  4.$f.$g.$h.$j.$k.sh; done; rm 4.$f.$g.$h.$j.$k.sh
 
+# For individuals with five bams to merge (listed in fastqs_per_indiv5 where the first column is the individual's id which will be used as the new name of the merged file and the remaining columns are the bams to be merged), run:
+for i in `seq 1 5`; do sed "${i}q;d" fastqs_per_indiv5 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; j=`awk '{print $4}' tmp2`; k=`awk '{print $5}' tmp2`; l=`awk '{print $6}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_5.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh; sed -e s/SAMPLE4/$j/g g.$f.$g.$h.sh > g.$f.$g.$h.$j.sh;  sed -e s/SAMPLE5/$k/g g.$f.$g.$h.$j.sh > g.$f.$g.$h.$j.$k.sh; sed -e s/SAMPLE6/$l/g g.$f.$g.$h.$j.$k.sh > 5.$f.$g.$h.$j.$k.$l.sh; sbatch --mem=20G 5.$f.$g.$h.$j.$k.$l.sh;   done; rm 5.$f.$g.$h.$j.$k.$l.sh
 
+mv map* bams/
 
-# get individuals to merge for BGDP
-# in R
-library(dplyr)
-tmp <- read.table("SraRunTable_BGDP_nonyelanu", header=T, sep=",")
-tmp$Sample.Name2 <- gsub("-", ".", tmp$Sample.Name)
-# add Gelada species name to sample (all other sample names have their species in their sample name)
-which(tmp$Sample.Name2=="38168")
-tmp[54:56,]$Sample.Name2 <- "GELADA.38168"
-tmp2 <- tmp %>% group_by(Sample.Name2) %>% tally()
-# do for samples with 1, 3, 4, 5, and 8 fastqs per individual separately (showing example for 8)
-poop <- tmp2[tmp2$n==8,]
-poop2 <- tmp[tmp$Sample.Name2 %in% poop$Sample.Name2,]
-poop3 <- poop2[c(37,1)]
-poop4 <- poop3 %>% group_by(Sample.Name2) %>% summarize(value=paste(Run, collapse="\t"))
-write.table(poop4, "fastqs_per_indiv8", row.names=F, col.names=F, sep="\t", quote=F)
+# Make new list including all samples we will analyze
+cat SRR_list* >> tmp # grab list of all SRR file names
+cat SRRs* >> tmp2 # grab list of all SRR file names that were merged
+awk 'NR==FNR{a[$0];next} !($0 in a)' tmp2 tmp >> tmp3 # remove all SRR file names that were merged per individual
+awk '{print $1}' fastqs_per_indiv* >> tmp4
+cat tmp3 tmp4 >> samples_final # add merged bam files per individual to sample list
+rm tmp* # remove temporary files that are no longer needed
 
+# Process samples before generating gVCF files
+# Sort, add read groups, remove duplicate reads and reads with MAPQ less than 10
+for f in `cat samples_final`; do sed -e s/SAMPLE/$f/g 02c.sort_RG_nodup_mapq10.sh > g.sh; sbatch --mem=30000 g.sh; done; rm g.sh 
 
-
-cat 00* >> 00_all_names
-cat *list >> multiple_bams_list 
-awk 'NR==FNR{a[$0];next} !($0 in a)' multiple_bams_list 00_all_names >> 00_all_names2
-# add
-#1X1126
-#1X1765
-#LIT
-# to the end of the 00_all_names2
-
-mv 1X1126.bam mapped.1X1126.bam
-mv 1X1765.bam mapped.1X1765.bam
-mv LIT.bam mapped.LIT.bam
-
-for f in `head 00_all_names2 | tail -n +8`; do sed -e s/SAMPLE/$f/g run.02c.sort_RG_nodup_mapq10.sh > g.sh; sbatch --mem=30000 g.sh; done; rm g.sh 
-for f in `cat merged_bam_list`; do sed -e s/SAMPLE/$f/g run.02c.sort_RG_nodup_mapq10.sh > g.sh; sbatch --mem=30000 g.sh; done; rm g.sh # bgdp samples
-
-
-
+# Make directory to store gVCFs 
 mkdir gVCF
 
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.03.gvcf.sh > $f.sh; sbatch --array=1-94%16 --mem=15000 $f.sh; done
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.04a.merge_gvcfs.sh > $f.sh; sbatch --mem=30000 $f.sh; done
+# Generate gVCF files using GATK HaplotypeCaller requiring a minimum base quality ≥ 20
+# Run for each chromosome and each individual
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 03.gvcf.sh > $f.sh; sbatch --array=1-50 --mem=15000 $f.sh; done; rm $f.sh
+# Merge gVCF files across individuals using GATK CombineGVCF and then call genotypes using GATK GenotypeGVCFs. Also, filter for high quality variants following GATK’s recommended criteria for hard filtering for germline variants and retain biallelic SNPs that were typed within all individuals in the sample. In addition, remove indels, singleton and doubleton variants, and clusters of 3 or more variants that fall within a 10 bp window.
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.04a.merge_gvcfs.sh > $f.sh; sbatch --mem=30000 $f.sh; done; rm $f.sh
 
-sbatch --mem=12000 run.04a.merge_gvcfs.sh
-
+# We would like to use the macaque as one possible outgroup so add the macaque genotype (homozygous reference) as an additional sample at all sites
 
 # or run for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g run.05.add_macaque_geno.sh >> $f.sh; sbatch --mem=20 $f.sh; done
 rm chr*sh
