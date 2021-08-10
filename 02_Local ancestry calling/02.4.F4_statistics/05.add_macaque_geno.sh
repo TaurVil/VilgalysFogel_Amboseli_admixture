@@ -3,12 +3,12 @@
 module load bcftools
 
 # Remove vcf header
-bcftools view --no-header ../baboon.to.macam.n48.CHROMOSOME.filtused.recode.vcf >> noheader.baboon.to.macam.n48.CHROMOSOME.filtused.recode.vcf
+bcftools view --no-header baboon.to.macam.n48.CHROMOSOME.filtused.recode.vcf >> noheader.baboon.to.macam.n48.CHROMOSOME.filtused.recode.vcf
 # Add a new sample for all sites where the genotype is homozygous reference i.e., 0/0 (other genotype fields - e.g., AD:DP:GQ:PL - were grabbed from a sample with the homozygous reference genotype but these fields will not be important later)
 sed 's/$/\t0\/0:49,0:49:99:0,120,1800/g' noheader.baboon.to.macam.n48.CHROMOSOME.filtused.recode.vcf >> tmp.CHROMOSOME.vcf
 
 # Add macaque as the name of our newly added sample
-sed '/^#CHROM/ {s/$/\tmacaque/}' ../baboon.to.macam.n48.CHROMOSOME.filtused.recode.vcf >> tmp2.CHROMOSOME.vcf
+sed '/^#CHROM/ {s/$/\tmacaque/}' baboon.to.macam.n48.CHROMOSOME.filtused.recode.vcf >> tmp2.CHROMOSOME.vcf
 
 # Bgzip and index our vcf with the updated sample name in the header
 module load tabix
