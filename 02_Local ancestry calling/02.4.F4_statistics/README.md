@@ -4,7 +4,7 @@ In addition to estimating admixture using a local ancestry approach (e.g., LCLAE
 
 Details can be found in Supplementary Methods Section 8.
 
-XXX Once ASF gets SRR file names for new data, need to update a few files below including line 18 and all of the individual sample files for convertf XXXX
+XXX Once ASF gets SRR file names for new data, can update a few files below XXXX
 
 ```console
 
@@ -64,7 +64,7 @@ mkdir gVCF
 # Run for each chromosome and each individual
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 03.gvcf.sh > $f.sh; sbatch --array=1-50 --mem=15000 $f.sh; done; rm $f.sh
 # Merge gVCF files across individuals using GATK CombineGVCF and then call genotypes using GATK GenotypeGVCFs. Also, filter for high quality variants following GATK’s recommended criteria for hard filtering for germline variants and retain biallelic SNPs that were typed within all individuals in the sample. In addition, remove indels, singleton and doubleton variants, and clusters of 3 or more variants that fall within a 10 bp window.
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g r04.merge_gvcfs_genotype_filter.sh > $f.sh; sbatch --mem=30000 $f.sh; done; rm $f.sh
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 04.merge_gvcfs_genotype_filter.sh > $f.sh; sbatch --mem=30000 $f.sh; done; rm $f.sh
 
 # We would like to use the macaque as one possible outgroup so add the macaque genotype (homozygous reference) as an additional sample at all sites
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g 05.add_macaque_geno.sh >> $f.sh; sbatch --mem=20 $f.sh; done; rm $f.sh
