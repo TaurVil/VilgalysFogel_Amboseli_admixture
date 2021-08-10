@@ -14,7 +14,7 @@ pops1 <- c("Amboseli_historic", "Amboseli_recent")
 # Generate estimates of α for the following phylogenetic configurations (A, B, C, O): (i) hamadryas, SNPRC anubis, Mikumi yellow, macaque; (ii) Guinea, SNPRC anubis, Mikumi yellow, macaque; (iii) hamadryas, SNPRC anubis, Mikumi yellow, gelada; and (iv) Guinea, SNPRC anubis, Mikumi yellow, gelada.
 
 # Macaque as population O/outgroup
-result1 <- f4ratio(X = pops1, A = "Hamadryas", B = "SW_olive", C = "Mikumi", O = "macaque", data = snps) # phylogenetic configuation (i)
+result1 <- f4ratio(X = pops1, A = "Hamadryas", B = "SNPRC_anubis_founder", C = "Mikumi", O = "macaque", data = snps) # phylogenetic configuation (i)
 result2 <- f4ratio(X = pops1, A = "Guinea", B = "SNPRC_anubis_founder", C = "Mikumi", O = "macaque", data = snps) # phylogenetic configuation (ii)
 
 # Gelada as population O/outgroup
