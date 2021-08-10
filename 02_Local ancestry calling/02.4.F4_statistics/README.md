@@ -4,7 +4,7 @@ In addition to estimating admixture using a local ancestry approach (e.g., LCLAE
 
 Details can be found in Supplementary Methods Section 8.
 
-XXX Once ASF gets SRR file names for new data, can update a few files below XXXX
+XXX Once ASF gets SRR file names for new data, need to update a few files below including line 18 and all of the individual sample files for convertf XXXX
 
 ```console
 
