@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# for fastq files where paired-end data are labeled as R1 and R2
 module load bowtie2
 module load samtools
 
