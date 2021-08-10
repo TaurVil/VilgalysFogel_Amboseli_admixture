@@ -20,7 +20,7 @@ names$missing <- colSums(is.na(d))
 ## Add in the population which each animal originated 
 names$source <- c(rep("Amboseli",9), rep("SNPRCanubis_founders",24), rep("Mara", 7), rep("WNPRC",6), rep("BGDPanubis",4), rep("SNPRCyellow_founders",7), rep("Mikumi",15))
 
-# missing <- rowSums(is.na(d)); hist(missing) # plot amount of missing data per site
+missing <- rowSums(is.na(d)); hist(missing) # plot amount of missing data per site
 
 ## covariance of all individuals, using sites called in almost all individuals (we will allow 1 sample missing each site)
 cov(scale(d[missing<=1,], center=T, scale=T), use="pairwise") -> covgeno
