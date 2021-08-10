@@ -24,16 +24,17 @@ mv map* bams/
 
 # Merge multiple bams from the same individual into one bam per individual
 # Must first sort before merging
-for f in `cat LIT_list`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
-for f in `cat 1X1765_list_list`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
-for f in `cat 1X1765_list`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
-for f in `cat 00_BGDP`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
+for f in `cat SRRs_AMB_310`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
+for f in `cat SRRs_1X1126`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
+for f in `cat SRRs_1X1765`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
+for f in `cat SRR_list_BGDP`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
 
-# rename samples with only one FASTQ
-for i in `seq 1 12`; do sed "${i}q;d" fastqs_per_indiv1 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.rename_1.sh | sed -e s/SAMPLE/$g/g > 1.$f.$g.sh; sbatch 1.$f.$g.sh; done
+# For individuals with two bams to merge (listed in fastqs_per_indiv2 where the first column is the individual's id which will be used as the new name of the merged file and the remaining columns are the bams to be merged), run:
+for i in `seq 1 2`; do sed "${i}q;d" fastqs_per_indiv2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_2.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh; sed -e s/SAMPLE3/$h/g  g.$f.$g.sh > 2.$f.$g.$h.sh; sbatch --mem=10G 2.$f.$g.$h.sh; rm 2.$f.$g.$h.sh; done
 
-# merge 3 samples from the same individual
-for i in `seq 1`; do sed "${i}q;d" fastqs_per_indiv3 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; k=`awk '{print $4}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.merge_3.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh;  sed -e s/SAMPLE4/$k/g g.$f.$g.$h.sh > 3.$f.$g.$h.$k.sh; sbatch --mem=10G 3.$f.$g.$h.$k.sh; done
+# For individuals with three bams to merge (listed in fastqs_per_indiv3 where the first column is the individual's id which will be used as the new name of the merged file and the remaining columns are the bams to be merged), run:
+for i in `seq 1`; do sed "${i}q;d" fastqs_per_indiv3 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; k=`awk '{print $4}' tmp2`; sed -e s/SAMPLE1/$f/g 02b.merge_3.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh;  sed -e s/SAMPLE4/$k/g g.$f.$g.$h.sh > 3.$f.$g.$h.$k.sh; sbatch --mem=10G 3.$f.$g.$h.$k.sh; done # note that we added the species name "Gelada" in front of the id to help distinguish individuals from different species
+
 # merge 4 samples from the same individual
 for i in `seq 1 3`; do sed "${i}q;d" fastqs_per_indiv4 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; j=`awk '{print $4}' tmp2`; k=`awk '{print $5}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.merge_4.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh; sed -e s/SAMPLE4/$j/g g.$f.$g.$h.sh > g.$f.$g.$h.$j.sh;  sed -e s/SAMPLE5/$k/g g.$f.$g.$h.$j.sh > 4.$f.$g.$h.$j.$k.sh; sbatch --mem=10G  4.$f.$g.$h.$j.$k.sh; done
 # merge 5 samples from the same individual
@@ -41,9 +42,7 @@ for i in `seq 1 5`; do sed "${i}q;d" fastqs_per_indiv5 > tmp2; f=`awk '{print $1
 # merge 8 samples from the same individual
 for i in `seq 1`; do sed "${i}q;d" fastqs_per_indiv8 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; j=`awk '{print $4}' tmp2`; k=`awk '{print $5}' tmp2`; l=`awk '{print $6}' tmp2`; m=`awk '{print $7}' tmp2`; n=`awk '{print $8}' tmp2`; o=`awk '{print $9}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.merge_5.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh;  sed -e s/SAMPLE3/$h/g  g.$f.$g.sh >  g.$f.$g.$h.sh; sed -e s/SAMPLE4/$j/g g.$f.$g.$h.sh > g.$f.$g.$h.$j.sh;  sed -e s/SAMPLE5/$k/g g.$f.$g.$h.$j.sh > g.$f.$g.$h.$j.$k.sh; sed -e s/SAMPLE6/$l/g g.$f.$g.$h.$j.$k.sh > g.$f.$g.$h.$j.$k.$l.sh; sed -e s/SAMPLE7/$m/g g.$f.$g.$h.$j.$k.$l.sh > g.$f.$g.$h.$j.$k.$l.$m.sh; sed -e s/SAMPLE8/$n/g g.$f.$g.$h.$j.$k.$l.$m.sh > g.$f.$g.$h.$j.$k.$l.$m.$n.sh; sed -e s/SAMPLE9/$o/g g.$f.$g.$h.$j.$k.$l.$m.$n.sh > 8.$f.$g.$h.$j.$k.$l.$m.$n.$o.sh; sbatch --mem=20G 8.$f.$g.$h.$j.$k.$l.$m.$n.$o.sh; done
 
-sbatch --mem=1G run.02b.merge_LIT.sh
-sbatch --mem=1G run.02b.merge_SW_1X1765.sh 
-sbatch --mem=1G run.02b.merge_SW_1X1126.sh
+
 
 # get individuals to merge for BGDP
 # in R
