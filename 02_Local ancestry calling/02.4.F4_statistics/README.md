@@ -1,6 +1,6 @@
 ## _F4_ statistics
 
-In addition to estimating admixture using a local ancestry approach (e.g., LCLAE), we used F4-ratio estimation (see Patterson et al. 2012 Genetics for details) as an orthogonal method to estimate the anubis ancestry proportions of Amboseli individuals. Following the nomenclature of Patterson et al. (2012), we estimated the ancestry proportion of members of population X (Amboseli) as a combination of two sources, represented by modern populations B (the SNPRC anubis founders; n=24) and (yellow baboons from Mikumi National Park in Tanzania; n=10). This method also requires two additional populations: population A, which has not contributed to population X but is a sister group to population B (hamadryas baboons and Guinea baboons resequenced by the Baboon Genome Sequencing Consortium as two alternatives; n=2 in each case), and an outgroup, O, to populations A, B, and C (the gelada monkey, also from the Baboon Genome Sequencing Consortium, and rhesus macaque; n=1 in each case). 
+In addition to estimating admixture using a local ancestry approach (e.g., LCLAE), we used F4-ratio estimation (see Patterson et al. 2012 Genetics for details) as an orthogonal method to estimate the anubis ancestry proportions of Amboseli individuals. Following the nomenclature of Patterson et al. (2012), we estimated the ancestry proportion of members of population X (Amboseli) as a combination of two sources, represented by modern populations B (the SNPRC anubis founders; n=24) and (yellow baboons from Mikumi National Park in Tanzania; n=10). This method also requires two additional populations: population A, which has not contributed to population X but is a sister group to population B (hamadryas baboons and Guinea baboons resequenced by the Baboon Genome Sequencing Consortium as two alternatives; n=2 in each case), and an outgroup, O, to populations A, B, and C (the gelada monkey, also from the Baboon Genome Sequencing Consortium, and rhesus macaque; n=1 in each case).
 
 Details can be found in Supplementary Methods Section 8.
 
@@ -69,112 +69,54 @@ for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g r04.merge_gvcfs_genot
 # We would like to use the macaque as one possible outgroup so add the macaque genotype (homozygous reference) as an additional sample at all sites
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g 05.add_macaque_geno.sh >> $f.sh; sbatch --mem=20 $f.sh; done; rm $f.sh
 
-# Convert each chromosome-specific vcf into eigenstrat format by way of the plink format
+# Convert each chromosome-specific vcf into EIGENSTRAT format by way of the plink format
 # Note that we will convert chromosomes 1-19 (excluding chromosomes 02a and 02b) separately from chromosomes 02a and 02b which require some name adjustments for plink
 # This step requires the plink (https://www.cog-genomics.org/plink2) and the covertf program from EIGENSOFT (https://github.com/DReichLab/EIG; https://github.com/DReichLab/EIG/tree/master/CONVERTF)
-# Before running the script to convert vcf --> plink --> eigenstrat, create a 'parfile' which is required for the the plink --> eigenstrat conversion using convertf 
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat >> my.par.ped.eigenstrat.$f; done # create chromosome-specific my.par.ped.eigenstrat files
+# Before running the script to convert vcf --> plink --> EIGENSTRAT, create a 'parfile' which is required for the the plink --> EIGENSTRAT conversion using convertf 
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat >> my.par.ped.eigenstrat.$f; done # create chromosome-specific my.par.ped.eigenstrat files; note that macaque is specified as the sample id (polarize=macaque) so that reference/alternate alleles are always determined by macaque which will have a count of 2 (note that if this is not specified, we'll stil get the same f4 results because it doesn't matter which is allele is called reference/alternative)
 
-# For chromosomes 1-19 (excluding chromosomes 02a and 02b), run vcf --> plink --> eigenstrat conversion:
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 05.get_eigenstrat_format.sh >> $f.sh; sbatch $f.sh; done 
+# For chromosomes 1-19 (excluding chromosomes 02a and 02b), run vcf --> plink --> EIGENSTRAT conversion:
+grep -v "chr02" MacaM_autosome_list >> MacaM_autosome_list_no_chr02s # get list of autosomes excluding chr02a and chr02b
+for f in `cat MacaM_autosome_list_no_chr02s`; do sed -e s/CHROM/$f/g 06a.get_eigenstrat_format_excluding_chr02s.sh >> $f.sh; sbatch $f.sh; done; rm MacaM_autosome_list_no_chr02s; rm $f.sh # for all autosomes except chr02a and chr02b
 
-# For chromosomes 02a and 02b, neddrun vcf --> plink --> eigenstrat conversion:
-
-
-
-
-for f in `cat MacaM_autosome_list`; do cp eig.indiv eig.n51.$f.ind; done
-
-
-
-06a.get_eigenstrat_format_excluding_02s.sh
-
-# plink/eigenstrat is does not like weird chromosome names so rename chr02a and chr02b to chr20 and chr21 respectively
+# For chromosomes 02a and 02b, plink and EIGENSTRAT formats do not like weird chromosome names so rename chr02a and chr02b to chr20 and chr21 in the vcf, respectively (but can keep file names as chr02a and chr02b)
 echo "chr02a chr20" >> chr02a_names
 echo "chr02b chr21" >> chr02b_names
+
 module load bcftools
 module load tabix
-bcftools annotate --rename-chrs chr02a_names final.baboon.to.macam.n51.chr02a.vcf.gz | bgzip > final.baboon.to.macam.n51.chr02a.rename.vcf.gz
-bcftools annotate --rename-chrs chr02b_names final.baboon.to.macam.n51.chr02b.vcf.gz | bgzip > final.baboon.to.macam.n51.chr02b.rename.vcf.gz
-tabix final.baboon.to.macam.n51.chr02a.rename.vcf.gz 
-tabix final.baboon.to.macam.n51.chr02b.rename.vcf.gz 
+bcftools annotate --rename-chrs chr02a_names final.baboon.to.macam.n49.chr02a.vcf.gz | bgzip > final.baboon.to.macam.n49.chr02a.rename.vcf.gz
+bcftools annotate --rename-chrs chr02b_names final.baboon.to.macam.n49.chr02b.vcf.gz | bgzip > final.baboon.to.macam.n49.chr02b.rename.vcf.gz
+tabix final.baboon.to.macam.n49.chr02a.rename.vcf.gz 
+tabix final.baboon.to.macam.n49.chr02b.rename.vcf.gz 
 
-# first convert to plink, then add population info to plink ped file, then convert to eigenstrat
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat >> my.par.ped.eigenstrat.$f; done # create chromosome specific my.par.ped.eigenstrat files
-# note that macaque is specified as the sample id so that reference/alternate alleles are always determined by macaque which will have a count of 2 (note that if you don't specify this, you'll stil get the same f4 results because it doesn't matter which is allele is called reference/alternative)
-for f in `cat MacaM_autosome_list_nochr2 `; do sed -e s/CHROM/$f/g run.05.get_eigenstrat_format.sh >> $f.sh; sbatch $f.sh; done # for all autosomes except chr02a and chr02b
+rm chr02*names
 
-grep "chr02" MacaM_autosome_list >> MacaM_autosome_list_chr02s
-for f in `cat MacaM_autosome_list_chr02s`; do sed -e s/CHROM/$f/g run.05.get_eigenstrat_format_chr02s.sh >> $f.sh; sbatch $f.sh; done # for renamed chr02a and chr02b
+# Now run vcf --> plink --> EIGENSTRAT conversion:
+grep "chr02" MacaM_autosome_list >> MacaM_autosome_list_only_chr02s # get list of chr02a and chr02b
+for f in `cat MacaM_autosome_list_only_chr02s`; do sed -e s/CHROM/$f/g 06a.get_eigenstrat_format_chr02s.sh >> $f.sh; sbatch $f.sh; done; rm MacaM_autosome_list_only_chr02s; rm $f.sh # for renamed chr02a and chr02b files
 
-# chromosome conversion between Rogers et al. 2006 Genomics linkage (see Table 1 linkage map) map/genome assembly and Zimin et al. 2014 Biol Direct (MacaM)
-https://www.ncbi.nlm.nih.gov/genome/guide/rhesus_macaque/rhesuschrtable.html
+# The eig.n49.ind chromosome-specific files need to be updated with population info for each sample (see eig.indiv) and it's easier to remove the ones generated by convertf and copy eig.indiv so that each chromosome has the correct eig.ind file
+rm eig.n48*ind # remove chromosome-specific files generated by convertf
+for f in `cat MacaM_autosome_list`; do cp eig.indiv eig.n49.$f.ind; done # create new eig.ind files
 
-
-
-# not used for for now --a2-allele --real-ref-alleles
-
-# we now have the requisite eigenstrat files (ind, snp, and geno files)
+# Now we have the requisite EIGENSTRAT files (ind, snp, and geno files for each chromosome)!
+# We'll input the EIGENSTRAT formatted data into admixr (version 0.9.1; Petr et al. 2019 Bioinformatics; https://github.com/bodkan/admixr), an R package that builds on the ADMIXTOOLS software suite (Patterson et al. 2012 Genetics; https://github.com/DReichLab/AdmixTools). There are several helpful tutorials for using admixr (see here for example: https://bodkan.net/admixr/articles/tutorial.html).
+# admixr is available on CRAN and be installed like a typical R package using:
+install.packages("admixr")
+# However, admixr requires that ADMIXTOOLS is also downloaded. After installing ADMIXTOOLS (https://github.com/DReichLab/AdmixTools/blob/master/README.INSTALL), you'll need to load a few more packages for ADMIXTOOLS to work:
 module load gcc
 module load gsl
 module load OpenBLAS
-module load R
-export PATH=$PATH:/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/AdmixTools-master/bin
-# check that it's in the PATH
-echo $PATH
-#/nfs/software/helmod/apps/Core/gsl/1.16-fasrc02/bin:/nfs/software/helmod/apps/Core/netcdf/4.3.2-fasrc03/bin:/nfs/software/helmod/apps/Core/hdf5/1.8.12-fasrc04/bin:/nfs/software/helmod/apps/Core/R_core/3.6.1-gcb03/bin:/nfs/software/helmod/apps/Core/R_core/3.6.1-gcb03/lib64/R/bin:/nfs/software/helmod/apps/Core/gcc/7.3.0-gcb01/bin:/nfs/software/helmod/apps/Core/pcre/8.37-fasrc02/bin:/nfs/software/helmod/apps/Core/pcre/8.37-fasrc02/bin:/nfs/software/helmod/apps/Core/xz/5.2.2-fasrc01/bin:/nfs/software/helmod/apps/Core/bzip2/1.0.6-fasrc01/bin:/nfs/software/helmod/apps/Core/curl/7.45.0-fasrc01/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/lpp/mmfs/bin:/opt/dell/srvadmin/bin:/home/asf40/bin:/usr/lpp/mmfs/bin:/opt/stack/bin:/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/AdmixTools-master/bin
+# You'll also need to change your path so R can find where ADMIXTOOLS is installed
+export PATH=$PATH:AdmixTools-master/bin
+# Check that it's in the PATH
+echo $PATH # should be the last part of the path
 
-# admixr tutorial: https://bodkan.net/admixr/articles/tutorial.html
-# in R:
-library(admixr, lib.loc="/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/AdmixTools-master/bin")
-# set data prefix so R knows where to find our eigenstrat formatted files
-data_prefix <- "./poop"
-snps <- eigenstrat(data_prefix)
-#snps <- eigenstrat(ind="/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/your.ind", snp="/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/all.chrX.snp", geno="/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/all.chrX.eigenstratgeno")
-snps <- eigenstrat(ind="/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/scratch/tmp3.ind", snp="/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/scratch/tmp3.take2", geno="/data/tunglab/asf40/wgs_data/MedGenome_ftp/f4stats/scratch/tmp3.geno.original")
+# Estimate the f4 ratio per chromosome using the f4ratio function in admixr
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 07.f4ratio_admixr.R >> $f.sh; sbatch $f.sh; done; rm $f.sh
 
-result <- d(W = c("Amboseli_historic", "Amboseli_recent"), X = "Mikumi", Y = "SW_olive", Z = "Macaque", data = snps)
-
-read_ind(snps)
-read_snp(snps, exclude = FALSE)
-read_geno(snps)
-
-logiinfo(result) # get run info
-
-
-(prefix <- download_data(dirname = tempdir()))
-list.files(path = dirname(prefix), pattern = basename(prefix), full.names = TRUE)
-snps <- eigenstrat(prefix)
-# in snps, we should have
-#snps
-#EIGENSTRAT object
-#=================
-#components:
-#  ind file: /tmp/RtmpiHG45S/snps/snps.ind
-#  snp file: /tmp/RtmpiHG45S/snps/snps.snp
-#  geno file: /tmp/RtmpiHG45S/snps/snps.geno
-
-# define populations
-pops <- c("French", "Sardinian", "Han", "Papuan", "Khomani_San", "Mbuti", "Dinka")
-# run f4ratio
-result <- f4ratio(X = pops, A = "Altai", B = "Vindija", C = "Yoruba", O = "Chimp", data = snps)
-
-# Rename HAP file
-mv mapped.SRR2565914.wall.bam mapped.HAP.wall.bam
-
-rm mapped.SRR256*.bam; rm mapped.SRR265*
-
-# some fstats tutorials:
-https://compvar-workshop.readthedocs.io/en/latest/contents/03_f3stats/f3stats.html
-
-# plotting the results in R
-tmp5 <- read.table("~/Downloads/f3_test", header=T)
-tmp5$A_B_C <- paste(tmp5$A, tmp5$B, tmp5$C, sep="_")
-# need to remove A-B/B-A duplicates
-tmp6 <- tmp5[c(1:3)]
-tmp7 <- tmp6[ !duplicated(apply(tmp6, 1, sort), MARGIN = 2), ]
-tmp8 <- merge(tmp7, tmp5, by=c("A", "B", "C"), all.x=T)
-ggplot()+geom_pointrange(data=tmp8, aes(x=reorder(A_B_C, f3), y=f3, ymin=f3-stderr, ymax=f3+stderr, color=Zscore), size=1)+theme_classic()+theme(text=element_text(size=14), axis.text.x = element_text(angle=90))+geom_hline(aes(yintercept=0), linetype="dashed", color="grey50")
-
+# To obtain a genome-wide f4 ratio estimate of anubis ancestry proportions (α), averaged for the different phylogenetic configurations per chromosome and then averaged across chromosomes, weighted by chromosome length, run:
+8.f4ratio_result.R
 
 ```
