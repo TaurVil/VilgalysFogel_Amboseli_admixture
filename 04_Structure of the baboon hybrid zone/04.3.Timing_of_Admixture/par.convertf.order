@@ -1,8 +1,0 @@
-genotypename:    family_packed.geno
-snpname:         family_packed.snp # or example.map, either works
-indivname:       family_packed.ind # or example.ped, either works
-outputformat:    ANCESTRYMAP
-genotypeoutname: model.geno
-snpoutname:      model.snp
-indivoutname:    model.ind
-hashcheck: NO

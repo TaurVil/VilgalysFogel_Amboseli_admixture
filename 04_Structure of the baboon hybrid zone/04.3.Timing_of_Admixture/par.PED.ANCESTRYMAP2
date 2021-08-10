@@ -1,7 +1,0 @@
-genotypename:    plink.ambo.ped
-snpname:         plink.ambo.map # or example.map, either works
-indivname:       plink.ambo.ped # or example.ped, either works
-outputformat:    ANCESTRYMAP
-genotypeoutname: ambo.ancestrymapgeno
-snpoutname:      ambo.snp
-indivoutname:    ambo.ind

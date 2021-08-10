@@ -1,0 +1,10 @@
+table_s1_id	DATES_estimate	hybrid_status
+AMB_313	77.08	historical
+AMB_301	4.99	recent
+AMB_311	664.94	historical
+AMB_314	63.73	historical
+AMB_312	17.84	historical
+AMB_316	482.22	historical
+AMB_310	316.12	historical
+AMB_317	20.76	recent
+AMB_318	360.22	historical
