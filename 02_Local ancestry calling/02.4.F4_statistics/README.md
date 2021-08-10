@@ -109,7 +109,7 @@ module load gcc
 module load gsl
 module load OpenBLAS
 # You'll also need to change your path so R can find where ADMIXTOOLS is installed
-export PATH=$PATH:AdmixTools-master/bin
+export PATH=$PATH:AdmixTools-master/bin # location of the AdmixTools-master directory
 # Check that it's in the PATH
 echo $PATH # should be the last part of the path
 
