@@ -27,3 +27,5 @@ vcftools --vcf tmp.n48.CHROM.recode.vcf --singletons --out tmp.n48.CHROM
 
 # Remove singletons, doubletons, indels, and sites not typed in all individuals; retain only biallelic sites 
 vcftools --vcf tmp.n48.CHROM.recode.vcf --exclude-positions tmp.n48.CHROM.singletons --max-alleles 2 --max-missing 1 --remove-indels --recode --out baboon.to.macam.n48.CHROM.filtused --recode-INFO-all --remove-filtered-all
+
+rm tmp.n48.CHROM.recode.vcf
