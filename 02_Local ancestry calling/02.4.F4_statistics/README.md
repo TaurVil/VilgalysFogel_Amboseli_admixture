@@ -117,6 +117,6 @@ echo $PATH # should be the last part of the path
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 07.f4ratio_admixr.R >> $f.sh; sbatch $f.sh; done; rm $f.sh
 
 # To obtain a genome-wide f4 ratio estimate of anubis ancestry proportions (α), averaged for the different phylogenetic configurations per chromosome and then averaged across chromosomes, weighted by chromosome length, run:
-8.f4ratio_result.R
+08.f4ratio_results.R
 
 ```
