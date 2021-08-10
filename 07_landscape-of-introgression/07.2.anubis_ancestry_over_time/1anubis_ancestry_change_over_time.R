@@ -63,7 +63,7 @@ round(mean(tmp$n),3) # mean of 135.19 individuals resequenced per year
 which(years_list>=1979) # 9-50
 years_list <- years_list[9:50]
 
-# For each year, get the average anubis ancestry in the population in each 250 kb window
+# For each year, get the average anubis ancestry in the population in each 100 kb window
 for (i in 1:length(years_list)) {
   
   tmp <- years[years$year==years_list[i],] # get the list of individuals to include for the focal year
@@ -125,7 +125,7 @@ min(ancestry_change$year_count) # all genomic windows used 42 years (what we exp
 fst <- read.table("fst_masked_unmerged_SWref_100kbwin_500bpstep.windowed.weir.fst", header=T) 
 # Remove mean FST as we will use weighted Fst (although results are qualitatively similar whether you use one measure or the other)
 fst <- fst[c(1:5)] 
-# Get the center position for each 250 kb window
+# Get the center position for each 100 kb window
 fst$pos <- ((fst$BIN_END-fst$BIN_START+1)/2)+fst$BIN_START-1
 # Give each site a unique id
 fst$id <- paste(fst$CHROM, fst$pos, sep="_")
