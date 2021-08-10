@@ -23,5 +23,5 @@ plink --file CHROM.n49 --update-ids updatepop.n49.txt --keep-allele-order --reco
 # Also, need to convert our column 6 from weird 0 values to 1 (otherwise individuals are ignored)
 plink --file updated.n49.CHROM --make-pheno names.pheno.txt '*' --allow-no-sex --keep-allele-order --recode --out updated2.n49.CHROM # names.pheno.txt is just the first two columns of updatepop.n49.txt
 
-# Finally, convert plink format to eigenstrat format using the convertf parameter
+# Finally, convert plink format to eigenstrat format using convertf
 EIG-6.1.4/bin/convertf -p my.par.ped.eigenstrat.CHROM
