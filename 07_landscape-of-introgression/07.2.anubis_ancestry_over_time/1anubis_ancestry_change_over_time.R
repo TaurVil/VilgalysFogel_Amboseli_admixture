@@ -3,27 +3,12 @@
 # Load R libraries
 library(dplyr)
 library(ggplot2)
+library(data.table)
 
 # Load ancestry in 100 kb windows for all Amboseli individuals
-load("100kb_SWmasked_19Jul2021.RData", verbose=T) # Tauras will provide a cleaned up version
-load("100kb_SWmasked_by_individual_21Jul2021.RData", verbose=T) # Tauras will provide a cleaned up version 
-
-# Script will likely be updated given Tauras' cleaned up file
+load("./100kb_ancestry_and_features.RData")
 
 ancestry_windows <- cbind(new_windows, window_by_individual)
-# rename ids in ancestry_windows so that they match the new table_s1_ids
-rm(ids)
-
-# May cut depending on Tauras' file
-# reload your ids just to be safe (they are the same as TPV's)
-ids <- read.csv("../Amboseli Sequencing Round 2 146 Individuals/Table_S1_v5.txt", header=T, sep="\t") # latest version that I'm using
-
-ids$table_s1_id2 <- as.character(ids$table_s1_id)
-ids$old_id2 <- as.character(ids$old_id)
-# need to rename ancestry column names with table_s1_id
-
-library(data.table)
-setnames(ancestry_windows, ids$old_id2, ids$table_s1_id2, skip_absent = T)
 
 # Load demographic data for Amboseli individuals with confirmed ids, including the starting and endings years they were present in the population
 # Other demographic data used in other scripts are also included in this data frame but which we won't use here (their sex, entry type (B = born into a study group, O = first observed in a new study group, or I = immigrating into a study group)
@@ -103,6 +88,7 @@ ancestry2$id <- paste(ancestry2$chr, ancestry2$pos, sep="_")
 
 ancestry_change <- ancestry2 
 
+## note: this would be consiberably faster as a function and done in parallel
 for (i in 1:nrow(ancestry2)) {
   
   tmp <- ancestry_year[ancestry_year$id==ancestry2$id[i],]
@@ -111,9 +97,7 @@ for (i in 1:nrow(ancestry2)) {
   ancestry_change[i,7] <- tmp2$pop_avg_anubis_admix # grab the average anubis ancestry in the population in the starting year of the analysis (1979)
   ancestry_change[i,8] <- nrow(tmp) #  number of years included in the model (should be 42 years for every genomic window since we have no NAs for average anubis ancestry in the population in the ancestry_year data frame)
   
-  
-  print(i)
-  
+  if (i/500 == round(i/500)) {print(i)}
 }
 
 colnames(ancestry_change)[6:8] <- c("annual_anubis_change_beta", "starting_pop_avg_anubis_admix_1979", "year_count")
