@@ -1,4 +1,4 @@
-## expression("F"['4']) statistics
+## _F4_ statistics
 
 In addition to estimating admixture using a local ancestry approach (e.g., LCLAE), we used F4-ratio estimation (see Patterson et al. 2012 Genetics for details) as an orthogonal method to estimate the anubis ancestry proportions of Amboseli individuals. Following the nomenclature of Patterson et al. (2012), we estimated the ancestry proportion of members of population X (Amboseli) as a combination of two sources, represented by modern populations B (the SNPRC anubis founders; n=24) and (yellow baboons from Mikumi National Park in Tanzania; n=10). This method also requires two additional populations: population A, which has not contributed to population X but is a sister group to population B (hamadryas baboons and Guinea baboons resequenced by the Baboon Genome Sequencing Consortium as two alternatives; n=2 in each case), and an outgroup, O, to populations A, B, and C (the gelada monkey, also from the Baboon Genome Sequencing Consortium, and rhesus macaque; n=1 in each case). 
 
@@ -64,34 +64,31 @@ mkdir gVCF
 # Run for each chromosome and each individual
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 03.gvcf.sh > $f.sh; sbatch --array=1-50 --mem=15000 $f.sh; done; rm $f.sh
 # Merge gVCF files across individuals using GATK CombineGVCF and then call genotypes using GATK GenotypeGVCFs. Also, filter for high quality variants following GATK’s recommended criteria for hard filtering for germline variants and retain biallelic SNPs that were typed within all individuals in the sample. In addition, remove indels, singleton and doubleton variants, and clusters of 3 or more variants that fall within a 10 bp window.
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.04a.merge_gvcfs.sh > $f.sh; sbatch --mem=30000 $f.sh; done; rm $f.sh
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g r04.merge_gvcfs_genotype_filter.sh > $f.sh; sbatch --mem=30000 $f.sh; done; rm $f.sh
 
 # We would like to use the macaque as one possible outgroup so add the macaque genotype (homozygous reference) as an additional sample at all sites
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g 05.add_macaque_geno.sh >> $f.sh; sbatch --mem=20 $f.sh; done; rm $f.sh
 
-# or run for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g run.05.add_macaque_geno.sh >> $f.sh; sbatch --mem=20 $f.sh; done
-rm chr*sh
-# we now need to add the macaque genotypes - let's copy our vcf (named it tmp.vcf.gz) and try this out
-module load bcftools
-# remove vcf header
-bcftools view --no-header biallelic.males.females.chrX.baboon.to.macam.recode.vcf >> noheader.biallelic.males.females.chrX.baboon.to.macam.recode.vcf
-# add a new sample for all sites where the genotype is homozygous reference (I just grabbed the other values from one of the other reference genotypes - may want to change this later)
-sed 's/$/\t0\/0:11,0:11:33:0,33,430/g' noheader.biallelic.males.females.chrX.baboon.to.macam.recode.vcf >> tmp.vcf
+# Convert each chromosome-specific vcf into eigenstrat format by way of the plink format
+# Note that we will convert chromosomes 1-19 (excluding chromosomes 02a and 02b) separately from chromosomes 02a and 02b which require some name adjustments for plink
+# This step requires the plink (https://www.cog-genomics.org/plink2) and the covertf program from EIGENSOFT (https://github.com/DReichLab/EIG; https://github.com/DReichLab/EIG/tree/master/CONVERTF)
+# Before running the script to convert vcf --> plink --> eigenstrat, create a 'parfile' which is required for the the plink --> eigenstrat conversion using convertf 
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat >> my.par.ped.eigenstrat.$f; done # create chromosome-specific my.par.ped.eigenstrat files
 
-# add macaque as the name of our newly added sample
-sed '/^#CHROM/ {s/$/\tmacaque/}' biallelic.males.females.chrX.baboon.to.macam.recode.vcf >> tmp2.vcf
-# bgzip and index our new vcf
-module load tabix
-bgzip tmp2.vcf
-tabix tmp2.vcf.gz
-# only output the vcf header
-bcftools view -h tmp2.vcf.gz >> header
-###bcftools annotate tmp.vcf -h header
-cat header tmp.vcf >> final.chrX.baboon.to.macam.recode.vcf
+# For chromosomes 1-19 (excluding chromosomes 02a and 02b), run vcf --> plink --> eigenstrat conversion:
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 05.get_eigenstrat_format.sh >> $f.sh; sbatch $f.sh; done 
 
-bgzip final.chrX.baboon.to.macam.recode.vcf 
-tabix final.chrX.baboon.to.macam.recode.vcf.gz
+# For chromosomes 02a and 02b, neddrun vcf --> plink --> eigenstrat conversion:
 
-# we now need to convert our vcf into eigenstrat format by way of the plink format
+
+
+
+for f in `cat MacaM_autosome_list`; do cp eig.indiv eig.n51.$f.ind; done
+
+
+
+06a.get_eigenstrat_format_excluding_02s.sh
+
 # plink/eigenstrat is does not like weird chromosome names so rename chr02a and chr02b to chr20 and chr21 respectively
 echo "chr02a chr20" >> chr02a_names
 echo "chr02b chr21" >> chr02b_names
