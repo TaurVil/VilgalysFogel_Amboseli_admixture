@@ -13,10 +13,10 @@ Details can be found in Supplementary Methods Section 8.
 # Fastq files for hamadryas, Guinea, and the gelada monkey from the Baboon Genome Sequencing Consortium available in the NCBI Sequence Read Archive (SRA) under BioProject accession numbers PRJNA20425, PRJNA54003, PRJNA251424, respectively (see Table S1 for accession numbers for each sample).
 
 # Map these data to the rhesus macaque genome (MacaM; Zimin et al. 2014 Biology Direct) using bowtie2
-for f in `cat XXXOnce you get SRR numbersXXX`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.highcov_amb.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
+for f in `cat XXXOnce you get SRR numbersXXX`; do sed -e s/NAME/$f/g 01a.bowtie2_map_macam.SRRs1.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
 
 cat SRR_list_BGDP SRR_list_SNPRC_amboseli_published SRR_list_SNPRC_anubis_founders >> SRR_tmp
-for f in `cat SRR_tmp`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.highcov_mikumi.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; rm SRR_tmp; done # for all other data where paired-end reads are labeled as _1 and _2
+for f in `cat SRR_tmp`; do sed -e s/NAME/$f/g 01a.bowtie2_map_macam.SRRs2.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; rm SRR_tmp; done # for all other data where paired-end reads are labeled as _1 and _2
 
 # Make directory to store mapped bams and move all these files to this directory
 mkdir bams
@@ -24,10 +24,10 @@ mv map* bams/
 
 # Merge multiple bams from the same individual into one bam per individual
 # Must first sort before merging
-for f in `cat LIT_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
-for f in `cat 1X1765_list_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
-for f in `cat 1X1765_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
-for f in `cat 00_BGDP`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
+for f in `cat LIT_list`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
+for f in `cat 1X1765_list_list`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
+for f in `cat 1X1765_list`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
+for f in `cat 00_BGDP`; do sed -e s/NAME/$f/g 02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
 
 # rename samples with only one FASTQ
 for i in `seq 1 12`; do sed "${i}q;d" fastqs_per_indiv1 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.rename_1.sh | sed -e s/SAMPLE/$g/g > 1.$f.$g.sh; sbatch 1.$f.$g.sh; done
