@@ -116,7 +116,7 @@ echo $PATH # should be the last part of the path
 # Estimate the f4 ratio per chromosome using the f4ratio function in admixr
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 07.f4ratio_admixr.R >> $f.sh; sbatch $f.sh; done; rm $f.sh
 
-# To obtain a genome-wide f4 ratio estimate of anubis ancestry proportions (α), averaged for the different phylogenetic configurations per chromosome and then averaged across chromosomes, weighted by chromosome length, run:
+# To obtain a genome-wide f4 ratio estimate of anubis ancestry proportions (α), get the average of the different phylogenetic configurations per chromosome and then average these estimates across chromosomes, weighted by chromosome length. Run:
 08.f4ratio_results.R
 
 ```
