@@ -5,7 +5,8 @@
 
 # First, convert vcf to plink format
 module load vcftools
-vcftools --gzvcf final.baboon.to.macam.n49.CHROM.vcf.gz --plink --out CHROM.n49
+vcftools --gzvcf final.baboon.to.macam.n49.CHROM.vcf.gz --mac 1 --plink --out CHROM.n49
+# mac 1 = only include sites with a minor allele count of at least 1 (i.e., all samples are not all carrying the major allele) - doesn’t really matter because sites where individuals are completely for the major allele won’t be informative for f-statistics
 
 # Second, update plink ped file with correct population info for each sample
 #--update-ids expects input with the following four fields:
