@@ -1,30 +1,33 @@
-# Calculate f4/D-statistics using yellow, anubis, Amboseli, and macaque
+## F4 statistics
 
-# grab kinda, guinea, chamca, hamadryas, and gelada from the BGDP (60 SRRs) - https://www.ncbi.nlm.nih.gov/sra?LinkName=bioproject_sra_all&from_uid=260523
+In addition to estimating admixture using a local ancestry approach (e.g., LCLAE), we used F4-ratio estimation (see Patterson et al. 2012 Genetics for details) as an orthogonal method to estimate the anubis ancestry proportions of Amboseli individuals. Following the nomenclature of Patterson et al. (2012), we estimated the ancestry proportion of members of population X (Amboseli) as a combination of two sources, represented by modern populations B (the SNPRC anubis founders; n=24) and (yellow baboons from Mikumi National Park in Tanzania; n=10). This method also requires two additional populations: population A, which has not contributed to population X but is a sister group to population B (hamadryas baboons and Guinea baboons resequenced by the Baboon Genome Sequencing Consortium as two alternatives; n=2 in each case), and an outgroup, O, to populations A, B, and C (the gelada monkey, also from the Baboon Genome Sequencing Consortium, and rhesus macaque; n=1 in each case). 
 
+Details can be found in Supplementary Methods Section 8.
 
-# Map to the macaque genome
-for f in `cat 00_highcov_amb`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.highcov_amb.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; done # high coverage Amboseli 
-for f in `cat 00_highcov_mikumi `; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.highcov_mikumi.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; done # high coverage Mikumi individuals
-for f in `cat 00_SWfounders_Wallref_HAP_LIT`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.SRR_data.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; done # SW founders, Wall et al. 2016 ref panel (Masai Mara, Mikumi, TNPRC individuals), HAP and LIT
-for f in `cat  00_BGDP`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.SRR_data.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; done # BGDP individuals from Rogers et al. 2019
+```console
 
-rm SRR*.sh
-rm L*.sh
-rm 7*.sh
+# Data needed:
+# Fastq files for Amboseli high coverage individuals (recently admixed animals: AMB_301, AMB_317; historically admixed animals: AMB_310, AMB_311, AMB_312, AMB_313, AMB_314, AMB_316, AMB_318) are available in the NCBI Sequence Read Archive (SRA) under BioProject accession numbers PRJNAxxx and PRJNA295782 (see Table S1 for accession numbers for each sample)
+# Fastq files for the SNPRC anubis founders are available in the NCBI Sequence Read Archive (SRA) under BioProject accession number PRJNA433868 (see Table S1 for accession numbers for each sample)
+# Fastq files for yellow baboons from Mikumi National Park are available in the NCBI Sequence Read Archive (SRA) under BioProject accession number PRJNAxxx (see Table S1 for accession numbers for each sample)
+# Fastq files for hamadryas, Guinea, and the gelada monkey from the Baboon Genome Sequencing Consortium available in the NCBI Sequence Read Archive (SRA) under BioProject accession numbers PRJNA20425, PRJNA54003, PRJNA251424, respectively (see Table S1 for accession numbers for each sample).
 
+# Map these data to the rhesus macaque genome (MacaM; Zimin et al. 2014 Biology Direct) using bowtie2
+for f in `cat XXXOnce you get SRR numbersXXX`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.highcov_amb.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
 
+cat SRR_list_BGDP SRR_list_SNPRC_amboseli_published SRR_list_SNPRC_anubis_founders >> SRR_tmp
+for f in `cat SRR_tmp`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.highcov_mikumi.sh > $f.sh; sbatch --mem=32000 --out=mapping.$f.out $f.sh; rm $f.sh; rm SRR_tmp; done # for all other data where paired-end reads are labeled as _1 and _2
+
+# Make directory to store mapped bams and move all these files to this directory
 mkdir bams
 mv map* bams/
 
-# Merge multiple bams from the same individual into one bam 
-# must first sort before merging
-for f in `cat LIT_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done 
-for f in `cat 1X1765_list_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done
-for f in `cat 1X1765_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done 
-for f in `cat 00_BGDP`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; done
-
-rm SRR*.sh
+# Merge multiple bams from the same individual into one bam per individual
+# Must first sort before merging
+for f in `cat LIT_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
+for f in `cat 1X1765_list_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
+for f in `cat 1X1765_list`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done 
+for f in `cat 00_BGDP`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh > $f.sh; sbatch --mem=2G $f.sh; rm $f.sh; done
 
 # rename samples with only one FASTQ
 for i in `seq 1 12`; do sed "${i}q;d" fastqs_per_indiv1 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.rename_1.sh | sed -e s/SAMPLE/$g/g > 1.$f.$g.sh; sbatch 1.$f.$g.sh; done
@@ -196,3 +199,6 @@ tmp6 <- tmp5[c(1:3)]
 tmp7 <- tmp6[ !duplicated(apply(tmp6, 1, sort), MARGIN = 2), ]
 tmp8 <- merge(tmp7, tmp5, by=c("A", "B", "C"), all.x=T)
 ggplot()+geom_pointrange(data=tmp8, aes(x=reorder(A_B_C, f3), y=f3, ymin=f3-stderr, ymax=f3+stderr, color=Zscore), size=1)+theme_classic()+theme(text=element_text(size=14), axis.text.x = element_text(angle=90))+geom_hline(aes(yintercept=0), linetype="dashed", color="grey50")
+
+
+```
