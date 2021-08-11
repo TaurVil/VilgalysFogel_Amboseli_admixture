@@ -1,0 +1,8 @@
+genotypename:    updated2.n49.CHROM.ped
+snpname:         updated2.n49.CHROM.map 
+indivname:       updated2.n49.CHROM.ped
+outputformat:    EIGENSTRAT
+genotypeoutname: eig.n49.CHROM.geno
+snpoutname:      eig.n49.CHROM.snp
+indivoutname:    eig.n49.CHROM.ind
+polarize:       macaque:macaque
