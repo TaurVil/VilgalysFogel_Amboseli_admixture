@@ -35,8 +35,11 @@ sbatch --array=1-20 --mem=12G ./r02.get_Amboseli_calls.sh
 
 ```
 
-Finally, we'll create a merged call set of both Amboseli and unadmixed individuals, including only samples that passed filtering criteria in both datasets. These files are saved as `04.merged_shared.$index.vcf.gz`. 
+Finally, we'll create a merged call set of both Amboseli and unadmixed individuals, including only samples that passed filtering criteria in both datasets. These files are saved as `04.merged_shared.$index.vcf.gz` and merged into `merged_shared.vcf.gz`. 
 
 ```console
 sbatch --array=1-20 --mem=12G ./r03.merge.sh
+
+bcftools concat ./chrom_vcfs/04.merged_shared.*.vcf.gz -O z -o ./merged_shared.vcf.gz
+
 ```

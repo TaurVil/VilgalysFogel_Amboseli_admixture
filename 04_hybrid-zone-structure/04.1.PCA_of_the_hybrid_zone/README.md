@@ -1,9 +1,7 @@
 
 ## Principal Component Analysis
 
-To visualize the genetic variation in our sample, 
-
-Because the number of samples can obscure relationships, we include only high coverage Amboseli genomes (n=9), although all possible reference panel individuals are included. We extract these samples from the merged vcf including both Amboseli and reference panel individuals, after filtering (`merged_shared.allchroms.vcf.gz`, see Section 01_Genotype_Calling), and generate a 012 genotype matrix from which to estimate the covariance between samples. 
+To visualize the genetic variation in our sample, we used principal component analyses to visualize the major axes of variation. Because the number of samples can obscure relationships, we include only high coverage Amboseli genomes (n=9), although all possible reference panel individuals are included. We extract these samples from the merged vcf including both Amboseli and reference panel individuals, after filtering (`merged_shared.vcf.gz`, see Section 01_Genotype_Calling), and generate a 012 genotype matrix from which to estimate the covariance between samples. 
 
 ```console
 ## filter for select individuals, and output as 012 genotype matrix
@@ -36,3 +34,6 @@ save.image("for_pca.RData")
 ```
 
 Finally, we will produce Figures 1B and S4. The data file needed to reproduce these figures is included here (`for_pca.RData`) and the code is in `figure1B_S4.R`
+```console
+./figure1B_S4.R
+```
