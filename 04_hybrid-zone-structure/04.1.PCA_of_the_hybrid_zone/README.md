@@ -35,5 +35,5 @@ save.image("for_pca.RData")
 
 Finally, we will produce Figures 1B and S4. The data file needed to reproduce these figures is included here (`for_pca.RData`) and the code is in `figure1B_S4.R`
 ```console
-./figure1B_S4.R
+./r01.figure1B_S4.R
 ```

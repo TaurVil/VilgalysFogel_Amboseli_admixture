@@ -1,16 +1,13 @@
-# Using the code from McVicker et al. 2009
+# Using code from McVicker et al. 2009
 
 # Modify genotype calls/recombination map from original recombination output files 
 	# So the file is recombination blocks, where the snp position is the start of this block and goes until the next block 
 	# Need to make sure both the rate and length are in the right units 
-    mkdir /data/tunglab/tpv/B_values_GrahamCode/panubis1/
-    mkdir /data/tunglab/tpv/B_values_GrahamCode/panubis1/RCR
-	cd /data/tunglab/tpv/B_values_GrahamCode/panubis1/RCR
 
-	cp /data/tunglab/tpv/panubis1_genotypes/recombination/output/anubisSW.* ./
+	cp ./recombination/anubisSW.* ./
 
 	module load R; R
-    read.table("/data/tunglab/shared/genomes/panubis1/Panubis1.0.fa.fai") -> lengths
+    read.table("~/genomes/panubis1/Panubis1.0.fa.fai") -> lengths
 	library(data.table) 
 	# give lengths the length we'll be aiiming for in centiMorgans 
 	# These are the chromosome lengths from Cox et al. 2006
@@ -111,9 +108,6 @@
 	module load bedtools2; for f in `ls *bed`; do bedtools merge -i $f > tmp; mv tmp $f.v2; done
     cd /data/tunglab/tpv/B_values_GrahamCode/panubis1/
 
-
-# Everything else on hardac will be from working directory
-cd /data/tunglab/tpv/B_values_GrahamCode/panubis1/
 
 ##
 sbatch --mem=16G Annotate_B_values_script.sh

@@ -6,7 +6,7 @@ The process to create a liftover file is divided over 4 scripts, run in sequenti
 
 The files 1-4 refer to instructions to make the liftover from hg38 to panubis1. The 1b-4b are files to make the liftover for panubis1 to hg38. 
  
-Note that both genomes are supposed to be repeat masked first, which they are when downloaded from NCBI (soft-masking is okay, which is when repetitive regions are in low case). I think all the necessary executables can be found here: http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/.
+Note that both genomes are supposed to be repeat masked first, which they are when downloaded from NCBI (soft-masking is okay, which is when repetitive regions are in low case). I believe all the necessary executables can be found here: http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/.
  
 # Citation/Credit
 Scripts were initially developed by Jacqueline Robinson based on UCSC procedures. They were later modified by Tauras Vilgalys and Jordan Anderson. Please contact me (Tauras) for access to the resulting recombination maps, with any questions, or for how to acknowledge/cite this code if used in your project. My e-mail is taur.vil@gmail.com. 

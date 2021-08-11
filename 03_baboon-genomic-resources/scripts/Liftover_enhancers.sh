@@ -1,20 +1,20 @@
 ## To annotate enhancers in the baboon genome without direct experimental data, we'll liftover human enhancers to the baboon genome. We'll require 1:1 mapping such that each baboon enhancer maps back to the human genome in the same position which it originated from. Overall, we properly lift over 113k enhancers to the baboon genome, out of 188k human enhancers and 146k which initially lifted over to the baboon genome. 
 
 ######### Liftover enhancers
-cd /data/tunglab/tpv/my_genomes/humans
+cd ~/my_genomes/humans
 wget https://www.encodeproject.org/files/ENCFF995VPI/@@download/ENCFF995VPI.bed.gz
 gunzip ENCFF995VPI.bed.gz; mv ENCFF995VPI.bed H3K4me1_peaks.bed
 
-cd /data/tunglab/tpv/my_genomes/panubis1
+cd ~/my_genomes/panubis1
 cut -f 1-4 ../humans/H3K4me1_peaks.bed > ./human_enhancer.bed
 
 module load ucsc
 
 ## lift human H3K4me1_peaks over to the baboon genome (tmp.forward.bed)
-liftOver ./human_enhancer.bed /data/tunglab/tpv/my_genomes/liftover/hg38_to_Panubis1.0.chain.gz tmp.forward.bed forward_dropped_unMapped_enh.bed
+liftOver ./human_enhancer.bed ~/my_genomes/liftover/hg38_to_Panubis1.0.chain.gz tmp.forward.bed forward_dropped_unMapped_enh.bed
 
 ## lift from baboon back to the human genome (tmp.reverse.bed)
-liftOver ./tmp.forward.bed /data/tunglab/tpv/my_genomes/liftover/Panubis1.0_to_hg38.chain.gz tmp.reverse.bed reverse_dropped_unMapped_enh.bed
+liftOver ./tmp.forward.bed ~/my_genomes/liftover/Panubis1.0_to_hg38.chain.gz tmp.reverse.bed reverse_dropped_unMapped_enh.bed
 
 ## get only elements from tmp.forward.bed that are also in tmp.reverse.bed
 awk 'NR==FNR{A[$1];next}$4 in A' tmp2.rev.names human_enhancer.bed > tmp3.bed 
