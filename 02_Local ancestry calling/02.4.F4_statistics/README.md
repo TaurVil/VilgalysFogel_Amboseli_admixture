@@ -77,6 +77,7 @@ rm run*sh
 # Merge gVCF files across individuals using GATK CombineGVCF and then call genotypes using GATK GenotypeGVCFs. Also, filter for high quality variants following GATK’s recommended criteria for hard filtering for germline variants and retain biallelic SNPs that were typed within all individuals in the sample. In addition, remove indels, singleton and doubleton variants, and clusters of 3 or more variants that fall within a 10 bp window.
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g 04.merge_gvcfs_genotype_filter.sh > run.$f.sh; sbatch --mem=30000 run.$f.sh; done
 rm run*sh
+# Note that we performed joint genotyping with other samples that were subsequently removed before downstream analysis detailed in this directory. We don’t anticipate that the inclusion of other samples during the joint genotyping step affects our results given our subsequent filtering and processing before analysis.
 
 # We would like to use the macaque as one possible outgroup so add the macaque genotype (homozygous reference) as an additional sample at all sites
 for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g 05.add_macaque_geno.sh >> run.$f.sh; sbatch --mem=20 run.$f.sh; done
