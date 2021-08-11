@@ -11,7 +11,7 @@ library(patchwork)
 #############################################################################################################################
 
 # Load baboon results
-load("250kb_SWmasked_20Jul2021.RData", verbose=T)
+load("../VilgalysFogel_main_data_file.250kb_windows.RData", verbose=T)
 
 # Rename to_analyze to baboon
 baboon <- to_analyze
@@ -63,12 +63,12 @@ plotE <- ggplot(data = baboon, aes(x=rcr_quant, y=mean_ancestry)) +
 #############################################################################################################################
 
 # Load hominin data
-load("human_Windows_250kb.RData", verbose=T)
+load("./windows.human.250kb.RData", verbose=T)
 rm(distance, Neand_ancestry)
 
 hominin <- all
 
-# Only retain windows where more than 150 kb of the 250 kb window includes "testable" parts of the human genome (i.e. they are not regions labeled as difficult to detect Neanderthal ancestry)
+# Only retain windows where more than 60% of the 250 kb window includes "testable" parts of the human genome (i.e. they are not regions labeled as difficult to detect Neanderthal ancestry and in regions where Neanderthal genotypes have been called)
 hominin <- hominin[hominin$testable > 150000,] 
 # Only retain windows where we have non-NA values for all data
 hominin <- hominin[rowSums(is.na(hominin)) == 0,] # we lose one line
@@ -101,7 +101,7 @@ plotD <- ggplot() +
   labs(x="rank-ordered B values", y="standardized introgressed ancestry"); plotD
 
 plotF <- ggplot() + 
-  geom_smooth(data = hominin, aes(x=rank(rcr)/length(rcr), y=mean_ancestry_centered_sd), color="#366B7D", size=1.5, linetype = "longdash", method="lm", se=FALSE) + geom_smooth(data = baboon, aes(x=rank(rcr)/length(rcr), y=mean_ancestry_centered_sd), color="#366B7D", size=1.5,  method="lm", se=FALSE) + theme_classic() +
+  geom_smooth(data = hominin, aes(x=rank(recombination)/length(recombination), y=mean_ancestry_centered_sd), color="#366B7D", size=1.5, linetype = "longdash", method="lm", se=FALSE) + geom_smooth(data = baboon, aes(x=rank(rcr)/length(rcr), y=mean_ancestry_centered_sd), color="#366B7D", size=1.5,  method="lm", se=FALSE) + theme_classic() +
   theme(text=element_text(size=14), axis.text = element_text(color="black"), axis.text.x=element_blank(),axis.ticks.x=element_blank(), legend.position = "none", axis.title.x = element_text(vjust=-2), plot.margin = margin(l=20,b=10))  + 
   labs(x="rank-ordered recombination rate", y=""); plotF
 
