@@ -6,7 +6,7 @@ For all three analyses, we calculated mean anubis ancestry for non-overlapping w
 
 #### For each window size, get mean ancestry and genomic features
 
-We will do this in two parts. First we'll calculate each feature for non-overlapping 25kb windows, which we will then scale to larger window sizes in the second part. This is done to minimize the amount of computational time calculating each feature, while maintaining the flexibility to scale to larger window sizes. 
+We will do this in two parts. First we'll calculate each feature for non-overlapping 25kb windows, then we will combine these smaller windows into larger ones for later analyses. This is done to minimize the amount of computational time calculating each feature, while maintaining the flexibility to scale to larger window sizes. 
 
 ```console 
 ## get non-overlapping 25 kb windows across the genome, and genomic features for them. We'll scale these smaller windows up to our larger sizes for analyses in each window size. 
@@ -19,9 +19,9 @@ We will do this in two parts. First we'll calculate each feature for non-overlap
 ## this code can also be modified to print out the ancestry per individual and window. This isn't included because of memory limitations, but can be done by retaining `ancestry_per_individual`. This can then be scaled to arbitrary window sizes using the code appended at the end of `r02.scale_to_larger_windows.R`. 
 ```
 
-```console
-## scale up 25kb windows to a previously defined window size
+Scale up from 25 kb windows to larger window sizes that are a multiple of 25kb. 
 
+```console
 ./r02.scale_to_larger_windows.R 
 ## adjust the disance `distance` and output distance name `d_name` at the top of the script
 ```
@@ -42,11 +42,11 @@ To provide context for our findings, we compared them to evidence for selection 
 
 #### Test for associations between genomic features and mean ancestry
 
-For each window size, test for signatures of selection between ge
+For each window size, test for signatures of selection between introgressed ancestry and recombination rate, B values, and the number of fixed differences between yellow and anubis baboons. 
 
 ```console 
 ./r04.results.R
-## results for the main text, SI, and plot for supplementary figure S7
+## results for the main text, SI, and plot for supplementary figure S7 (using 250kb)
 
 ./r05.plot_results.R
 ## plotting the results per 250kb window for Fig 2 and Fig 3D-F
