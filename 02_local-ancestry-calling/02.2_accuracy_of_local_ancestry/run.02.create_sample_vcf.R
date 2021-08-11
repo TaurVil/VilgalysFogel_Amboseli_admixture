@@ -2,7 +2,7 @@
 #SBATCH --get-user-env
 
 library(data.table); library(plyr)
-fread("./tracts/NAME.tracts.txt") -> sample
+fread("./true_tracts/NAME.tracts.txt") -> sample
 read.delim("vcf_example_header") -> VCF
 
 subset(sample, sample$chrom == "SCAF") -> sample

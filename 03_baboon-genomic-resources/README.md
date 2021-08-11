@@ -10,7 +10,7 @@ This folder contains the baboon genomic resources (Panubis1 genome) which were u
 
 * **B values** were estimated for the baboon genome using the recombination rate map called previously, a distribution of deleterious mutations estimated for humans (McVicker et al. 2009), and the location of genes in the baboon genome. Code to generate B values is available in `scripts/Annotate_B_values.sh` and the resulting files are available per chromsome in `resources`. There are two sets of output files, representing the decrease in neutral variation due to coding mutations (`B_values_coding`) and due to deleterious mutations in non-coding regions (`B_values_noncoding_near_genes`). 
 
-* **Allele frequencies** for anubis and yellow baboons were estimated from all unadmixed individuals, after masking for putative heterospecific ancestry. This simply involved using `vcftools --freq` for sets of yellow and anubis baboons. 
+* **Allele frequencies** for anubis and yellow baboons were estimated from all unadmixed individuals, after masking for putative heterospecific ancestry. This simply involved using `vcftools --freq` for sets of yellow and anubis baboons. Allele frequencies are available on Zenodo as `allele_frequencies.reference.masked.RData`. 
 
 * **GC content** for 250 kb windows of the genome was calculated using bedtools. The resulting data file is included in `resources/gc_content.panubis1.250kb.txt`. 
 
