@@ -130,4 +130,4 @@ rbind(agreement, tmp_res) -> agreement
 ## Repeat for each individual and method, adding to `agreement` each time. 
 ```
 
-Summarized data for the accuracy of local ancestry calling and code to recreate values in the text and Fig S2 can be found in `./results.accuracy_of_ancestry_calling.R`. 
+Summarized data for the accuracy of local ancestry calling and code to recreate values in the text and Fig S2 can be found in `./results.accuracy_of_ancestry_calling.R` and `./DATA/ACCURACY_OF_ANCESTRY_CALLING.RData`. 
