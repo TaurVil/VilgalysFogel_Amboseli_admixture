@@ -66,9 +66,7 @@ At this point, we have genotypes for each coverage titled `tmp.COVERAGE.vcf.gz`.
 
 To do so, we applied LCLAE (Wall et al. 2016), ADLIBS (Schaefer et al. 2017), and Ancestry HMM (Corbett-Detig et al. 2017). Out of these three methods, LCLAE performed the best for low coverage data and is therefore the focus of this section. Our pipeline for running Ancestry HMM and ADLIBS are described separately in `running_adlibs.md` and `running_ancestryhmm.md`. Nevertheless, we summarize the results of these different analyses and, in the next section of this README, provide data and code necessary to recapitulate Fig. S2. 
 
-**LCLAE (Wall et al. 2016)** uses genotype likelihoods extracted from a merged vcf file containing the reference and unadmixed individuals. 
-
-After discovering LCLAE outperformed other programs on low coverage data, we proceeded to optimize our parameter choices to call low ancestry data by performing a grid search of the window size and minimum difference in allele frequency used for LCLAE. 
+**LCLAE (Wall et al. 2016)** uses genotype likelihoods extracted from a merged vcf file containing the reference and unadmixed individuals. After discovering LCLAE outperformed other programs on low coverage data, we proceeded to optimize our parameter choices to call low ancestry data by performing a grid search of the window size and minimum difference in allele frequency used for LCLAE. All LCLAE local ancestry calls on simulated data are produced using the code below. 
 
 ```console
 ## Get anubis and yellow genotypes for chromosomes 17-20 from the filtered files in Section 01. Combine into `refpanel.vcf.gz`
@@ -107,5 +105,29 @@ module load R; for name in `cat test_samples.txt`; do  for d in `cat 02_AIMs.txt
 
 ```
 
+### Accuracy of ancestry calls on simulated data
 
+To evaluate how well different methods of ancestry callign performed, we compared the "true", simulated local ancestry tracts to those called using LCLAE, Ancestry HMM, and ADLIBS. After finding that LCLAE performed best for 1x coverage data, we additionally compared LCLAE results using different parameter choices to optimize ancestry calling for low coverage baboon data. 
 
+The main component of this is an R function `agree` that compares `tract1` and `tract2`, and reports a matrix with the number of rows in tract1. For each row, `agree` returns the for `tract1` the length of the tract, the ancestry state, and proportion of the tract with ancestry matching tract2. It also returns the number of base pairs assigned to each ancestry state in `tract2` for that tract. This function is saved in `./DATA/agree_function.RData`. The results for all methods and LCLAE parameters are summarized in `./DATA/ACCURACY_OF_ANCESTRY_CALLING.RData`. 
+
+```console
+## For each individual, read in the true ancestry tracts. 
+#### make sure these tracts are biallelic
+
+## then read in called local ancestry
+## run agree and save the result to a growing file with information for all individuals and comparisons
+res <- agree(test_tracts, true)
+res$percent <- res$correct/res$length; res$name <- nom; res$cov <- tmp_cov; res$method <- tmp_method
+
+## for LCLAE, retain the results for Fig S2C-D
+## rbind(all_tracts, res) -> all_tracts
+
+## report a summarized version for each individual and comparison
+tmp_res <- as.data.frame(matrix(ncol=4, nrow=1)); colnames(tmp_res) <- c("name", "cov", "method", "agreement")
+tmp_res$agreement <- sum(res$correct)/sum(res$length); tmp_res[,1] <- nom; tmp_res[,2] <- tmp_cov; tmp_res[,3] <- tmp_method
+rbind(agreement, tmp_res) -> agreement
+## Repeat for each individual and method, adding to `agreement` each time. 
+```
+
+Summarized data for the accuracy of local ancestry calling and code to recreate values in the text and Fig S2 can be found in `./results.accuracy_of_ancestry_calling.R`. 

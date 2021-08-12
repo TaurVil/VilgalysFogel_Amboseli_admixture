@@ -17,7 +17,7 @@ colnames(indv) <- c('chrom', 'snp', 'call', 'indiv')
 
 # Create list of chromosomes to run
 # updated to Panubis1.0, and only return chromosomes for which LCLAE was run
-read.delim("Panubis1.0.fa.fai", header=F) -> chroms
+read.delim("./DATA/Panubis1.0.fa.fai", header=F) -> chroms
 #subset(chroms, chroms$V1 %in% unique(indv$chrom)) -> chroms # This needs to be commented out when dealing without the "chr" in the chromosome names, because otherwise they don't match at all
 
 # We're going to get ancestry tracts for each chrom individually (going through the intermediary of majority rule) 
