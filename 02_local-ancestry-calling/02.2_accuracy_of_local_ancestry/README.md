@@ -3,7 +3,7 @@
 Before calling genotypes using LCLAE (Section 02.1), we sought to identify the best method to call local ancestry from low coverage baboon genotype data. To do so, we simulated local ancestry data for 25 individuals. We then simulated sequencing data for these individuals and called local ancestry based on 10x or 1x sequencing coverage using three programs suitable for low coverage data. 
 
 
-#### Simulate local ancestry
+### Simulate local ancestry
 
 We simulated local ancestry using SELAM (https://github.com/russcd/SELAM) to produce a population with a similar proportion of anubis ancestry and similar tract lengths to high coverage individuals in the Amboseli population. We then simulated high and low coverage sequencing data for these individuals and called genotypes following the procedure described in Section 01 with minor changes for a different computing cluster (exact code provided here). 
 
@@ -58,21 +58,31 @@ mkdir gVCF; sbatch --array=1-75 --mem=16G  run.06.gvcf.sh
 sbatch --array=1-3 --mem=16G run.07.merge_gvcfs.sh
 ```
 
+To control for sampling error in the reference panel, we also resampled a reference population of yellow and anubis baboons with allele frequencies drawn from the "true" frequencies observed from the actual reference panel. Using this alternate reference panel had little effect on ancestry calling, and therefore is not included here although it can be recapitulated through minor modification to the code described here. 
 
-#### Call local ancestry for simulated individuals
+### Call local ancestry for simulated individuals
 
+At this point, we have genotypes for each coverage titled `tmp.COVERAGE.vcf.gz`. We next sought to call local ancestry 
+
+To do so, we applied LCLAE (Wall et al. 2016), ADLIBS (Schaefer et al. 2017), and Ancestry HMM (Corbett-Detig et al. 2017). Out of these three methods, LCLAE performed the best for low coverage data and is therefore the focus of this section. Our pipeline for running Ancestry HMM and ADLIBS are described separately in `running_adlibs.md` and `running_ancestryhmm.md`. Nevertheless, we summarize the results of these different analyses and, in the next section of this README, provide data and code necessary to recapitulate Fig. S2. 
 
 **LCLAE (Wall et al. 2016)**
-W
+LCLAE uses genotype likelihoods extracted from a merged vcf file containing the reference and unadmixed individuals. 
 
 ```console
+## Get anubis and yellow genotypes for chromosomes 17-20 from the filtered files in Section 01. Combine into `refpanel.vcf.gz`
+
 ## Merge test samples with reference panel genotypes
-module load java/1.8.0_45-fasrc01
-java -jar ~/Programs/GenomeAnalysisTK.jar -T CombineVariants -R $path_genome --variant ./filt.$coverage.recode.vcf.gz --variant ../unadmixed_individuals/refpanel.vcf.gz -o merged.$coverage.vcf.gz -genotypeMergeOptions UNIQUIFY -L 01_targetted_chroms.bed
+## Get genotype likelihoods for LCLAE
+sbatch --array=1-3 --mem=16G run.08.get_genotypelikelihoods.sh
 
-java -jar ~/Programs/GenomeAnalysisTK.jar -T SelectVariants -R $path_genome -V merged.$coverage.vcf.gz -select 'set == "Intersection"' -o CommonCalls.$coverage.vcf
+## use vcftools to get the depth (idepth), relatedness, and individual names from one of the CommonCalls vcfs. These aren't necessary for anything, but help figure out which individuals are what for the *.h files
 
-## Exctract genotype likelihoods
+## create anubis.h and yellow.h which are the number of individuals for each reference population (24 and 7, respectively) followed by their position in the vcf file as a space separated file (e.g. `24 1 2 14 15 ...`, if the anubis individuals were samples 1, 2, 14, and 15). 
+
 
 
 ```
+
+
+
