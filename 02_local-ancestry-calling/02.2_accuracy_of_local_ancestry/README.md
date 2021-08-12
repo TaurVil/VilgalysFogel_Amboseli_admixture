@@ -62,15 +62,17 @@ To control for sampling error in the reference panel, we also resampled a refere
 
 ### Call local ancestry for simulated individuals
 
-At this point, we have genotypes for each coverage titled `tmp.COVERAGE.vcf.gz`. We next sought to call local ancestry 
+At this point, we have genotypes for each coverage titled `tmp.COVERAGE.vcf.gz`. We next sought to call local ancestry for these simulated individuals. 
 
 To do so, we applied LCLAE (Wall et al. 2016), ADLIBS (Schaefer et al. 2017), and Ancestry HMM (Corbett-Detig et al. 2017). Out of these three methods, LCLAE performed the best for low coverage data and is therefore the focus of this section. Our pipeline for running Ancestry HMM and ADLIBS are described separately in `running_adlibs.md` and `running_ancestryhmm.md`. Nevertheless, we summarize the results of these different analyses and, in the next section of this README, provide data and code necessary to recapitulate Fig. S2. 
 
-**LCLAE (Wall et al. 2016)**
-LCLAE uses genotype likelihoods extracted from a merged vcf file containing the reference and unadmixed individuals. 
+**LCLAE (Wall et al. 2016)** uses genotype likelihoods extracted from a merged vcf file containing the reference and unadmixed individuals. 
+
+After discovering LCLAE outperformed other programs on low coverage data, we proceeded to optimize our parameter choices to call low ancestry data by performing a grid search of the window size and minimum difference in allele frequency used for LCLAE. 
 
 ```console
 ## Get anubis and yellow genotypes for chromosomes 17-20 from the filtered files in Section 01. Combine into `refpanel.vcf.gz`
+## make sure that both files match either having a `chr` prefix or not having one
 
 ## Merge test samples with reference panel genotypes
 ## Get genotype likelihoods for LCLAE
@@ -80,7 +82,28 @@ sbatch --array=1-3 --mem=16G run.08.get_genotypelikelihoods.sh
 
 ## create anubis.h and yellow.h which are the number of individuals for each reference population (24 and 7, respectively) followed by their position in the vcf file as a space separated file (e.g. `24 1 2 14 15 ...`, if the anubis individuals were samples 1, 2, 14, and 15). 
 
+## create directory to output results
+mkdir raw_calls
 
+## run LCLAE for each coverage (COVERAGE should be replaced with 1x, 2x, 10x, etc.)
+## the array should specific the "test" individuals in the VCF
+## this file calls `02_AIMS.txt` and `02_windows.txt` which cover a range of LCLAE parameters we test over. For the main results, we used values of 0.2 and 35 kb. 
+for f in `cut -f 1 01_targetted_chroms.bed`; do sed -e s/CHROMOSOME/$f/g run.09.run_lclae.COVERAGE.sh > tmp.sh; sbatch --array=32-56 --mem=5G tmp.sh; done 
+## make sure that each file completes. LCLAE sometimes has random seg fault errors, but it works to rerun the script until all files have text. Alternately, files and conditions can be run individually which may work better for the last couple iterations to finish. 
+
+## this produces one file per chromosome per individual, with information in the title regarding what parameters were used. 
+## attach chromosome labels, then collapse chroms into single file 
+for name in `cat test_samples.txt`; do for d in `cat 02_AIMs.txt`; do for window in `cat 02_windows.txt`; do for cov in `cat 01_sets.txt`; do for chrom in `cat 01_targetted_chroms.bed | cut -f 1`; do sed -i 's/^/\t/' ./raw_calls/sw.$window.$d.$name.$cov.$chrom.txt; sed -i s/^/$chrom/ ./raw_calls/sw.$window.$d.$name.$cov.$chrom.txt; done; cat ./raw_calls/sw.$window.$d.$name.$cov.chr* > ./raw_calls/sw.$window.$d.$name.$cov.txt; echo $name $d $window $cov; done; done; done; done 
+rm raw_calls/*chr*.txt
+
+## Get LCLAE tracts after applying majority rule. 
+## For majority rule, use the same distance as above. We tried modifying this separately but found it had little effect on the accuracy of ancestry calls. 
+
+module load R; for name in `cat test_samples.txt`; do  for d in `cat 02_AIMs.txt`; do for window in `cat 02_windows.txt`; do for cov in `cat 01_sets.txt`; do sed -e s/INDIV/$name/g -e  s/DIFFERENCE/$d/g -e  s/DISTANCE/$window/g -e  s/COVERAGE/$cov/g run.07.calls_to_MajRule_tracts.R > r.$cov.$d.$window.R; sbatch --mem=20G --nice=50 r.$cov.$d.$window.R; sleep 10; rm r.$cov.$d.$window.R; fi; done; done; done; done 
+
+## At this point, we have ancestry tracts for each individual but have excluded the first and last 50kb of each chromosome. 
+## min50 and n20 in the title refer to a Majority Rule of at least 50% of sites and a minimum of 20 sites within the window to make a reliable call. Altering these parameters had little effect on the accuracy of ancestry calling. 
+## Tracts have not yet been filtered for length
 
 ```
 

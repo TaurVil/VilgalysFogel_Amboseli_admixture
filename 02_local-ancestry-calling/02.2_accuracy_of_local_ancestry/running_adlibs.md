@@ -1,5 +1,4 @@
-**ADLIBS (Schaefer et al. 2017)**
-ADLIBS (Schaefer et al. 2017) uses a Hidden Markov Model (HMM) and pseudo-haploid chromosomes to identify regions of the genome that more closely resemble one parental population than the other. Because this method uses pseudo-haploid data, it can be inferred from a single base pair at a position and additional coverage doesn't affect the outcome. However, ADLIBS appears to perform poorly when faced with abundant segregating variation, because haploid information is unable to reliably assign ancestry in the absence of fixed or nearly fixed differences. 
+**ADLIBS (Schaefer et al. 2017)** uses a Hidden Markov Model (HMM) and pseudo-haploid chromosomes to identify regions of the genome that more closely resemble one parental population than the other. Because this method uses pseudo-haploid data, it can be inferred from a single base pair at a position and additional coverage doesn't affect the outcome. However, ADLIBS appears to perform poorly when faced with abundant segregating variation, because haploid information is unable to reliably assign ancestry in the absence of fixed or nearly fixed differences. 
 
 ```console
 ##haploidize each indivdiual
