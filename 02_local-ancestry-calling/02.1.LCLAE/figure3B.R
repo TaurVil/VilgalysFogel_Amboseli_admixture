@@ -5,7 +5,7 @@
 library(ggplot2)
 
 # Load ancestry tracts generated using masked SNPRC individuals for the reference panel (used in main text analyses) available in the Duke Data Repository at XXX
-tracts <- read.table("amboseli.tracts.maskedSNPRCref.txt", header=T)
+tracts <- read.table("amboseli_LCLAE_tracts.txt", header=T)
 
 # Remove tracts <1 kb in length
 tracts <- tracts[tracts$length2>1000,]

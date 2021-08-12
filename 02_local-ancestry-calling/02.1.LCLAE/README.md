@@ -89,3 +89,11 @@ for f in `cat 00_vcf_sample_order.masked.list`; do cat run.06.majcalls_tracts.R 
 # merge tracts for all individuals into a single file
 touch all.tracts.txt; for f in `ls *tracts.d2.*`; do sed '1d' $f >> amboseli_LCLAE_tracts.txt; done
 ```
+
+## Visualizing local ancestry calls
+
+We visualize local ancestry calls using LCLAE in Figures 1A, 3B, and 3C. The code for each of these figures is provided here. 
+
+* **Fig 1A**: example visualizaiton of local ancestry in Amboseli individuals. Calls data from `amboseli_LCLAE_tracts.txt`.
+* **Fig 3B**: example of local ancestry for 2 Amboseli individuals with different timing of admixture. Calls data from `amboseli_LCLAE_tracts.txt`.
+* **Fig 3C**: distribution of anubis ancestry in amboseli baboons. Calls mean estimated ancestry from Table S1 or `VilgalysFogel_main_data_file.250kb_windows.RData`. 
