@@ -19,7 +19,7 @@ rm(positions)
 rcr<- NULL
 for (k in 1:20) { #For each chromosome
   # n24 SW anubis recombination rates 
-  name=paste("/data/tunglab/asf40/wgs_data/MedGenome_ftp/recombination_rates/anubisSW.",k,".txt",sep="")
+  name=paste("../../03_baboon-genomic-resources/resources/Recombination_Rates/anubisSW.",k,".txt",sep="")
   fread(name) -> RCR; c(colnames(RCR)[-1],"fill") -> colnames(RCR); rm(name)
   
   rcr_chrom <- subset(empty_windows, empty_windows$chr == paste("chr",k,sep=""))

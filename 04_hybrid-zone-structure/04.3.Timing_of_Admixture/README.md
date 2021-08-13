@@ -3,13 +3,12 @@
 
 Briefly, DATES (Distribution of Ancestry Tracts of Evolutionary Signals) is a method to estimate the time of admixture based on the decay in genetic ancestry between locations. It takes as inputs a genotype file (eigenstrat format), population to which each individual belongs, and a configuration file. It returns estimates for how many generations prior to the present admixture occurred. Dates relies upon high coverage genomes, so we focus on the 9 Amboseli individuals for whom we have >10x sequencing coverage.  
 
-
 Because admixed individuals and missing genotype data can affect DATES, we used the high coverage Mikumi yellow baboons and SW anubis baboon founders to call DATES. Unlike with LCLAE, we were unable to use SW yellow founders because the missing genotypes from masking anubis ancestry would negatively affect DATES. We will get these genotypes from the combined vcf file, then filter for biallelic SNPs and convert to the ancestry map format.  
 
 ```console 
-## Grab the right samples 
+## Grab the right samples from genotype calls produces in Section 01.2
 module load vcftools; module load plink
-vcftools --keep 00_anu.list --keep 00_yel.list --vcf ../ALL_GENOTYPES.vcf.gz --recode --out tmp.ref.for_plink
+vcftools --keep 00_anu.list --keep 00_yel.list --vcf ./refpanel.vcf.gz --recode --out tmp.ref.for_plink
 plink --vcf tmp.ref.for_plink.recode.vcf --snps-only --maf 0.05 --recode --out plink.ref 
 ## Conversion from plink to ANCESTRYMAP format uses convertf: https://github.com/argriffing/eigensoft/tree/master/CONVERTF
 ~/Programs/EIG-6.1.4/bin/convertf -p par.PED.ANCESTRYMAP
@@ -24,13 +23,12 @@ module load R; ./r01.get_genetic_positions.R
 We'll also pull the high coverage Amboseli genotypes and format those as well. 
 
 ```console
-vcftools --keep 00_amboseli.list --vcf ../ALL_GENOTYPES.vcf.gz --recode --out tmp.ambo.for_plink
+vcftools --keep 00_amboseli.list --vcf ./amboseli.vcf.gz --recode --out tmp.ambo.for_plink
 plink --vcf tmp.ambo.for_plink.recode.vcf --snps-only --recode --out plink.ambo 
 ~/Programs/EIG-6.1.4/bin/convertf -p par.PED.ANCESTRYMAP2
 
 sed -e "s/ref/ambo/g" ./r01.get_genetic_positions.R > ./r01b.get_genetic_positions_ambo.R
 ./r01b.get_genetic_positions_ambo.R; rm r01b.get_genetic_positions_ambo.R
-
 ```
 
 DATES provides a function to merge ANCESTRYMAP files, after which we need to do some reformatting to make sure SNPs are included in all sampels and sequential. 
@@ -53,7 +51,7 @@ module load OpenBLAS/0.2.20-gcb01; module load glibc/2.14-gcb01; module load gnu
 ~/Programs/DATES-master/src/bin/dates -p par.dates > log.dates 
 ```
 
-DATES outputs one folder per individual. Results are summarized in `DATES_results.txt` and plotted for Fig. S6 using `figureS6.R`
+DATES outputs one folder per individual. Results are summarized in `DATES_results.txt` and plotted for Fig S6 using `r03.figureS6.R`
 
 ```console
 ./r03.figureS6.R

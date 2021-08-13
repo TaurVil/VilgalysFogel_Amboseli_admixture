@@ -29,11 +29,11 @@ for (i in seq(1,19)) {
   
 }
 
-# Make a column for labelling the phylogenetic configurations following the nomenclature of Patterson et al. 2012 Genetics (excluding the focal population X)
+# Make a column for labeling the phylogenetic configurations following the nomenclature of Patterson et al. 2012 Genetics (excluding the focal population X)
 # population X is a combination of two sources, populations B' and C'. Because B' and C' are unknown ancestral populations, they are represented by modern populations B and C. This method also requires two additional populations: population A, which has not contributed to population X but is a sister group to population B, and an outgroup, O, to populations A, B, and C. 
 f4$phylogeny_noX <- paste(f4$A, f4$B, f4$C, f4$O, sep="/")
 
-# Plot the results (alpha +/- 2 SE) for all phoylogenic configurations colored by population X (Amboseli historically admixed individuals or Amboseli recently admixed individuals)
+# Plot the results (alpha +/- 2 SE) for all phyologenic configurations colored by population X (Amboseli historically admixed individuals or Amboseli recently admixed individuals)
 ggplot() + geom_pointrange(data=subset(f4, X=="Amboseli_recent"), aes(x=phylogeny_noX, y=alpha, ymin = alpha - (2 * stderr), ymax = alpha + (2 * stderr)), color="#009E73") + geom_pointrange(data=subset(f4, X=="Amboseli_historic"), aes(x=phylogeny_noX, y=alpha, ymin = alpha - (2 * stderr), ymax = alpha + (2 * stderr)), color="#FFED4F") +  geom_hline(yintercept = 0, linetype = 2) + facet_wrap(~chrom) + labs(y = "anubis ancestry proportion", x = "phylogeny (A, B, C, Outgroup)") + theme_classic() + scale_x_discrete(labels=c("Guinea/SW_olive/Mikumi/Gelada" = "Guinea/SW_olive/\nMikumi/Gelada",  "Guinea/SW_olive/Mikumi/macaque" = "Guinea/SNPRC_anubis/\nMikumi/macaque", "Hamadryas/SNPRC_anubis/Mikumi/Gelada" = "Hamadryas/SNPRC_anubis/\nMikumi/Gelada", "Hamadryas/SNPRC_anubis/Mikumi/macaque"="Hamadryas/SNPRC_anubis/\nMikumi/macaque")) + geom_text(data=f4, aes(x=phylogeny_noX, y=alpha, label=Zscore), size=3, nudge_x=0.4) + theme(axis.text.x = element_text(size=6.5))
 
 # Get a weighted average based on chromosome size

@@ -88,6 +88,8 @@ for f in `cat 00_vcf_sample_order.masked.list`; do cat run.06.majcalls_tracts.R 
 
 # merge tracts for all individuals into a single file
 touch all.tracts.txt; for f in `ls *tracts.d2.*`; do sed '1d' $f >> amboseli_LCLAE_tracts.txt; done
+# merge all majority rule calls for all individuals into a single file
+touch all.majrule.txt; for f in `ls *Maj*`; do sed '1d' $f >> amboseli.majrule.txt; done ## these are only used in 02.3 for pedigree inconsistencies
 ```
 
 ## Visualizing local ancestry calls

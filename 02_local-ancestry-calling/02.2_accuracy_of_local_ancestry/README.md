@@ -31,10 +31,13 @@ mkdir true_tracts; module load R; for f in `cat 00names `; do sed -e s/NAME/$f/g
 mv i*.txt true_tracts/; mv slurm-* true_tracts/ ## Cleanup
 ```
 
-Having simulated ancestry tracts, we now get genotypes for each individual. We'll do so by randomly drawing alleles based on an individuals ancestry state at the locus and the mean SNPRC founder anubis and yellow baboon allele frequencies (Section 3). After generating genotypes for each individual, we will simulate 10x coverage sequencing using NEAT-genreads (Zachary Stephens, https://github.com/zstephens/neat-genreads and https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5125660/), map to the Panubis1 genome, and downsample to 1x and 2x coverage. 
+Having simulated ancestry tracts, we now get genotypes for each individual. We'll do so by randomly drawing alleles based on an individuals ancestry state at the locus and the mean SNPRC founder anubis and yellow baboon allele frequencies. After generating genotypes for each individual, we will simulate 10x coverage sequencing using NEAT-genreads (Zachary Stephens, https://github.com/zstephens/neat-genreads and https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5125660/), map to the Panubis1 genome, and downsample to 1x and 2x coverage. 
 
 ```console
-# get genotype calls
+# get allele frequencies for yellow and anubis individuals that make up the reference panel
+# this is done using vcftools' `freq` command: vcftools --gzvcf masked_yellow_and_anubis.vcf.gz --keep 00_SNPRCanubis.list --chr chr17 --freq --out chr17.anubis
+
+# get genotype calls, by simulated individual and chromosome
 mkdir simulated_vcfs; module load R; for f in `cat 00names`; do for g in `cat 00chroms`; do cat run.02.create_sample_vcf.R | sed -e s/NAME/$f/g | sed -e s/SCAF/$g/g > g.$f.$g.R; sbatch g.$f.$g.R; rm g.$f.$g.R; done; done 
 
 # Generate 10x coverage in SE, 100bp reads for each individual and chromosome
@@ -58,7 +61,7 @@ mkdir gVCF; sbatch --array=1-75 --mem=16G  run.06.gvcf.sh
 sbatch --array=1-3 --mem=16G run.07.merge_gvcfs.sh
 ```
 
-To control for sampling error in the reference panel, we also resampled a reference population of yellow and anubis baboons with allele frequencies drawn from the "true" frequencies observed from the actual reference panel. Using this alternate reference panel had little effect on ancestry calling, and therefore is not included here although it can be recapitulated through minor modification to the code described here. 
+To control for sampling error in the reference panel, we also resampled a reference population of yellow and anubis baboons with allele frequencies drawn from the "true" frequencies observed from the actual reference panel. These individuals were simulated by creating "local ancestry tracts" that were entirely anubis or yellow, simulating a vcf for each sample using `run.02`, simulating coverage and calling genotypes based on the actual coverage of reference panel individuals. Using this alternate reference panel had little effect on ancestry calling, and therefore is not included here.  
 
 ### Call local ancestry for simulated individuals
 

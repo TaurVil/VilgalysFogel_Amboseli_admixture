@@ -1,6 +1,6 @@
 ## Baboon genomic resources
 
-This folder contains the baboon genomic resources (Panubis1 genome) which were used in this study, and the scripts used to generate them. 
+This folder contains the baboon (Panubis1) genomic resources which were used in this study, and the scripts used to generate them. 
 
 * **Liftover files** were created between Panubis1 and hg38. Code to create the liftover files is available in `scripts/create-liftover-files`, which includes a separate README. Liftover files are available on Zenodo. 
 
