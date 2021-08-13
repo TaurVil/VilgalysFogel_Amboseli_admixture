@@ -5,11 +5,11 @@ min_length <- 50000; min_lod <- 10 # thresholds for minimum length and LOD score
 read.delim("~/genomes/panubis1/chromInfo.txt", header=F) -> chroms; colnames(chroms)[1:2] <- c("name", "length")
 
 # Read in lists of test (Amboseli) and source (all other baboon) individuals
-read.delim("./IBDmix/00_amboseli_sources.list", header=F) -> sources; read.delim("./IBDmix/00_amboseli.list", header=F) -> samples
+read.delim("./DATA/00_amboseli_sources.list", header=F) -> sources; read.delim("./DATA/00_amboseli.list", header=F) -> samples
 
 # For each source individual, and each chromosome within a source individual, read in the resulting data file. These files are available upon request or can be generated from the above scripts. 
 IBD_ambo <- NULL; for (i in 1:nrow(sources)) { tmp <- NULL; for (chrom in 1:20) {
-    name=paste("./IBDmix_amboseli/amboseli.relative_to_",sources[i,1],".",chrom,".txt",sep="")
+    name=paste("./IBDmix_by_chrom/amboseli.relative_to_",sources[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- sources[i,1]
     data <- subset(data, data$length >= min_length & data$slod >= min_lod); rbind(tmp,data) -> tmp }
   rbind(IBD_ambo,tmp) -> IBD_ambo; rm(tmp); print(i) }; rm(i, chrom, data, name)
@@ -32,4 +32,4 @@ amboseli$aberdares <- rowMeans(samples[,c(26:27)])
 amboseli$SNPRCyellow <- rowMeans(samples[,c(40:46)])
 amboseli$SNPRCanubis <- rowMeans(samples[,c(2:25,28:29)])
 
-write.table(amboseli, "./ibdmix_amboseli_estimates.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(amboseli, "./RESULTS/ibdmix_amboseli_estimates.txt", row.names=F, col.names=T, sep="\t", quote=F)

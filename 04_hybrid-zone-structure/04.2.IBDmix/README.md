@@ -27,6 +27,7 @@ We run IBDmix in parallel across chromosomes. For each run, we first grab genoty
 ```console 
 ## have "source" files which contain the source individuals we want to iterate calling local ancestry over: 00_yellow_sources.list, 00_anubis_sources.list
 ## for each chromosome, run "run_IBDmix.sh"
+mkdir ./IBDmix_by_chrom; mkdir ./chrom_vcfs
 sbatch --array=1-20 --mem=16G run_IBDmix.sh
 ```
 

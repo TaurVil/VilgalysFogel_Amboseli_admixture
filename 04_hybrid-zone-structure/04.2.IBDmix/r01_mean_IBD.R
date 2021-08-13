@@ -4,19 +4,19 @@ min_length <- 50000; min_lod <- 10
 read.delim("~/genomes/panubis1/chromInfo.txt", header=F) -> chroms; colnames(chroms)[1:2] <- c("name", "length") # Read in chromosome file 
 
 #### read in file of test and source individuals ###############
-read.delim("./IBDmix/00_yellow_sources.list", header=F) -> yel_source; read.delim("./IBDmix/00_yel.list", header=F) -> yel
-read.delim("./IBDmix/00_anubis_sources.list", header=F) -> anu_source; read.delim("./IBDmix/00_anu.list", header=F) -> anu
+read.delim("./DATA/00_yellow_sources.list", header=F) -> yel_source; read.delim("./DATA/00_yel.list", header=F) -> yel
+read.delim("./DATA/00_anubis_sources.list", header=F) -> anu_source; read.delim("./DATA/00_anu.list", header=F) -> anu
 
 # For each source individual, and each chromosome within a source individual, read in the resulting data file. These files are available upon request or can be generated from the above scripts. 
 IBD_yellow <- NULL; for (i in 1:nrow(yel_source)) { tmp <- NULL; for (chrom in 1:20) {
-    name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/yellow.relative_to_",yel_source[i,1],".",chrom,".txt",sep="")
+    name=paste("./IBDmix_by_chrom/yellow.relative_to_",yel_source[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- yel_source[i,1]
     data <- subset(data, data$length >= min_length & data$slod >= min_lod); rbind(tmp,data) -> tmp }
   rbind(IBD_yellow,tmp) -> IBD_yellow; rm(tmp); print(i) }; rm(i, chrom, data, name)
 IBD_yellow <- IBD_yellow[order(IBD_yellow$ID,IBD_yellow$source,IBD_yellow$chrom,IBD_yellow$start),]
 
 IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL;  for (chrom in 1:20) {
-    name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/anubis.relative_to_",anu_source[i,1],".",chrom,".txt",sep="")
+    name=paste("./IBDmix_by_chrom/anubis.relative_to_",anu_source[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- anu_source[i,1]
     data <- subset(data, data$length >= min_length & data$slod >= min_lod); rbind(tmp,data) -> tmp; rm(data) }
   rbind(IBD_anubis,tmp) -> IBD_anubis; rm(tmp); print(i) }; rm(i, chrom, name)
@@ -59,5 +59,5 @@ mean(anu2[anu2$individual == "panu_30877", colnames(anu2) == "mikumi"])
 mean(anu2[!anu2$individual == "panu_30877", colnames(anu2) == "mikumi"])
 sd(anu2[!anu2$individual == "panu_30877", colnames(anu2) == "mikumi"])
 
-write.table(yel2, "./ibdmix_yellow_estimates.txt", row.names=T, col.names=T, quote=F, sep="\t") # used for figure 1C and in the SI tables
-write.table(anu2, "./ibdmix_anubis_estimates.txt", row.names=T, col.names=T, quote=F, sep="\t") # used in the SI tables
+write.table(yel2, "./RESULTS/ibdmix_yellow_estimates.txt", row.names=T, col.names=T, quote=F, sep="\t") # used for figure 1C and in the SI tables
+write.table(anu2, "./RESULTS/ibdmix_anubis_estimates.txt", row.names=T, col.names=T, quote=F, sep="\t") # used in the SI tables

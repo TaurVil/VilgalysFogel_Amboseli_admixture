@@ -14,8 +14,8 @@ export PATH=$PATH:~/Programs/cmake/bin/
 module load gcc
 
 # Get genotype calls
-vcftools --gzvcf ~/04.merged_shared.$chrom.vcf.gz --keep 00_amboseli.list --recode --out ./chrom_vcfs/02.ambo.$chrom
-vcftools --gzvcf ~/02.unadmixed_highcov.$chrom.recode.vcf.gz --keep 00_amboseli_sources.txt --recode --out ./chrom_vcfs/02.source.$chrom
+vcftools --gzvcf baboon_genotypes.raw.$chrom.vcf.gz --keep 00_amboseli.list --max-missing 0 --max-alleles 2 --recode --out ./chrom_vcfs/02.ambo.$chrom
+vcftools --gzvcf baboon_genotypes.raw.$chrom.vcf.gz --keep 00_amboseli_sources.txt --max-missing 0 --max-alleles 2 --recode --out ./chrom_vcfs/02.source.$chrom
 
 # Merge genotypes using generate_gt
 ~/Programs/IBDmix/IBDmix-master/build/src/generate_gt -a ./chrom_vcfs/02.source.$chrom.recode.vcf -m ./chrom_vcfs/02.ambo.$chrom.recode.vcf -o ./chrom_vcfs/03.$chrom.gt

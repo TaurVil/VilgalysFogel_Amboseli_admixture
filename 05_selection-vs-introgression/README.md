@@ -42,11 +42,12 @@ To provide context for our findings, we compared them to evidence for selection 
 
 #### Test for associations between genomic features and mean ancestry
 
-For each window size, test for signatures of selection between introgressed ancestry and recombination rate, B values, and the number of fixed differences between yellow and anubis baboons. 
+For each window size, test for signatures of selection between introgressed ancestry and recombination rate, B values, and the number of fixed differences between yellow and anubis baboons. Although they can also be recapitulated from scripts r02 and r04, we also include a specific script `r04b.results_250kb.R` which recapitulates the main results presented in the text. 
 
 ```console 
 ./r04.results.R
-## results for the main text, SI, and plot for supplementary figure S7 (using 250kb)
+./r04b.results_250kb.R
+## results for the main text, SI, and plot for supplementary figure S7 (note Fig S7 in the text uses 250kb windows)
 
 ./r05.plot_results.R
 ## plotting the results per 250kb window for Fig 2 and Fig 3D-F
