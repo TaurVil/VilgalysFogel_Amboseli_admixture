@@ -3,19 +3,19 @@ library(data.table)
 # read in chromosome file 
 read.delim("~/genomes/panubis1/chromInfo.txt", header=F) -> chroms; colnames(chroms)[1:2] <- c("name", "length")
 # read in file of test and source individuals 
-read.delim("./IBDmix/00_yellow_sources.list", header=F) -> yel_source; read.delim("./IBDmix/00_yel.list", header=F) -> yel
-read.delim("./IBDmix/00_anubis_sources.list", header=F) -> anu_source; read.delim("./IBDmix/00_anu.list", header=F) -> anu
+read.delim("./DATA/00_yellow_sources.list", header=F) -> yel_source; read.delim("./DATA/00_yel.list", header=F) -> yel
+read.delim("./DATA/00_anubis_sources.list", header=F) -> anu_source; read.delim("./DATA/00_anu.list", header=F) -> anu
 
 # read in all yellow tracts
 IBD_yellow <- NULL; for (i in 1:nrow(yel_source)) { tmp <- NULL; for (chrom in 1:20) {
-    name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/yellow.relative_to_",yel_source[i,1],".",chrom,".txt",sep="")
+    name=paste("./IBDmix_by_chrom/yellow.relative_to_",yel_source[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- yel_source[i,1]; data <- subset(data, data$length >= 1000 & data$slod >= 4)
     rbind(tmp,data) -> tmp }; rbind(IBD_yellow,tmp) -> IBD_yellow; rm(tmp); print(i) }; rm(i, chrom, data, name)
 IBD_yellow <- IBD_yellow[order(IBD_yellow$ID,IBD_yellow$source,IBD_yellow$chrom,IBD_yellow$start),]
 
 # read in all anubis tracts
 IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL; for (chrom in 1:20) {
-    name=paste("~/Baboon/Paper1b_demographicinference/IBDmix/IBDmix_results/anubis.relative_to_",anu_source[i,1],".",chrom,".txt",sep="")
+    name=paste("./IBDmix_by_chrom/anubis.relative_to_",anu_source[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- anu_source[i,1]; data <- subset(data, data$length >= 1000 & data$slod >= 4)
     rbind(tmp,data) -> tmp }; rbind(IBD_anubis,tmp) -> IBD_anubis; rm(tmp); print(i) }; rm(i, chrom, data, name)
 IBD_anubis <- IBD_anubis[order(IBD_anubis$ID,IBD_anubis$source,IBD_anubis$chrom,IBD_anubis$start),]
@@ -149,11 +149,11 @@ ibd_mix_tracts <- NULL; min_n <- 7; for (i in 1:nrow(anu)) {
 }; rm(i, tmp); ibd_mix_tracts -> ibd_mix_tracts_70anu; rm(ibd_mix_tracts)
 rm(min_n)
 
-save.image("./IBDmix_tracts.RData")
+save.image("./RESULTS/IBDmix_tracts.RData")
 
-write.table(ibd_mix_tracts_30anu[ibd_mix_tracts_30anu$number > 0,], "./IBDmix/ibdmix_tracts.anubis.30.txt", row.names=F, col.names=T, sep="\t", quote=F)
-write.table(ibd_mix_tracts_50anu[ibd_mix_tracts_50anu$number > 0,], "./IBDmix/ibdmix_tracts.anubis.50.txt", row.names=F, col.names=T, sep="\t", quote=F)
-write.table(ibd_mix_tracts_70anu[ibd_mix_tracts_70anu$number > 0,], "./IBDmix/ibdmix_tracts.anubis.70.txt", row.names=F, col.names=T, sep="\t", quote=F)
-write.table(ibd_mix_tracts_30yel[ibd_mix_tracts_30yel$number > 0,], "./IBDmix/ibdmix_tracts.yellow.30.txt", row.names=F, col.names=T, sep="\t", quote=F)
-write.table(ibd_mix_tracts_50yel[ibd_mix_tracts_50yel$number > 0,], "./IBDmix/ibdmix_tracts.yellow.50.txt", row.names=F, col.names=T, sep="\t", quote=F)
-write.table(ibd_mix_tracts_70yel[ibd_mix_tracts_70yel$number > 0,], "./IBDmix/ibdmix_tracts.yellow.70.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(ibd_mix_tracts_30anu[ibd_mix_tracts_30anu$number > 0,], "./RESULTS/ibdmix_tracts.anubis.30.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(ibd_mix_tracts_50anu[ibd_mix_tracts_50anu$number > 0,], "./RESULTS/ibdmix_tracts.anubis.50.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(ibd_mix_tracts_70anu[ibd_mix_tracts_70anu$number > 0,], "./RESULTS/ibdmix_tracts.anubis.70.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(ibd_mix_tracts_30yel[ibd_mix_tracts_30yel$number > 0,], "./RESULTS/ibdmix_tracts.yellow.30.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(ibd_mix_tracts_50yel[ibd_mix_tracts_50yel$number > 0,], "./RESULTS/ibdmix_tracts.yellow.50.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(ibd_mix_tracts_70yel[ibd_mix_tracts_70yel$number > 0,], "./RESULTS/ibdmix_tracts.yellow.70.txt", row.names=F, col.names=T, sep="\t", quote=F)
