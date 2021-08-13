@@ -2,7 +2,7 @@
 
 This folder contains instructions and scripts for generating local ancestry calls/tracts from genotype calls using LCLAE (Wall et al. 2016 Molecular Ecology: https://doi.org/10.1111/mec.13684, https://github.com/jdwall02/LCLAE). You must download LCLAE for these scripts (available here: https://github.com/jdwall02/LCLAE)
 
-We will begin by converting genotype data into genotype likelihoods, using `filtbaboon1b` from LCLAE. This will require an input file of genotype calls fro Amboseli baboons and yellow/anubis baboons masked of anubis introgression (`amboseli_with_masked_refpanel.vcf.gz`, Section 01.3) which can be produced from `amboseli.vcf.gz` and `masked_yellow_and_anubis.vcf.gz` available on Zenodo. 
+We will begin by converting genotype data into genotype likelihoods, using `filtbaboon1b` from LCLAE. This will require an input file of genotype calls fro Amboseli baboons and yellow/anubis baboons masked of anubis introgression (`amboseli_with_masked_refpanel.vcf.gz`) which can be produced from `amboseli.vcf.gz` and `masked_yellow_and_anubis.vcf.gz` available on Zenodo (see Section 01.3). 
 
 ```console 
 # get list of individuals in the vcf file in the order that they appear in the vcf file (all chromosome vcf files have the same set of individuals so just grab the list of ordered individuals from chromosome 1)
