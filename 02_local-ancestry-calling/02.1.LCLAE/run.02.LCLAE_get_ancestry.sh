@@ -4,6 +4,7 @@
 index=${SLURM_ARRAY_TASK_ID}
 chrom=$index
 
+# NUMBER specifies the individual
 printf "`echo NUMBER` `echo $chrom` \n"
 
 number=NUMBER
