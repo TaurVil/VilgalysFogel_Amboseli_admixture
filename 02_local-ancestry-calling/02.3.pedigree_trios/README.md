@@ -36,11 +36,10 @@ wc -l all*
 #73976 all.ancestry_calls_maskedSNPRCref_pedigree_trios_35kbpos.txt
 ```
 
-In the same directory, run the R scripts `run.03.get_ped_inconsistencies_SNPRCref.R` and `run.03.get_ped_inconsistencies_Wallref.R` to identify inconsistent ancestry calls
+In the same directory, run the R script `run.03.get_ped_inconsistencies_SNPRCref.R` to identify inconsistent ancestry calls using the pedigree structure.
 
 ```console 
 sbatch --mem=1G  run.03.get_ped_inconsistencies_SNPRCref.R
-sbatch --mem=1G  run.03.get_ped_inconsistencies_Wallref.R
 
 # can check that all scripts ran by looking for "done" written in the output files
 grep "done" slurm* | wc -l #2 = the number of total scripts we ran so everything ran to completion
