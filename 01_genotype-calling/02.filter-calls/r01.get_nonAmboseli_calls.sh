@@ -25,7 +25,7 @@ vcftools --gzvcf ./chrom_vcfs/01.$chrom.missing_minQ_biallelic.unadmixed.recode.
 ## Panubis1.nochromname.fa is a version of the baboon genome where chromosomes are index 1-20 rather than "chr1", "chr2", etc. 
 java -jar ~/Programs/GenomeAnalysisTK.jar -T VariantFiltration -R ./Panubis1.nochromname.fa -V ./chrom_vcfs/01.$chrom.missing_minQ_biallelic.unadmixed.recode.vcf -filterName "FS" --filterExpression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" -o ./chrom_vcfs/01b.gatk_filtered.unadmixed.$chrom.vcf.gz
 
-# Get sitest that should be removed due to insufficient species-specific coverage
+# Get sites that should be removed due to insufficient species-specific coverage
 vcftools --gzvcf ./chrom_vcfs/01.$chrom.missing_minQ_biallelic.unadmixed.recode.vcf --keep 00_anu.list --max-missing 0.5 --remove-indels --removed-sites --out ./chrom_vcfs/01.anu.$chrom
 vcftools --gzvcf ./chrom_vcfs/01.$chrom.missing_minQ_biallelic.unadmixed.recode.vcf --keep 00_yel.list --max-missing 0.5 --remove-indels --removed-sites --out ./chrom_vcfs/01.yel.$chrom
 # Merge all sites to remove (singletons and low species coverage)
