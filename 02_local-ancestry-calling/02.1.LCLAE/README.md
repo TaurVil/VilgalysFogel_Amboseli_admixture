@@ -48,7 +48,7 @@ Next, we will call local ancestry using LCLAE's `filtbaboon2c` and `geno_lik2` f
 # the array/index specifies the chromosome for each iteration
 # for example, to call local ancestry for all 20 chromosomes for the first 10 individuals in the vcf, we would run:
 for f in `seq 1 10`; do sed -e s/NUMBER/$f/g run.02.LCLAE_get_ancestry.sh > r.$f.sh; sbatch --array=1-20 --mem=30000 r.$f.sh; rm r.$f.sh; done
-# note: in the script run.02.LCLAE_get_ancestry.sh, on line 11, make sure to specify the total number of individuals in the vcf after calling the filtbaboon2c function (currently XXX is used as a placeholder for this number)
+# note: in the script run.02.LCLAE_get_ancestry.sh, on line 12, make sure to specify the total number of individuals in the vcf after calling the filtbaboon2c function (currently XXX is used as a placeholder for this number)
 # returns an ancestry call at each ancestry informative SNP (minimum 20% allele frequency difference between the two reference populations), based on the surrounding genomic window (here, 35 kb)
 
 # LCLAE sometimes fails, returning a "Segmentation Fault" error. If it works, the output (here, slurm-[job_id_#].out) will have a single output line with the sample number and the chromosome. 
