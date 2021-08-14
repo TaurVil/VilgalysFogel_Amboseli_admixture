@@ -1,15 +1,15 @@
-## Call local ancestry for Amboseli individuals using LCLAE
+## Local ancestry calling for Amboseli individuals using LCLAE
 
-This folder contains instructions and scripts for generating local ancestry calls/tracts from genotype calls using LCLAE (Wall et al. 2016 Molecular Ecology: https://doi.org/10.1111/mec.13684, https://github.com/jdwall02/LCLAE). You must download LCLAE for these scripts (available here: https://github.com/jdwall02/LCLAE)
+This folder contains instructions and scripts for generating local ancestry calls and tracts from genotype data using LCLAE (Wall et al. 2016 Molecular Ecology: https://doi.org/10.1111/mec.13684, https://github.com/jdwall02/LCLAE). You must download LCLAE for these scripts (available here: https://github.com/jdwall02/LCLAE)
 
-We will begin by converting genotype data into genotype likelihoods, using `filtbaboon1b` from LCLAE. This will require an input file of genotype calls fro Amboseli baboons and yellow/anubis baboons masked of anubis introgression (`amboseli_with_masked_refpanel.vcf.gz`) which can be produced from `amboseli.vcf.gz` and `masked_yellow_and_anubis.vcf.gz` available on Zenodo (see Section 01.3). 
+We will need an input file of genotype calls from Amboseli baboons as well as yellow baboons and anubis baboons masked for putative introgression. This vcf (`amboseli_with_masked_refpanel.vcf.gz`) can be produced from `masked_yellow_and_anubis.vcf.gz`, which will be available on Zenodo (see also Section 01.3), and `amboseli.vcf.gz` (see section 01.2). 
 
 ```console 
 # get list of individuals in the vcf file in the order that they appear in the vcf file (all chromosome vcf files have the same set of individuals so just grab the list of ordered individuals from chromosome 1)
 module load bcftools
 bcftools query -l analyzed_sites.masked_and_unmasked_refpanel.1.vcf.gz >> 00_vcf_sample_order.masked.list 
 
-# for each chromosome (1-20), format vcf for LCLAE and then use LCLAE's filtbaboon1b to get genotype likelihoods (run 1LCLAE_get_genolik.sh)
+# for each chromosome (1-20), format vcf for LCLAE and then use LCLAE's filtbaboon1b to convert genotype data into genotype likelihoods (run run.01.LCLAE_get_genolik.sh)
 mkdir genotype_likelihoods_maskedref # make directory where we will store all of our genotype likelihood files
 sbatch --array=1-20 --mem=100 run.01.LCLAE_get_genolik.sh
 # note: make sure the number after filtbaboon1b is correct (the total number of individuals in the vcf)
