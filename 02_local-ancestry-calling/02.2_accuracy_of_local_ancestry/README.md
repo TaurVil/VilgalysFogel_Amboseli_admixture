@@ -1,6 +1,6 @@
 ## Simulations and accuracy of local ancestry calling
 
-Before calling local ancestry using LCLAE (Section 02.1), we sought to identify the best method to call local ancestry from low coverage baboon genotype data. To do so, we simulated local ancestry data for 25 individuals. We then simulated sequencing data from these individuals' ancestry and called local ancestry based on 10x or 1x sequencing coverage using three programs suitable for low coverage data. 
+Before calling local ancestry using LCLAE (Section 02.1), we sought to identify the best method to call local ancestry from low coverage baboon genotype data. To do so, we simulated local ancestry data for 25 individuals. We then simulated sequencing data for these individuals, based on their ancestry, and called local ancestry based on 10x or 1x sequencing coverage using three programs suitable for low coverage data. 
 
 
 ### Simulate local ancestry
