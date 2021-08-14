@@ -2,7 +2,7 @@
 
 #### Part 1: Scripts to process whole genome short-read Illumina sequence data (fastq -> BAM -> gVCF).
 
-For each sample, sequentially run WGSproc steps 1-7 to trim, map, and call genotypes per individual. These jobs can be submitted together using baboonWGS_wynton_remotesubmit_20190814_single_highcov.sh. 
+For each sample, sequentially run WGSproc steps 1-7 to trim, map, and call genotypes per individual. These jobs can be submitted together using run.baboonWGS_wynton_remotesubmit_20190814_single_highcov.sh. 
 
 The resulting genotyping calls will be available on Zenodo as `baboon_genotypes.raw.CHROMOSOME.vcf.gz`. 
 
@@ -12,11 +12,11 @@ For any questions regarding this content, please contact Jacqueline Robinson (ht
 
 #### Part 2: Filter merged genotype calls to produce files of anubis and yellow baboon genotype calls, as well as a callset merged with the Amboseli data. 
 
-First, we will get genotype calls for putatively unadmixed yellow and anubis baboons. This will require the unfiltered VCF file of baboon genotypes (which will be made available on Zenodo as baboon_genotypes.raw.CHROMOSOME.vcf.gz) and lists of unadmixed individuals (`00_anubis.list` and `00_yellow.list`, which can be found in Table S1). We will hard filter these genotypes for sites called in >50% of both yellow and anubis baboons, as well as sites that pass hard filtering criteria. Finally, we will remove singleton variants and export files of yellow and anubis genotype calls as `02.yel.$chrom.recode.vcf.gz` and `02.anu.$chrom.recode.vcf`. These files will then be combined into `yellow.vcf.gz` and `anubis.vcf.gz`, and merged into `refpanel.vcf.gz`. 
+First, we will get genotype calls for putatively unadmixed yellow and anubis baboons. This will require the unfiltered VCF file of baboon genotypes (which will be made available on Zenodo as `baboon_genotypes.raw.CHROMOSOME.vcf.gz`) and lists of unadmixed individuals (`00_anubis.list` and `00_yellow.list`, which can be found in Table S1). We will hard filter these genotypes for sites called in >50% of both yellow and anubis baboons, as well as sites that pass hard filtering criteria. Finally, we will remove singleton variants and export files of yellow and anubis genotype calls as `02.yel.$chrom.recode.vcf.gz` and `02.anu.$chrom.recode.vcf`. These files will then be combined into `yellow.vcf.gz` and `anubis.vcf.gz`, and merged into `refpanel.vcf.gz`. 
 
 ```console
 ## Get calls for unadmixed individuals
-sbatch --array=1-20 --mem=12G ./r01.get_nonAmboseli_calls.sh
+sbatch --array=1-20 --mem=12G ./run.01.get_nonAmboseli_calls.sh
 
 ## merge vcfs for unadmixed yellow and anubis baboons
 module load bcftools
@@ -32,10 +32,10 @@ vcftools --gzvcf ./anubis.vcf.gz --depth --out anubis
 vcftools --gzvcf ./yellow.vcf.gz --depth --out yellow
 ```
 
-Next we will get genotype calls for Amboseli individuals. This will require the unfiltered VCF file of baboon genotypes (will be made available on Zenodo as baboon_genotypes.raw.CHROMOSOME.vcf.gz) and a list of the Amboseli baboons (`00_amboseli.list`, which can be found in Table S1). We will retain biallelic variants which pass hard filtering criteria and are called in at least 20% of Amboseli individuals. We will not apply a minor allele frequency threshold within Amboseli, but rather focus on variants segregating between anubis and yellow baboons. These files are then combined into `amboseli.vcf.gz`. 
+Next we will get genotype calls for Amboseli individuals. This will require the unfiltered VCF file of baboon genotypes (will be made available on Zenodo as `baboon_genotypes.raw.CHROMOSOME.vcf.gz`) and a list of the Amboseli baboons (`00_amboseli.list`, which can be found in Table S1). We will retain biallelic variants which pass hard filtering criteria and are called in at least 20% of Amboseli individuals. We will not apply a minor allele frequency threshold within Amboseli, but rather focus on variants segregating between anubis and yellow baboons. These files are then combined into `amboseli.vcf.gz`. 
 
 ```console
-sbatch --array=1-20 --mem=12G ./r02.get_Amboseli_calls.sh
+sbatch --array=1-20 --mem=12G ./run.02.get_Amboseli_calls.sh
 
 bcftools concat ./chrom_vcfs/02.*.amboseli.recode.vcf.gz -o ./amboseli.vcf.gz -O z; tabix ./amboseli.vcf.gz
 ```
@@ -43,14 +43,14 @@ bcftools concat ./chrom_vcfs/02.*.amboseli.recode.vcf.gz -o ./amboseli.vcf.gz -O
 Finally, we will create a merged call set of both Amboseli and unadmixed yellow and anubis individuals, including only samples that passed filtering criteria in both datasets. These files are saved by chromosome as `04.merged_shared.$index.vcf.gz` and merged into `merged_shared.vcf.gz`. 
 
 ```console
-sbatch --array=1-20 --mem=12G ./r03.merge.sh
+sbatch --array=1-20 --mem=12G ./run.03.merge.sh
 
 bcftools concat ./chrom_vcfs/04.merged_shared.*.vcf.gz -O z -o ./merged_shared.vcf.gz
 ```
 
 #### Part 3: Masking introgressed anubis and yellow ancestry in non-Amboseli individuals
 
-Our results revealed unexpected anubis ancestry in yellow baboons used to found the SNPRC baboon colony as well as low levels of introgressed ancestry in other unadmixed individuals, potentially consistent with background noise (see Section 4). We therefore sought to mask regions of the genome which contained putative introgressed ancestry in individuals we will then use as part of unadmixed reference panels when calling local ancestry and estimating yellow and anubis baboon allele frequency differences. To minimize the proportion of introgressed ancestry retained while also ensuring a high density of markers called in yellow and anubis individuals, we masked regions of the genome called as introgressed using LCLAE and those called IBD using IBDmix using at least 50% of possible reference individuals (see Section 4). 
+Our results revealed unexpected anubis ancestry in yellow baboons used to found the SNPRC baboon colony as well as low levels of introgressed ancestry in other unadmixed individuals, potentially consistent with background noise (see Section 4). We therefore sought to mask regions of the genome which contained putative introgressed ancestry in individuals we will then use as part of unadmixed reference panels when calling local ancestry and estimating yellow and anubis baboon allele frequency differences. To minimize the proportion of introgressed ancestry retained while also ensuring a high density of markers called in yellow and anubis individuals, we masked regions of the genome called as introgressed using LCLAE and those called IBD with heterospecific baboons, using IBDmix with at least 50% of possible individuals (see Section 4). 
 
 Creating these files requires genotype calls for unadmixed individuals (`yellow.vcf.gz` and `anubis.vcf.gz`, generated above) and tracts of sequence to mask (`yes_intersect_50.bed`, generated in Section 04.2). These genotype calls will be available on Zenodo as `masked_yellow_and_anubis.vcf.gz`. 
 
