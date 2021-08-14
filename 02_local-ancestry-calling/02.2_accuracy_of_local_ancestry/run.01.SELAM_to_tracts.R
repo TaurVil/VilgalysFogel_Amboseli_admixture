@@ -31,13 +31,13 @@ for (i in unique(data$V5)) {
         # Replace with the appropriate end point
         d0$V9[d0$V7 == d0$nxt] <- d0$nxt_pos[d0$V7 == d0$nxt]
         d1$V9[d1$V7 == d1$nxt] <- d1$nxt_pos[d1$V7 == d1$nxt]
-        # Get ride of the second one in the string
+        # Get rid of the second one in the string
         d0$delete <- c(0, (d0$V7 == d0$nxt)[-nrow(d0)]); d1$delete <- c(0, (d1$V7 == d1$nxt)[-nrow(d1)])
         d0 <- subset(d0, d0$delete == 0); d1 <- subset(d1, d1$delete == 0)
-        # Remerge data from both chroms
+        # Remerge data from both chromosomes
         rbind(d0,d1) -> d; d <- d[order(d$V9,d$V8),]; rm(d1, d0)
 
-        #Create and structure output file
+        # Create and structure output file
         res <- as.data.frame(matrix(ncol=2,nrow=nrow(d)))
         res$chrom <- lengths[i+17,1]; res[,2] <- d$V9; res[,1] <- c(0,res[-nrow(res),2]); res$ancestry  <- NA
         for (j in 1:nrow(d)) {
