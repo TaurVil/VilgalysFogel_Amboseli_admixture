@@ -48,7 +48,7 @@ sbatch --array=1-20 --mem=12G ./r03.merge.sh
 bcftools concat ./chrom_vcfs/04.merged_shared.*.vcf.gz -O z -o ./merged_shared.vcf.gz
 ```
 
-#### Part 3: Masking anubis and yellow ancestry in non-Amboseli individuals
+#### Part 3: Masking introgressed anubis and yellow ancestry in non-Amboseli individuals
 
 Our results revealed unexpected anubis ancestry in yellow baboons used to found the SNPRC baboon colony as well as low levels of introgressed ancestry in other unadmixed individuals, potentially consistent with background noise (see Section 4). We therefore sought to mask regions of the genome which contained putative introgressed ancestry in individuals we will then use as part of unadmixed reference panels when calling local ancestry and estimating yellow and anubis baboon allele frequency differences. To minimize the proportion of introgressed ancestry retained while also ensuring a high density of markers called in yellow and anubis individuals, we masked regions of the genome called as introgressed using LCLAE and those called IBD using IBDmix using at least 50% of possible reference individuals (see Section 4). 
 
