@@ -12,7 +12,7 @@ load("local_ancestry_pedigree_trios_maskedSNPRCref.Rd", verbose=T)
 rm(indiv_list, tracts2, trios)
 
 # Load ALL ancestry calls on focal chromosome in Amboseli individuals (these are not unique ancestry informative markers - multiple rows can have the same ancestry informative marker but called in different individuals)
-calls <- read.table("aims_maskedSNPRCref_CHROMOSOME.txt", header=F)
+calls <- read.table("aims_CHROMOSOME.txt", header=F)
 colnames(calls) <-  c("chrom", "AIM", "ancestry_call", "indiv", "n", "mode", "n_mode", "perc")
 
 # Get unique ancestry informative markers
