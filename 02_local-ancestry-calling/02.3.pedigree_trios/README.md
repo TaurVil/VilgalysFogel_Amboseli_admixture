@@ -6,14 +6,14 @@ This directory contains multiple scripts for evaluating the quality of local anc
 
 #### Get pedigree inconsistences for the pedigree inconsistencies model (scripts labelled 1-3...).
 
-In R, run `r.01.prep_for_pedigree_inconsistencies.R` which generates two R data files (`local_ancestry_pedigree_trios_maskedSNPRCref.Rd` and `local_ancestry_pedigree_trios_unmaskedWallref.Rd`) containing tracts, pedigree trio info, list of pedigree individuals, and genomic positions for evaluating the consistent of ancestry calls within pedigree trios for two sets of ancestry tracts (one generated using the SNPRC reference panel, one generated using the Wall et al. 2016 low coverage reference panel supplemented with high coverage Mikumi sequences). These R data files can then uploaded to a computing cluster for parallelization across chromosomes (which will make things run much faster).
+In R, run `run.01.prep_for_pedigree_inconsistencies.R` which generates two R data files (`local_ancestry_pedigree_trios_maskedSNPRCref.Rd` and `local_ancestry_pedigree_trios_unmaskedWallref.Rd`) containing tracts, pedigree trio info, list of pedigree individuals, and genomic positions for evaluating the consistent of ancestry calls within pedigree trios for two sets of ancestry tracts (one generated using the SNPRC reference panel, one generated using the Wall et al. 2016 low coverage reference panel supplemented with high coverage Mikumi sequences). These R data files can then uploaded to a computing cluster for parallelization across chromosomes (which will make things run much faster).
 
-In a directory on a computing cluster containing both R data files, run the R scripts `r.02.get_ancestry_calls_SNPRCref.R` and `r.02.get_ancestry_calls_Wallref.R` using the commands below in order to generate chromosome-specific scripts. These scripts (which only differ in the ancestry calls they are using) will generate chromosome-specific files containing the ancestry calls ancestry calls for each individual in the pedigree analysis at each of our focal positions (positions data frame created in `r.01.prep_for_pedigree_inconsistencies.R`):
+In a directory on a computing cluster containing both R data files, run the R scripts `run.02.get_ancestry_calls_SNPRCref.R` and `run.02.get_ancestry_calls_Wallref.R` using the commands below in order to generate chromosome-specific scripts. These scripts (which only differ in the ancestry calls they are using) will generate chromosome-specific files containing the ancestry calls ancestry calls for each individual in the pedigree analysis at each of our focal positions (positions data frame created in `run.01.prep_for_pedigree_inconsistencies.R`):
 
 ```console 
 # R must be loaded in your computing environment (e.g., module load R, activate a conda environment with R loaded, etc.)
-for f in `cat autosomes.list`; do sed -e s/CHROMOSOME/$f/g r.02.get_ancestry_calls_SNPRCref.R > $f.sh; sbatch --mem=300 $f.sh; rm $f.sh; done
-for f in `cat autosomes.list`; do sed -e s/CHROMOSOME/$f/g r.02.get_ancestry_calls_Wallref.R > $f.sh; sbatch --mem=300 $f.sh; rm $f.sh; done
+for f in `cat autosomes.list`; do sed -e s/CHROMOSOME/$f/g run.02.get_ancestry_calls_SNPRCref.R > $f.sh; sbatch --mem=300 $f.sh; rm $f.sh; done
+for f in `cat autosomes.list`; do sed -e s/CHROMOSOME/$f/g run.02.get_ancestry_calls_Wallref.R > $f.sh; sbatch --mem=300 $f.sh; rm $f.sh; done
 # can check that all scripts ran by looking for "done" written in the output files
 grep "done" slurm* | wc -l #40 = the number of total scripts we ran so everything ran to completion
 
@@ -38,10 +38,10 @@ wc -l all*
 #73976 all.ancestry_calls_maskedSNPRCref_pedigree_trios_35kbpos.txt
 #73976 all.ancestry_calls_unmaskedWallref_pedigree_trios_35kbpos.txt
 ```
-In the same directory, run the R scripts `r.03.get_ped_inconsistencies_SNPRCref.R` and `r.03.get_ped_inconsistencies_Wallref.R` to identify inconsistent ancestry calls
+In the same directory, run the R scripts `run.03.get_ped_inconsistencies_SNPRCref.R` and `run.03.get_ped_inconsistencies_Wallref.R` to identify inconsistent ancestry calls
 ```console 
-sbatch --mem=1G  r.03.get_ped_inconsistencies_SNPRCref.R
-sbatch --mem=1G  r.03.get_ped_inconsistencies_Wallref.R
+sbatch --mem=1G  run.03.get_ped_inconsistencies_SNPRCref.R
+sbatch --mem=1G  run.03.get_ped_inconsistencies_Wallref.R
 
 # can check that all scripts ran by looking for "done" written in the output files
 grep "done" slurm* | wc -l #2 = the number of total scripts we ran so everything ran to completion
@@ -51,13 +51,13 @@ grep "done" slurm* | wc -l #2 = the number of total scripts we ran so everything
 
 For each genomic window, we would also like to get information on the number of (1) ancestry informative markers, (2) FST, and (3) recombination rate which we will include as covariates in our models of pedigree inconsistencies. 
 
-**(1) ANCESTRY INFORMATIVE MARKERS**: run the R script `r.04a.AIM_count_PANEL.R` using the command below in order to generate chromosome-specific scripts. This script requires majority rule ancestry calls across Amboseli individuals, split into chromosome specific files. To generate these files, take the `amboseli.majrule.txt` output generated in Section 02.1 from the appropriate reference panel (e.g., masked SNPRC, unmasked Wall et al.), and split into chromosome-specific files by:
+**(1) ANCESTRY INFORMATIVE MARKERS**: run the R script `run.04a.AIM_count_PANEL.R` using the command below in order to generate chromosome-specific scripts. This script requires majority rule ancestry calls across Amboseli individuals, split into chromosome specific files. To generate these files, take the `amboseli.majrule.txt` output generated in Section 02.1 from the appropriate reference panel (e.g., masked SNPRC, unmasked Wall et al.), and split into chromosome-specific files by:
 ```console
 awk '{OFS="\t"; print >> ("aims_maskedSNPRCref_" $1 ".txt")}' amb.majrule.maskedSNPRCref.txt # generates chromosome-specific files of ancestry calls across all Amboseli individuals 
 awk '{OFS="\t"; print >> ("aims_unmaskedWallref_" $1 ".txt")}' amb.majrule.unmaskedWallref.txt # generates chromosome-specific files of ancestry calls across all Amboseli individuals 
 
-for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g r.04a.AIM_count_SNPRCref.R > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
-for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g r.04a.AIM_count_Wallref.R > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
+for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g run.04a.AIM_count_SNPRCref.R > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
+for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g run.04a.AIM_count_Wallref.R > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
 
 # check that all scripts ran by looking for "done" written in the output files
 grep "done" slurm* | wc -l #40 = the number of total scripts we ran so everything ran to completion
@@ -75,17 +75,17 @@ wc -l all.for_pedigree_trios_AIM_count*
 rm for_pedigree_trios_AIM_count*txt
 ```
 
-**(2) FST**: use the scripts `r.04b.FST_SNPRCref.sh` and `r.04b.FST_Wallref.sh` to calculate FST using vcftools with 35 kb windows and 500 bp step size
+**(2) FST**: use the scripts `run.04b.FST_SNPRCref.sh` and `run.04b.FST_Wallref.sh` to calculate FST using vcftools with 35 kb windows and 500 bp step size
 ```console
-sbatch --mem=500 r.04b.FST_SNPRCref.sh
-sbatch --mem=500 r.04b.FST_Wallref.sh
+sbatch --mem=500 run.04b.FST_SNPRCref.sh
+sbatch --mem=500 run.04b.FST_Wallref.sh
 ```
 
-**(3) RECOMBINATION RATE**: run the R script from `r.04c.Recomb.R` which is almost identical to the code in `Section 05, r01`, but modified for the input for this analysis, the positions in this analysis (in the positions data frame), and the output (we want the lengths used).
+**(3) RECOMBINATION RATE**: run the R script from `run.04c.Recomb.R` which is almost identical to the code in `Section 05, r01`, but modified for the input for this analysis, the positions in this analysis (in the positions data frame), and the output (we want the lengths used).
 ```console
-sbatch --mem=200 r.04c.Recomb.R
+sbatch --mem=200 run.04c.Recomb.R
 ```
 
 #### Results from the pedigree inconsistencies (script labelled with a 5...)
 
-Finally, in a directory containing all files generated up to this point, run `r.05.pedigree_inconsistencies_results.R` which calculates, compares, and plots the proportion of ancestry state inconsistencies using ancestry calls from two reference panels. It also runs a model to evaluate what predicts ancestry state inconsistencies across sites. Finally, it evaluates the proportion of ancestry state inconsistencies per pedigree trio and whether the minimum coverage of individuals in the trio might contribute to it. 
+Finally, in a directory containing all files generated up to this point, run `run.05.pedigree_inconsistencies_results.R` which calculates, compares, and plots the proportion of ancestry state inconsistencies using ancestry calls from two reference panels. It also runs a model to evaluate what predicts ancestry state inconsistencies across sites. Finally, it evaluates the proportion of ancestry state inconsistencies per pedigree trio and whether the minimum coverage of individuals in the trio might contribute to it. 
