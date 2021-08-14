@@ -6,8 +6,8 @@ library(dplyr)
 # Load text file containing pedigree trios and their associated genomic data (genome-wide anubis ancestry and coverage)
 trios <- read.table("pedigree_trio_info.txt", header=T)
 
-# Load ancestry tracts generated using masked SNPRC individuals for the reference panel (used in main text analyses) available in the Duke Data Repository at XXX
-tracts <- read.table("amboseli.tracts.maskedSNPRCref.txt", header=T)
+# Load ancestry tracts for Amboseli individuals
+tracts <- read.table("amboseli_LCLAE_tracts.txt", header=T)
 
 # Remove tracts <1 kb in length
 tracts <- tracts[tracts$length2>1000,]
@@ -35,7 +35,7 @@ nrow(distinct(tmp2, indiv))==nrow(indiv_list) # TRUE
 # Grab only columns we'll need (indiv, chrom, start of the tract, end of the tract, ancestry state of the tract)
 tracts2 <- tmp2[c(1:5)]
 
-# We also need to get the positions along the genome we'd like to evaluate for pedigree consistencies
+# We also need to get the positions along the genome we'd like to evaluate for pedigree consistencies/inconsistencies
 # Load chromosomes sizes from the Panubis1 genome
 chrom_sizes <- read.table("chromsizes_Panubis1_final.txt", header=FALSE)
 colnames(chrom_sizes) <- c("chrom", "length")
@@ -84,7 +84,7 @@ save(indiv_list, tracts2, positions, trios, file="local_ancestry_pedigree_trios_
 rm(tracts, tracts2) # remove tracts using the masked SNPRC reference panel but keep the indiv_list, trios, and positions data frames
 
 # Load ancestry tracts generated using unmasked Maasai Mara and Mikumi individuals for the reference panel available in the Duke Data Repository at XXX
-# Note that throughout the code, this panel is referred to as "Wallref" but it includes not only the low-coverage reference panel used by Wall et al. but is also supplemented with high coverage Mikumi samples (10 new and one from Rogers et al. 2019)
+# Note that throughout the code, this panel is referred to as "Wallref" but it includes not only the low-coverage reference panel used by Wall et al. but is also supplemented with high coverage Mikumi samples (10 new and one from Rogers et al. 2019 Sci Advances)
 tracts <- read.table("amboseli.tracts.unmaskedWallref.txt", header=T)
 
 # Remove tracts <1 kb in length
