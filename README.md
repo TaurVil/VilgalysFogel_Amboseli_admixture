@@ -1,7 +1,7 @@
 # VilgalysFogel_Amboseli_admixture
 ## Selection against admixture and gene regulatory divergence in a long-term primate field study
 
-![alt text](https://github.com/TaurVil/VilgalysFogel_Amboseli_admixture/blob/main/baboon.jpg?raw=true)
+![alt text](https://github.com/TaurVil/VilgalysFogel_Amboseli_admixture/blob/main/baboon.jpg?raw=true)*Young baboons playing in the Amboseli basin of southern Kenyna.
 
 This repository contains materials used to analyze the data from, and recreate the results in, Vilgalys, Fogel, et al. currently under review. These scripts include: 
 
