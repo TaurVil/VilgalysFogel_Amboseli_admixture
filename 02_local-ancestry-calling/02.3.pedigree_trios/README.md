@@ -1,4 +1,4 @@
-## Accuracy of local ancestry calling using pedigree trios
+## Assesssing local ancestry calling using pedigree trios
 
 This directory contains multiple scripts for evaluating the quality of local ancestry calls from LCLAE using known parent-offspring trios from the Amboseli baboons (Supplementary Methods 7.3).
 
