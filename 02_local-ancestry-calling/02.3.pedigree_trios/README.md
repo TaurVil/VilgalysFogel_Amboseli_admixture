@@ -50,9 +50,9 @@ grep "done" slurm* | wc -l #2 = the number of total scripts we ran so everything
 
 For each genomic window, we would also like to get information on the number of (1) ancestry informative markers, (2) FST, and (3) recombination rate which we will include as covariates in our models of pedigree inconsistencies. 
 
-**(1) ANCESTRY INFORMATIVE MARKERS**: run the R script `run.04a.AIM_count_PANEL.R` using the command below in order to generate chromosome-specific scripts. This script requires majority rule ancestry calls across Amboseli individuals, split into chromosome specific files. To generate these files, take the `amboseli.majrule.txt` output generated in Section 02.1 from the appropriate reference panel (e.g., masked SNPRC, unmasked Wall et al.), and split into chromosome-specific files by:
+**(1) ANCESTRY INFORMATIVE MARKERS (AIMS)**: run the R script `run.04a.AIM_count_SNPRCref.R` using the command below in order to generate chromosome-specific scripts. This script requires majority rule ancestry calls across Amboseli individuals, split into chromosome specific files. To generate these files, take the `amboseli.majrule.txt` output generated in Section 02.1 and split into chromosome-specific files by:
 ```console
-awk '{OFS="\t"; print >> ("aims_maskedSNPRCref_" $1 ".txt")}' amb.majrule.maskedSNPRCref.txt # generates chromosome-specific files of ancestry calls across all Amboseli individuals 
+awk '{OFS="\t"; print >> ("aims_" $1 ".txt")}' amboseli.majrule.txt # generates chromosome-specific files of ancestry calls across all Amboseli individuals 
 
 for f in `seq 1 20`; do sed -e s/CHROMOSOME/$f/g run.04a.AIM_count_SNPRCref.R > $f.sh; sbatch --mem=30000 $f.sh; rm $f.sh; done
 
@@ -70,12 +70,12 @@ wc -l all.for_pedigree_trios_AIM_count*
 rm for_pedigree_trios_AIM_count*txt
 ```
 
-**(2) FST**: use the scripts `run.04b.FST_SNPRCref.sh` and `run.04b.FST_Wallref.sh` to calculate FST using vcftools with 35 kb windows and 500 bp step size
+**(2) FST**: use the scripts `run.04b.FST_SNPRCref.sh` to calculate FST using vcftools with 35 kb windows and 500 bp step size
 ```console
 sbatch --mem=500 run.04b.FST_SNPRCref.sh
 ```
 
-**(3) RECOMBINATION RATE**: run the R script from `run.04c.Recomb.R` which is almost identical to the code in `Section 05, r01`, but modified for the input for this analysis, the positions in this analysis (in the positions data frame), and the output (we want the lengths used).
+**(3) RECOMBINATION RATE**: run the R script from `run.04c.Recomb.R` which is almost identical to the code in `Section 05, run.01`, but modified for the input for this analysis, the positions in this analysis (in the positions data frame), and the output (we want the lengths used).
 ```console
 sbatch --mem=200 run.04c.Recomb.R
 ```
