@@ -55,7 +55,7 @@ Our results revealed unexpected anubis ancestry in yellow baboons used to found 
 Creating these files requires genotype calls for unadmixed individuals (`yellow.vcf.gz` and `anubis.vcf.gz`, generated above) and tracts of sequence to mask (`yes_intersect_50.bed`, generated in Section 04.2). These genotype calls will be available on Zenodo as `masked_yellow_and_anubis.vcf.gz`. 
 
 ```console
-## we'll use tracts generated in section 04.2, specifically yes_intersect_50.bed. The title `yes_intersect_50` means (i) we are masking regions called introgressed in low coverage individuals using the results from LCLAE, (ii) we're using the intersection of LCLAE and IBDmix for high coverage individuals, and (iii) we're requiring IBD with 50% of reference individuals to include a region. 
+## we'll use tracts generated in section 04.2, specifically yes_intersect_50.bed. The title `yes_intersect_50` means (i) we are masking regions called introgressed in low coverage individuals using the results from LCLAE, (ii) we're using the intersection of LCLAE and IBDmix for high coverage individuals, and (iii) we're requiring IBD with 50% of source individuals to include a region. 
 
 ## get tracts to mask per individual
 for samp in `cat 00_refpanel.names`; do grep $samp yes_intersect_50.bed > ./tracts_to_mask/to_remove.$samp.yes_intersect_50.bed; done; echo $samp; done 
@@ -63,7 +63,7 @@ for samp in `cat 00_refpanel.names`; do grep $samp yes_intersect_50.bed > ./trac
 for f in `find . -name '*.bed' -size 0`; do echo -e "chr1\t1\t2" > $f; done 
 
 ## get individual vcf files 
-## calls a combined reference panel of unadmixed individuals created above: ./refpanel.vcf.gz
+## calls a combined file of non-Amboseli yellow and anubis baboons created above: ./refpanel.vcf.gz
 mkdir indiv_vcfs; for samp in `cat 00_refpanel.names`; do sed -e s/SAMPLE_NAME/$samp/g ./run.01.get_indiv_vcf.sh > ./r.$samp.sh; sbatch --mem=3G --nice ./r.$samp.sh; rm ./r.$samp.sh; done; done 
 
 ## merge individual masked vcfs back together
