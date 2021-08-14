@@ -4,22 +4,24 @@
 ![alt text](https://github.com/TaurVil/VilgalysFogel_Amboseli_admixture/blob/main/baboon.jpg?raw=true)
 <sup>*Young baboons playing in the Amboseli basin of southern Kenya*</sup>
 
-This repository contains materials used to analyze the data from, and recreate the results in, Vilgalys, Fogel, et al. currently under review. These scripts include: 
+This repository contains materials used to analyze the data from, and recreate the results in, Vilgalys, Fogel, et al. *bioRxiv*. These scripts are organizing in the following seven directories: 
 
-1. **Genotype calling**: Scripts for trimming, mapping, and calling genotype data.
+1. **Genotype calling**: Trimming, mapping, and calling genotypes from whole genome resequencing data.
 
-2. **Local ancestry calling**: Local ancestry calling, including verifying our approach through simulation and quality control measures. 
+2. **Local ancestry calling**: Local ancestry estimation, including verifying our approach through simulations, quality control measures, and orthogonal approaches. 
 
-3. **Genomic resources for baboons**: Annotation of the baboon genome, expanding upon data available from Batra et al. 2020. 
+3. **Genomic resources for baboons**: Annotation of the baboon genome, expanding upon data available from Batra et al. 2020 *GigaScience* (https://doi.org/10.1093/gigascience/giaa134). 
 
-4. **Structure of the baboon hybrid zone**: Analyses and figures related to the extent of admixture beyond the Amboseli hybrid zone. 
+4. **Structure of the baboon hybrid zone**: Analyses and figures related to the geographical and temporal extent of admixture in and around the Amboseli hybrid population.
 
-5. **Selection against introgression in Amboseli**: Analyses and figured related to selection against anubis baboon ancestry in Amboseli baboons. 
+5. **Selection against introgression in Amboseli**: Analyses and figures related to selection against introgressed anubis ancestry in the Amboseli baboons. 
 
-6. **Selection against regulatory divergence**: Analyses and figures related to ancestry-associated expression, and selection against those regions.  
+6. **Selection against regulatory divergence**: Analyses and figures related to ancestry-associated gene expression and selection against those regions of the genome.  
 
-7. **Predicting the genomic landscape of introgression**: Analyses and figures related to predicting the extent of anubis introgression. 
+7. **Predicting the genomic landscape of introgression**: Analyses and figures related to predicting anubis introgression across the genome and over time. 
 
-Finally, we include here a RData file (`VilgalysFogel_main_data_file.250kb.RData`) which contains estimates of mean anubis ancestry for 250kb windows and genes across the baboon genome. This data file is produced in Section 05. 
+Finally, we include here a RData file (`VilgalysFogel_main_data_file.250kb.RData`) which contains estimates of mean anubis ancestry for 250 kb windows and genes across the baboon genome. This data file is produced in Section 05. 
+
+Thank you for your interest in our work!
 
 For additional assistance, please contact Tauras Vilgalys (taur.vil@gmail.com) and Arielle Fogel (afogel29@gmail.com). 
