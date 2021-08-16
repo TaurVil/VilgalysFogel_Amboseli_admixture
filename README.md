@@ -20,7 +20,7 @@ This repository contains materials used to analyze the data from, and recreate t
 
 7. **Predicting the genomic landscape of introgression**: Analyses and figures related to predicting anubis introgression across the genome and over time. 
 
-Finally, we include here a RData file (`VilgalysFogel_main_data_file.250kb.RData`) which contains estimates of mean anubis ancestry for 250 kb windows and genes across the baboon genome. This data file is produced in Section 05. 
+Finally, we include here a RData file (`VilgalysFogel_main_data_file.250kb.RData`) which contains estimates of mean anubis ancestry for 250 kb windows across the baboon genome. This file contains 4 tables and 5 other variables. The 4 tables are: (i) ids: a copy of Table S1 containing information for Amboseli baboons; (ii) recent: a matrix of individuals (rows) and chromsoomes (columns) containing the mean anubis ancestry per chromosome of individuals with a recent anubis ancestor known from the Amboseli pedigree; and 2 copies of genomic information and mean ancestry per 250kb window, the version of which titled `to_analyze` has been filtered for recombination rates higher than `max_rcr`. These files contain columns for the mean recombination rate (rcr), mean B values (B), and the number of fixed differences (fixed). This data file is produced in Section 05. 
 
 Thank you for your interest in our work!
 
