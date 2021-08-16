@@ -13,10 +13,10 @@ module load bcftools; bcftools concat ./SNPRCanubis.*.hwe.vcf.gz -O z -o ./SNPRC
 ## Phase with beagle
 module load java; \java -Xmx4g -jar ~/Programs/beagle.08Jun17.d8b.jar gt=./SNPRCanubis.vcf.gz out=./SNPRCanubis_beagle ne=40000; tabix SNPRCanubis_beagle.vcf.gz
 
-# Break to individual chromosomes
+# Break up into individual chromosomes
 for f in `seq 1 20`; do vcftools --gzvcf SNPRCanubis_beagle.vcf.gz --chr $f --recode --out $f.SNPRCanubis ; bgzip $f.SNPRCanubis.recode.vcf; tabix $f.SNPRCanubis.recode.vcf.gz; done
 # Get individual-vcfs for each haplotype
 for f in `seq 1 20`; do for g in `cat ./n24.anubis.SNPRCfounder.list`; do sed -e s/CHROM/$f/g run.01a.panubis1.sh | sed -e s/INDIV/$g/g > g.sh; sbatch g.sh; rm g.sh; done; done
-# Run ldhelmet
+# Run LDhelmet
 for f in `seq 1 20`; do sed -e s/CHROM/$f/g run.02a.panubis1.sh > r.all.sh; sbatch --mem=65000 --nice r.all.sh; rm r.all.sh; done
 
