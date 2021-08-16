@@ -19,23 +19,23 @@ Obtain fastq files for high coverage individuals from Amboseli and unadmixed pop
 ```console
 # Map to MacaM using bowtie2
 # SRR accession numbers will be made available at the time of publication
-# for f in `cat SRR_newly_published`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.SRRs1.sh >> run.$f.sh; sbatch --mem=32000 --out=mapping.$f.out run.$f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
-rm run.*.sh
+# for f in `cat SRR_newly_published`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.SRRs1.sh >> g.$f.sh; sbatch --mem=32000 --out=mapping.$f.out g.$f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
+rm g*sh
 
 # Map previously published data available on NCBI
 cat SRR_list_BGDP SRR_list_SNPRC_amboseli_published SRR_list_SNPRC_anubis_founders >> SRR_tmp
-for f in `cat SRR_tmp`; do sed -e s/NAME/$f/g run.01b.bowtie2_map_macam.SRRs2.sh >> run.$f.sh; sbatch --mem=32000 --out=mapping.$f.out run.$f.sh; done # for all other data where paired-end reads are labeled as _1 and _2
-rm run.*.sh
+for f in `cat SRR_tmp`; do sed -e s/NAME/$f/g run.01b.bowtie2_map_macam.SRRs2.sh >> g.$f.sh; sbatch --mem=32000 --out=mapping.$f.out g.$f.sh; done # for all other data where paired-end reads are labeled as _1 and _2
+rm g*sh
 
 # Make directory to store mapped bams and move all bam files to this directory
 mkdir bams; mv map* bams/; rm SRR_tmp
 
 # Merge multiple bams from the same individual into one bam per individual
 # Must first sort before merging
-for f in `cat SRRs_AMB_310`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> run.$f.sh; sbatch --mem=2G run.$f.sh; done
-for f in `cat SRRs_1X1126`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> run.$f.sh; sbatch --mem=2G run.$f.sh; done
-for f in `cat SRRs_1X1765`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> run.$f.sh; sbatch --mem=2G run.$f.sh; done
-for f in `cat SRR_list_BGDP`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> run.$f.sh; sbatch --mem=2G run.$f.sh; done; rm run*sh
+for f in `cat SRRs_AMB_310`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> g.$f.sh; sbatch --mem=2G g.$f.sh; done
+for f in `cat SRRs_1X1126`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> g.$f.sh; sbatch --mem=2G g.$f.sh; done
+for f in `cat SRRs_1X1765`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> g.$f.sh; sbatch --mem=2G g.$f.sh; done
+for f in `cat SRR_list_BGDP`; do sed -e s/NAME/$f/g run.02a.sort_for_merge.sh >> g.$f.sh; sbatch --mem=2G g.$f.sh; done; rm g*sh
 
 # For individuals with two bams to merge (listed in fastqs_per_indiv2 where the first column is the individual's id which will be used as the new name of the merged file and the remaining columns are the bams to be merged), run:
 for i in `seq 1 2`; do sed "${i}q;d" fastqs_per_indiv2 > tmp2; f=`awk '{print $1}' tmp2`; g=`awk '{print $2}' tmp2`; h=`awk '{print $3}' tmp2`; sed -e s/SAMPLE1/$f/g run.02b.merge_2.sh > g.$f.sh; sed -e s/SAMPLE2/$g/g g.$f.sh > g.$f.$g.sh; sed -e s/SAMPLE3/$h/g  g.$f.$g.sh > 2.$f.$g.$h.sh; sbatch --mem=10G 2.$f.$g.$h.sh; done
@@ -69,24 +69,24 @@ cat tmp3 tmp4 >> samples_final # add merged bam files per individual to sample l
 rm tmp* # remove temporary files that are no longer needed
 
 # Process samples before generating gVCF files: sort, add read groups, remove duplicate reads, and reads with MAPQ less than 10
-for f in `cat samples_final`; do sed -e s/SAMPLE/$f/g run.02c.sort_RG_nodup_mapq10.sh >> run.$f.sh; sbatch --mem=30000 run.$f.sh; done
-rm run.*.sh
+for f in `cat samples_final`; do sed -e s/SAMPLE/$f/g run.02c.sort_RG_nodup_mapq10.sh >> g.$f.sh; sbatch --mem=30000 g.$f.sh; done
+rm g*sh
 
 # Make directory to store gVCFs 
 mkdir gVCF
 
 # Generate gVCF files using GATK HaplotypeCaller requiring a minimum base quality ≥ 20
 # Run for each chromosome and each individual
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.03.gvcf.sh >> run.$f.sh; sbatch --array=1-50 --mem=15000 run.$f.sh; done
-rm run.*.sh
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.03.gvcf.sh >> g.$f.sh; sbatch --array=1-50 --mem=15000 g.$f.sh; done
+rm g*sh
 # Merge gVCF files across individuals using GATK CombineGVCF and then call genotypes using GATK GenotypeGVCFs. Also, filter for high quality variants following GATK’s recommended criteria for hard filtering for germline variants and retain biallelic SNPs that were typed within all individuals in the sample. In addition, remove indels, singleton and doubleton variants, and clusters of 3 or more variants that fall within a 10 bp window.
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.04.merge_gvcfs_genotype_filter.sh > run.$f.sh; sbatch --mem=30000 run.$f.sh; done
-rm run.*.sh
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.04.merge_gvcfs_genotype_filter.sh > g.$f.sh; sbatch --mem=30000 g.$f.sh; done
+rm g*sh
 # note: we performed joint genotyping with other samples that were subsequently removed before downstream analysis detailed in this directory. We do not anticipate that the inclusion of other samples during the joint genotyping step affects our results given our subsequent filtering and processing before analysis.
 
 # to use the macaque as a possible outgroup, add the macaque genotype (homozygous reference) as an additional sample at all sites
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g run.05.add_macaque_geno.sh > run.$f.sh; sbatch --mem=20 run.$f.sh; done
-rm run.*.sh
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROMOSOME/$f/g run.05.add_macaque_geno.sh >> g.$f.sh; sbatch --mem=20 g.$f.sh; done
+rm g*sh
 ```
 
 Having completed joint genotype calling, we next need to convert each vcf into EIGENSTRAT format. We will then calculate _F4_ statistics using _admixr_ (Petr et al. 2019 _Bioinformatics_; https://github.com/bodkan/admixr)
@@ -100,8 +100,8 @@ for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g my.par.ped.eigenstrat
 
 # For chromosomes 1-19 (excluding chromosomes 02a and 02b), run vcf --> plink --> EIGENSTRAT conversion:
 grep -v "chr02" MacaM_autosome_list >> MacaM_autosome_list_no_chr02s # get list of autosomes excluding chr02a and chr02b
-for f in `cat MacaM_autosome_list_no_chr02s`; do sed -e s/CHROM/$f/g run.06a.get_eigenstrat_format_excluding_chr02s.sh >> run.$f.sh; sbatch run.$f.sh; done # for all autosomes except chr02a and chr02b
-rm MacaM_autosome_list_no_chr02s; rm run*sh 
+for f in `cat MacaM_autosome_list_no_chr02s`; do sed -e s/CHROM/$f/g run.06a.get_eigenstrat_format_excluding_chr02s.sh >> g.$f.sh; sbatch g.$f.sh; done # for all autosomes except chr02a and chr02b
+rm MacaM_autosome_list_no_chr02s; rm g*sh 
 
 # For chromosomes 02a and 02b, plink and EIGENSTRAT formats do not like weird chromosome names so rename chr02a and chr02b to chr20 and chr21 in the vcf, respectively (but can keep file names as chr02a and chr02b)
 echo "chr02a chr20" >> chr02a_names; echo "chr02b chr21" >> chr02b_names
@@ -114,18 +114,18 @@ rm chr02*names
 
 # Now run vcf --> plink --> EIGENSTRAT conversion for chromosomes 02a and 02b:
 grep "chr02" MacaM_autosome_list >> MacaM_autosome_list_only_chr02s # get list of chr02a and chr02b
-for f in `cat MacaM_autosome_list_only_chr02s`; do sed -e s/CHROM/$f/g run.06b.get_eigenstrat_format_chr02s.sh >> run.$f.sh; sbatch run.$f.sh; done # for renamed chr02a and chr02b files
-rm MacaM_autosome_list_only_chr02s; rm run*sh 
+for f in `cat MacaM_autosome_list_only_chr02s`; do sed -e s/CHROM/$f/g run.06b.get_eigenstrat_format_chr02s.sh >> g.$f.sh; sbatch g.$f.sh; done # for renamed chr02a and chr02b files
+rm MacaM_autosome_list_only_chr02s; rm g*sh 
 
 # Remove intermediate files no longer needed
 rm updated*; rm *map; rm *ped
 
-# The eig.n49.ind chromosome-specific files generated by the `run.06` scripts need to be updated with population info for each sample (see eig.indiv) and it's easier to remove the ones generated by convertf and copy eig.indiv so that each chromosome has the correct eig.ind file
-rm eig.n49*ind # remove chromosome-specific files generated by convertf
-for f in `cat MacaM_autosome_list`; do cp eig.indiv eig.n49.$f.ind; done # create new eig.ind files
+# The eig.n49.ind chromosome-specific files generated by the `run.06` scripts need to be updated with population info for each sample (see DATA/eig.indiv) and it's easier to remove the ones generated by convertf and copy eig.indiv so that each chromosome has the correct eig.ind file
+rm eig.n49*ind # remove chromosome-specific "ind" files generated by convertf
+for f in `cat MacaM_autosome_list`; do cp eig.indiv eig.n49.$f.ind; done # create new eig.ind files for each chromosome
 
 # Now we have the requisite EIGENSTRAT files (ind, snp, and geno files for each chromosome)!
-# We'll input the EIGENSTRAT formatted data into admixr (version 0.9.1; Petr et al. 2019 Bioinformatics; https://github.com/bodkan/admixr), an R package that builds on the ADMIXTOOLS software suite (Patterson et al. 2012 Genetics; https://github.com/DReichLab/AdmixTools). There are several helpful tutorials for using admixr (see here for example: https://bodkan.net/admixr/articles/tutorial.html).
+# We'll input the EIGENSTRAT formatted data into admixr (version 0.9.1; Petr et al. 2019 Bioinformatics; https://github.com/bodkan/admixr), an R package that builds on the ADMIXTOOLS software suite (Patterson et al. 2012 Genetics; https://github.com/DReichLab/AdmixTools). There are several helpful tutorials for using admixr (see here for an example: https://bodkan.net/admixr/articles/tutorial.html).
 # admixr is available on CRAN and be installed like a typical R package using:
 install.packages("admixr")
 # However, admixr requires that ADMIXTOOLS is also downloaded. After installing ADMIXTOOLS (https://github.com/DReichLab/AdmixTools/blob/master/README.INSTALL), you'll need to load a few more packages for ADMIXTOOLS to work:
@@ -138,9 +138,9 @@ export PATH=$PATH:AdmixTools-master/bin # location of the AdmixTools-master dire
 echo $PATH # should be the last part of the path
 
 # Estimate the f4 ratio per chromosome using the f4ratio function in admixr
-for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.07.f4ratio_admixr.R >> run.$f.sh; sbatch run.$f.sh; done
-rm run*sh
+for f in `cat MacaM_autosome_list`; do sed -e s/CHROM/$f/g run.07.f4ratio_admixr.R >> g.$f.sh; sbatch g.$f.sh; done
+rm g*sh
 
-# To obtain a genome-wide f4 ratio estimate of anubis ancestry proportions (α), get the average of the different phylogenetic configurations per chromosome and then average these estimates across chromosomes, weighted by chromosome length. Run:
+# To obtain a genome-wide f4 ratio estimate of anubis ancestry proportions (α), get the average of the different phylogenetic configurations per chromosome and then average these estimates across chromosomes, weighted by chromosome length. We provide the chromosome-specific Rdata files generated by the run.07.f4ratio_admixr.R script in DATA (titled f4_ratio_CHROMOSOME.Rd) in order to run the following script. Run the R script:
 run.08.f4ratio_results.R
 ```
