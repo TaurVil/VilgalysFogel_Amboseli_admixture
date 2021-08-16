@@ -4,9 +4,9 @@ In addition to estimating admixture using a local ancestry approach (e.g., LCLAE
 
 Details can be found in Supplementary Methods Section 8.
 
-#### Mapping samples to MacaM genome
+#### Mapping samples to the _MacaM_ genome
 
-Obtain fastq files for high coverage individuals from Amboseli and unadmixed populations, then map these data to the rhesus macaque genome (MacaM; Zimin et al. 2014 Biology Direct) using bowtie2. Some of these files are split between multiple SRA ascensions, so they will need to be merged together into a single file after mapping. 
+Obtain fastq files for high coverage individuals from Amboseli and unadmixed populations, then map these data to the rhesus macaque genome (_MacaM_; Zimin et al. 2014 Biology Direct) using bowtie2. Some of these files are split between multiple SRA ascensions, so they will need to be merged together into a single file after mapping. 
 
 **Data needed:**
 * Fastq files for Amboseli high coverage individuals (recently admixed animals: AMB_301, AMB_317; historically admixed animals: AMB_310, AMB_311, AMB_312, AMB_313, AMB_314, AMB_316, AMB_318) are available in the NCBI Sequence Read Archive (SRA) under BioProject accession PRJNA295782 or will be available at the time of publication under BioProject accession PRJNA755322 (see Table S1 for accession numbers for each sample)
