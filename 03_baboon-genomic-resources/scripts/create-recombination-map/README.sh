@@ -3,7 +3,7 @@
 
 ## get genotype data from the raw, unfiltered vcf file 
 ## keep the 24 SNPRC high coverage anubis individuals, filter for sites with no missing data, that pass GATK hard filters, and have a minor allele frequency less than 5%. Also remove clusters of 3+ SNPs within 10 bp
-## matches filtering criteria in Pfeifer 2020 (vervet monkey genetic map )
+## matches filtering criteria used in Pfeifer 2020 Mol Biol Evol (vervet monkey genetic map)
 
 sbatch --array=1-20 --mem=12G ./run.01.prep_genotypes.sh 
 
