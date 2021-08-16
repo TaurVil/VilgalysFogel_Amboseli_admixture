@@ -9,6 +9,7 @@ module load tabix
 
 ls gVCF/*.CHROM.g.vcf.gz > indivs.CHROM.list
 
+# originally performed joint genotyping on 94 samples (why files are labeled as n94)
 GenomeAnalysisTK.sh CombineGVCFs  -R $path_genome -O baboon.to.macam.n94.CHROM.g.vcf.gz -L CHROM -V indivs.CHROM.list
 GenomeAnalysisTK.sh GenotypeGVCFs -R $path_genome -V baboon.to.macam.n94.CHROM.g.vcf.gz -L CHROM -O baboon.to.macam.n94.CHROM.vcf.gz 
 
@@ -17,7 +18,7 @@ module load java/1.8.0_45-fasrc01
 module load vcftools
 
 # GATK hard filtering for high quality variants, remove clusters of 3 or more variants that fell within a 10 bp window
-java -jar /data/tunglab/tpv/Programs/GenomeAnalysisTK.jar -T VariantFiltration -R $path_genome -V baboon.to.macam.n94.CHROM.vcf.gz -filterName "FS" --filterExpression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" -cluster 3 -window 10 -o baboon.to.macam.n94.CHROM.filt.vcf.gz
+java -jar GenomeAnalysisTK.jar -T VariantFiltration -R $path_genome -V baboon.to.macam.n94.CHROM.vcf.gz -filterName "FS" --filterExpression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" -cluster 3 -window 10 -o baboon.to.macam.n94.CHROM.filt.vcf.gz
 
 # Only keep the 48 individuals we will analyze for f4 stats
 #vcftools --gzvcf baboon.to.macam.n94.CHROM.filt.vcf.gz --keep f4indivlist_n48  --recode --out tmp.n48.CHROM --recode-INFO-all
