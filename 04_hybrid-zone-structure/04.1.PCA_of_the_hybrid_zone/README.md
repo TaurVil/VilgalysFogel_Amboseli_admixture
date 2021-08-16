@@ -15,7 +15,7 @@ fread("~/Baboon/Paper1b_demographicinference/for_pca.012") -> d; t(d) -> d; d[-1
 
 fread("~/Baboon/Paper1b_demographicinference/for_pca.012.indv", head=F) -> names
 names$missing <- colSums(is.na(d))
-## Add in the population which each animal originated 
+## Add in the population where each animal originated 
 names$source <- c(rep("Amboseli",9), rep("SNPRCanubis_founders",24), rep("Mara", 7), rep("WNPRC",6), rep("BGDPanubis",4), rep("SNPRCyellow_founders",7), rep("Mikumi",15))
 
 missing <- rowSums(is.na(d)); hist(missing) # plot amount of missing data per site
@@ -35,5 +35,5 @@ save.image("for_pca.RData")
 
 Finally, we will produce Figures 1B and S4. The data file needed to reproduce these figures is included here (`for_pca.RData`) and the code is in `figure1B_S4.R`
 ```console
-./r01.figure1B_S4.R
+./figure1B_S4.R
 ```
