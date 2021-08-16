@@ -4,8 +4,6 @@ In addition to estimating admixture using a local ancestry approach (e.g., LCLAE
 
 Details can be found in Supplementary Methods Section 8.
 
-Note that at this time, some SRR files are not publicly available yet.
-
 #### Mapping samples to MacaM genome
 
 Obtain fastq files for high coverage individuals from Amboseli and unadmixed populations, then map these data to the rhesus macaque genome (MacaM; Zimin et al. 2014 Biology Direct) using bowtie2. Some of these files are split between multiple SRA ascensions, so they will need to be merged together into a single file after mapping. 
