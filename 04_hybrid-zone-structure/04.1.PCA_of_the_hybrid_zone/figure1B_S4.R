@@ -12,7 +12,7 @@ load("./for_pca.RData", verbose=T)
 # Figure 1B
 #############################################################################################################################
 
-# PCA of high coverage samples
+# PCA of high coverage putatively unadmixed individuals and high coverage Amboseli individuals
 # Need to remove low coverage data
 names$V1[-c(34:46,58:60,65)]
 length(names$V1[-c(34:46,58:60,65)])==55 # TRUE - should equal 55
@@ -48,16 +48,15 @@ ggplot(data=tmp) + geom_point(aes(factor(as.factor(names_tmp$source2[-c(34:46,58
 
 ggsave("fig1B.png")
 
-
-# Combine 1B and 1C
+# Combine 1B and 1C for Figure 1
 #library(patchwork)
 #(b + theme(plot.margin = unit(c(0,20,0,0), "pt"))) + (c + theme(plot.margin = unit(c(0,0,0,20), "pt")))
 
 #############################################################################################################################
 # Figure S4
 #############################################################################################################################
-# PCA analysis on all putatively unadmixed individuals & high coverage amboseli samples
 
+# PCA of all putatively unadmixed individuals (both low and high coverage) and high coverage Amboseli individuals
 pcrat <- prcomp(covgeno,scale.=T) # perform PCA on genotype covariance using all individuals regardless of their coverage
 
 tmp <- as.data.frame(pcrat$x)
@@ -78,7 +77,6 @@ names_tmp$source[c(49:50)] <- "SNPRC"
 names_tmp$source[c(47:48)] <- "Aberdares"
 
 summary(pcrat)
-
 
 names_tmp$source2 <- factor(names_tmp$source, levels=c("Amboseli", "Mikumi", "Aberdares", "Mara", "WNPRC", "SNPRC")) 
 # assign low and high coverage
