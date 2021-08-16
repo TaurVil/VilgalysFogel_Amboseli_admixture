@@ -79,26 +79,3 @@ sum(floor(((chrom_sizes$end_chrom-chrom_sizes$start_chrom)/wind)+1))==nrow(posit
 
 # Save dataframes for upload to the computing cluster for parallelization 
 save(indiv_list, tracts2, positions, trios, file="local_ancestry_pedigree_trios_maskedSNPRCref.Rd")
-
-# We also want to compare consistencies of ancestry calls using the masked SNPRC reference panel with the low coverage reference panel from Wall et al. 2016 Molecular Ecology
-rm(tracts, tracts2) # remove tracts using the masked SNPRC reference panel but keep the indiv_list, trios, and positions data frames
-
-# Load ancestry tracts generated using unmasked Maasai Mara and Mikumi individuals for the reference panel available in the Duke Data Repository at XXX
-# Note that throughout the code, this panel is referred to as "Wallref" but it includes not only the low-coverage reference panel used by Wall et al. but is also supplemented with high coverage Mikumi samples (10 new and one from Rogers et al. 2019 Sci Advances)
-tracts <- read.table("amboseli.tracts.unmaskedWallref.txt", header=T)
-
-# Remove tracts <1 kb in length
-tracts <- tracts[tracts$length2>1000,]
-
-# Retain tracts only for individuals in the pedigree trios
-# Merge tracts with unique individuals across the pedigree trios so we only retain tracts from individuals we'll work with in this analysis
-tmp2 <- merge(indiv_list, tracts, by.x=c("indiv"), by.y = c("table_s1_id"))
-
-# Check to make we have tract data for all 181 individuals
-nrow(distinct(tmp2, indiv))==nrow(indiv_list) # TRUE
-
-# Grab only columns we'll need (indiv, chrom, start of the tract, end of the tract, ancestry state of the tract)
-tracts2 <- tmp2[c(1:5)]
-
-# Save dataframes for upload to the computing cluster for parallelization 
-save(indiv_list, tracts2, positions, trios, file="local_ancestry_pedigree_trios_unmaskedWallref.Rd")
