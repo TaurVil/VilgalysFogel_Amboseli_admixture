@@ -11,9 +11,9 @@ Note that at this time, some SRR files are not publicly available yet.
 Obtain fastq files for high coverage individuals from Amboseli and unadmixed populations, then map these data to the rhesus macaque genome (MacaM; Zimin et al. 2014 Biology Direct) using bowtie2. Some of these files are split between multiple SRA ascensions, so they will need to be merged together into a single file after mapping. 
 
 **Data needed:**
-* Fastq files for Amboseli high coverage individuals (recently admixed animals: AMB_301, AMB_317; historically admixed animals: AMB_310, AMB_311, AMB_312, AMB_313, AMB_314, AMB_316, AMB_318) are available in the NCBI Sequence Read Archive (SRA) under BioProject accession PRJNA295782 or will be available at the time of publication (see Table S1 for accession numbers for each sample)
+* Fastq files for Amboseli high coverage individuals (recently admixed animals: AMB_301, AMB_317; historically admixed animals: AMB_310, AMB_311, AMB_312, AMB_313, AMB_314, AMB_316, AMB_318) are available in the NCBI Sequence Read Archive (SRA) under BioProject accession PRJNA295782 or will be available at the time of publication under BioProject accession PRJNA755322 (see Table S1 for accession numbers for each sample)
 * Fastq files for the SNPRC anubis founders are available in the NCBI Sequence Read Archive (SRA) under BioProject accession number PRJNA433868 (see Table S1 for accession numbers for each sample)
-* Fastq files for yellow baboons from Mikumi National Park are available in the NCBI Sequence Read Archive (SRA) under BioProject accession PRJNA308870 or will be available at the time of publication (see Table S1 for accession numbers for each sample)
+* Fastq files for yellow baboons from Mikumi National Park are available in the NCBI Sequence Read Archive (SRA) under BioProject accession PRJNA308870 or will be available at the time of publication under BioProject accession PRJNA755322 (see Table S1 for accession numbers for each sample)
 * Fastq files for hamadryas, Guinea, and the gelada monkey from the Baboon Genome Sequencing Consortium available in the NCBI Sequence Read Archive (SRA) under BioProject accession numbers PRJNA20425, PRJNA54003, PRJNA251424, respectively (see Table S1 for accession numbers for each sample).
 
 ```console
