@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Filtering recommendations from Pfeifer 2020 (vervet monkey genetic map)
+# Filtering recommendations from Pfeifer 2020 Mol Biol Evol (vervet monkey genetic map)
 
 ## get SNPRC anubis from full list of baboon genome calls 
 vcftools --gzvcf ./baboon1k_v1_snpEff_chr$chrom'.vcf.gz' --keep n24.anubis.SNPRCfounder.list --max-alleles 2 --remove-indels --recode --out ./tmp.1.$chrom.SNPRCanubis --recode-INFO-all
@@ -26,11 +26,11 @@ rm SNPRCanubis.*singletons
 ## Specifically, a P-value for Hardy–Weinberg Equilibrium was calculated using the “—hardy” option in VCFtools v.0.1.13 (Danecek et al. 2011), and SNPs with P < 0.01 removed.
 vcftools --hardy --gzvcf SNPRCanubis.$chrom.recode.vcf --out SNPRCanubis.$chrom
 module load R; R 
-library(data.table); fread("SNPRCanubis.$chrom.hwe") -> hwe; subset(hwe, hwe$P_HWE < 0.01) -> hwe; dim(hwe); write.table(hwe[,1:2], "anubisSW_hwe_to_remove.$chrom.sites", row.names=F, col.names=F, sep="\t", quote=F); quit(save="no")
-vcftools --gzvcf SNPRCanubis.$chrom.recode.vcf --recode-INFO-all --remove-filtered-all --exclude-positions anubisSW_hwe_to_remove.$chrom.sites --recode --out SNPRCanubis.$chrom.hwe 
+library(data.table); fread("SNPRCanubis.$chrom.hwe") -> hwe; subset(hwe, hwe$P_HWE < 0.01) -> hwe; dim(hwe); write.table(hwe[,1:2], "anubisSNPRC_hwe_to_remove.$chrom.sites", row.names=F, col.names=F, sep="\t", quote=F); quit(save="no")
+vcftools --gzvcf SNPRCanubis.$chrom.recode.vcf --recode-INFO-all --remove-filtered-all --exclude-positions anubisSNPRC_hwe_to_remove.$chrom.sites --recode --out SNPRCanubis.$chrom.hwe 
 
 bgzip SNPRCanubis.$chrom.hwe.recode.vcf ; tabix SNPRCanubis.$chrom.hwe.recode.vcf.gz
 
 
-## SNPs that could be recipricolly lifted over with the human genome? We'll ignore this, assuming the quality of the baboon genome is sufficient. 
+## SNPs that could be reciprocally lifted over with the human genome? We'll ignore this, assuming the quality of the baboon genome is sufficient. 
 ## Remove fixed alleles: done earlier with the maf frequency
