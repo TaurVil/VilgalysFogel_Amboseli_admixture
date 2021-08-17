@@ -4,7 +4,7 @@
 	# So the file is recombination blocks, where the snp position is the start of this block and goes until the next block 
 	# Need to make sure both the rate and length are in the right units 
 
-	cp ./recombination/anubisSW.* ./
+	cp ./recombination/anubisSNPRC.* ./
 
 	module load R; R
     read.table("~/genomes/panubis1/Panubis1.0.fa.fai") -> lengths # indexed Panubis1.0 genome 
