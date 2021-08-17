@@ -13,10 +13,10 @@ library(patchwork)
 # Load baboon results
 load("../VilgalysFogel_main_data_file.250kb_windows.RData", verbose=T)
 
-# Rename to_analyze to baboon
+# Rename "to_analyze" data frame to "baboon"
 baboon <- to_analyze
 
-# For plotting purposes only, assign fixed differences, B values, and recombination rate to quintiles
+# For plotting purposes only, assign fixed differences, B values, and recombination rate to quantiles
 baboon$fixed_quant <- quantcut(baboon$fixed, q=5) # assign fixed differences to quantiles
 baboon$B_quant <- quantcut(baboon$B, q=5) # assign B values to quantiles
 baboon$rcr_quant <- quantcut(baboon$rcr, q=5) # assign recombination rate to quantiles
@@ -29,7 +29,7 @@ baboon$rcr_quant <- quantcut(baboon$rcr, q=5) # assign recombination rate to qua
 median_anubis_ancestry <- median(baboon$mean_ancestry)
 round(median_anubis_ancestry,3) # 0.367
 
-# Use swarm and boxplots plot all baboon data points
+# Use swarm plots and boxplots for visualizing patterns in the baboon data
 # Plot fixed differences vs. introgressed anubis ancestry
 plotA <- ggplot(data = baboon, aes(x=fixed_quant, y=mean_ancestry)) + 
   geom_beeswarm(aes(color=as.numeric(fixed_quant)), cex=0.4, alpha=0.5) + 
@@ -66,19 +66,20 @@ plotE <- ggplot(data = baboon, aes(x=rcr_quant, y=mean_ancestry)) +
 load("./windows.human.250kb.RData", verbose=T)
 rm(distance, Neand_ancestry)
 
+# Rename "all" data frame to "hominin"
 hominin <- all
 
-# Only retain windows where more than 60% of the 250 kb window includes "testable" parts of the human genome (i.e. they are not regions labeled as difficult to detect Neanderthal ancestry and in regions where Neanderthal genotypes have been called)
+# Only retain windows where more than 60% of the 250 kb window includes "testable" parts of the human genome (i.e., they are not regions labeled as difficult to detect Neanderthal ancestry and in regions where Neanderthal genotypes have been called)
 hominin <- hominin[hominin$testable > 150000,] 
 # Only retain windows where we have non-NA values for all data
 hominin <- hominin[rowSums(is.na(hominin)) == 0,] # we lose one line
 
-# As with the baboon results above, for plotting purposes only, assign fixed differences, B values, and recombination rate to quintiles
+# As with the baboon results above, for plotting purposes only, assign fixed differences, B values, and recombination rate to quantiles
 hominin$fixed_N3_quant <- quantcut(hominin$fixed_N3, q=5) # assign fixed differences to quantiles
 hominin$B_quant <- quantcut(hominin$B, q=5) # assign b-values to quantiles
 hominin$rcr_quant <- quantcut(hominin$Icelandic, q=5) # assign recombination rate to quantiles
 
-# To compare slopes between species (baboons and hominins) with different levels of introgressed ancestry, center mean introgressed ancestry on 0 within species and divde by the sd to facilitate comparison of slopes
+# To compare slopes between species (baboons and hominins) with different levels of introgressed ancestry, center mean introgressed ancestry on 0 within species and divide by the sd to facilitate comparison of slopes
 # Mean center the baboon data
 baboon$mean_ancestry_centered <- baboon$mean_ancestry - mean(baboon$mean_ancestry)
 # Mean center the hominin data
@@ -90,16 +91,19 @@ baboon$mean_ancestry_centered_sd <- baboon$mean_ancestry_centered/ sd(baboon$mea
 # Divde the mean centered hominin data by the sd
 hominin$mean_ancestry_centered_sd <- hominin$mean_ancestry_centered/ sd(hominin$mean_ancestry)
 
+# Plot fixed differences vs. introgressed ancestry for hominins and baboons
 plotB <- ggplot() + 
   geom_smooth(data = hominin, aes(x=rank(fixed_N3)/length(fixed_N3), y=mean_ancestry_centered_sd), color="#5C438A", size=1.5, linetype = "longdash", method="lm", se=FALSE) + geom_smooth(data = baboon, aes(x=rank(fixed)/length(fixed), y=mean_ancestry_centered_sd), color="#5C438A", size=1.5, method="lm", se=FALSE) + theme_classic() +
   theme(text=element_text(size=14), axis.text = element_text(color="black"), axis.text.x=element_blank(),axis.ticks.x=element_blank(), legend.position = "none", axis.title.x = element_text(vjust=-2), plot.margin = margin(l=20, b=10))  + 
   labs(x="rank-ordered number of fixed differences", y=""); plotB
 
+# Plot B values vs. introgressed ancestry for hominins and baboons
 plotD <- ggplot() + 
   geom_smooth(data = hominin, aes(x=rank(B)/length(B), y=mean_ancestry_centered_sd), color="#506FB3", size=1.5, linetype = "longdash", method="lm", se=FALSE) + geom_smooth(data = baboon, aes(x=rank(B)/length(B), y=mean_ancestry_centered_sd), color="#506FB3", size=1.5, method="lm", se=FALSE) + theme_classic() +
   theme(text=element_text(size=14), axis.text = element_text(color="black"), axis.text.x=element_blank(),axis.ticks.x=element_blank(), legend.position = "none", axis.title.x = element_text(vjust=-2), plot.margin = margin(l=20, b=10))  + 
   labs(x="rank-ordered B values", y="standardized introgressed ancestry"); plotD
 
+# Plot recombination rate vs. introgressed ancestry for hominins and baboons
 plotF <- ggplot() + 
   geom_smooth(data = hominin, aes(x=rank(recombination)/length(recombination), y=mean_ancestry_centered_sd), color="#366B7D", size=1.5, linetype = "longdash", method="lm", se=FALSE) + geom_smooth(data = baboon, aes(x=rank(rcr)/length(rcr), y=mean_ancestry_centered_sd), color="#366B7D", size=1.5,  method="lm", se=FALSE) + theme_classic() +
   theme(text=element_text(size=14), axis.text = element_text(color="black"), axis.text.x=element_blank(),axis.ticks.x=element_blank(), legend.position = "none", axis.title.x = element_text(vjust=-2), plot.margin = margin(l=20,b=10))  + 
@@ -145,4 +149,4 @@ plotFright <- ggplot(data = baboon)  + geom_smooth(aes(x=rank(rcr), y=recent_anc
 # Plot all panels in figures 3D-F
 (((plotDleft + theme(plot.margin = unit(c(0,0,50,0), "pt"))) | plotDright) + xlab(label = "number of fixed differences per Mb") + theme(axis.title.x = element_text( hjust=2.25, vjust=-0.3))) / (((plotEleft + theme(plot.margin = unit(c(0,0,50,0), "pt"))) | plotEright) + xlab(label = "rank-ordered B values") + theme(axis.title.x = element_text(hjust=-6,vjust=-0.3))) / (((plotFleft + theme(plot.margin = unit(c(0,0,50,0), "pt"))) | plotFright) + xlab(label = "rank-ordered recombination rate") + theme(axis.title.x = element_text(hjust=3, vjust=-0.3)))
 
-ggsave("fig3DEF.png") # this plot, I manually export as image in RStudio and save as "png" with 1000 width x 2000 height
+ggsave("fig3DEF.png") # this plot, I manually exported as an image in RStudio and save as "png" with 1000 width x 2000 height
