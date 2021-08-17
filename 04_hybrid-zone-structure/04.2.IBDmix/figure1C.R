@@ -5,7 +5,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-# Load IBDmix results for putative yellow individuals (Mikumi, SNPRC yellow). First column flags the individual ID and second column the population which the individual is from. Each other column represents the mean estimated IBD between the individual (row) and the population (column name). 
+# Load IBDmix results for putative unadmixed yellow individuals (Mikumi, SNPRC yellow). First column includes the individual ID and second column includes the individual's population. The remaining columns represents the mean estimated IBD between the individual (row) and the population (column name). 
 mikumi_SNPRCyellow_ibd <- read.table("ibdmix_yellow_estimates.txt", header=T) 
 # Load IBDmix results for high coverage Amboseli individuals
 amboseli_ibd <- read.table("ibdmix_amboseli_estimates.txt", header=T) 
