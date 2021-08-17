@@ -2,7 +2,7 @@
 library(plyr); library(dplyr); library(data.table); library(parallel)
 distance <- 2.5e5
 
-# Start with human chromosome lengths (we used the fasta index file hg37) to get non-overlapping 250kb windows of the genome
+# Start with human chromosome lengths (we used the fasta index file hg37) to get non-overlapping 250 kb windows of the genome
 # Get matrix of Neanderthal ancestry for hg19 from Steinrucken et al. 
 
 ##### Get windows for human genome ######
@@ -31,7 +31,7 @@ calc_mean_ancestry_per_window <- function(window) {
   return(sum(tmp2$l)/distance)
 }
 
-## list of all individuals published by Steinrucken et al
+## list of all individuals published by Steinrucken et al.
 individuals <- NULL
 individuals$"CEU" = c('NA06984', 'NA06986', 'NA06989', 'NA06994', 'NA07000', 'NA07037', 'NA07048', 'NA07051', 'NA07056', 'NA07347', 'NA07357', 'NA10847', 'NA10851', 'NA11829', 'NA11830', 'NA11831', 'NA11843', 'NA11892', 'NA11893', 'NA11894', 'NA11919', 'NA11920', 'NA11930', 'NA11931', 'NA11932', 'NA11933', 'NA11992', 'NA11993', 'NA11994', 'NA11995', 'NA12003', 'NA12004', 'NA12006', 'NA12043', 'NA12044', 'NA12045', 'NA12046', 'NA12058', 'NA12144', 'NA12154', 'NA12155', 'NA12249', 'NA12272', 'NA12273', 'NA12275', 'NA12282', 'NA12283', 'NA12286', 'NA12287', 'NA12340', 'NA12341', 'NA12342', 'NA12347', 'NA12348', 'NA12383', 'NA12399', 'NA12400', 'NA12413', 'NA12489', 'NA12546', 'NA12716', 'NA12717', 'NA12718', 'NA12748', 'NA12749', 'NA12750', 'NA12751', 'NA12761', 'NA12763', 'NA12775', 'NA12777', 'NA12778', 'NA12812', 'NA12814', 'NA12815', 'NA12827', 'NA12829', 'NA12830', 'NA12842', 'NA12843', 'NA12872', 'NA12873', 'NA12874', 'NA12889', 'NA12890')
 individuals$"CHB" = c('NA18525', 'NA18526', 'NA18527', 'NA18528', 'NA18530', 'NA18532', 'NA18534', 'NA18535', 'NA18536', 'NA18537', 'NA18538', 'NA18539', 'NA18541', 'NA18542', 'NA18543', 'NA18544', 'NA18545', 'NA18546', 'NA18547', 'NA18548', 'NA18549', 'NA18550', 'NA18552', 'NA18553', 'NA18555', 'NA18557', 'NA18558', 'NA18559', 'NA18560', 'NA18561', 'NA18562', 'NA18563', 'NA18564', 'NA18565', 'NA18566', 'NA18567', 'NA18570', 'NA18571', 'NA18572', 'NA18573', 'NA18574', 'NA18576', 'NA18577', 'NA18579', 'NA18582', 'NA18592', 'NA18593', 'NA18595', 'NA18596', 'NA18597', 'NA18599', 'NA18602', 'NA18603', 'NA18605', 'NA18606', 'NA18608', 'NA18609', 'NA18610', 'NA18611', 'NA18612', 'NA18613', 'NA18614', 'NA18615', 'NA18616', 'NA18617', 'NA18618', 'NA18619', 'NA18620', 'NA18621', 'NA18622', 'NA18623', 'NA18624', 'NA18626', 'NA18627', 'NA18628', 'NA18630', 'NA18631', 'NA18632', 'NA18633', 'NA18634', 'NA18635', 'NA18636', 'NA18637', 'NA18638', 'NA18639', 'NA18640', 'NA18641', 'NA18642', 'NA18643', 'NA18645', 'NA18647', 'NA18740', 'NA18745', 'NA18747', 'NA18748', 'NA18749', 'NA18757')
@@ -76,7 +76,7 @@ all$mean_ancestry <- rowMeans(Neand_ancestry[,-c(1:3)])
 
 ##### Get genomic features ######
 
-## Get B values## these were hg18
+## Get B values ## these were hg18
 ## moved to hg19/37 using http://grch37.ensembl.org/Homo_sapiens/Tools/AssemblyConverter?db=core
 ## due to file sizes, we lifted them over in 3 parts (newB1-3)
 calc_mean_B <- function(window) {

@@ -10,7 +10,7 @@ distance <- 5e6
 ### Recent vs historical
 load("./windows.25kb.RData")
 
-#########   Convert 25kb tracts to new tract lengths tracts       ###########
+#########   Convert 25 kb tracts to new tract lengths       ###########
 lengths <- read.delim("../03_baboon-genomic-resources/Resources/Panubis1_chromlengths.txt", header=F)
 new_windows <- NULL; for (i in 1:20) {
   max <- lengths$V2[i]
@@ -46,7 +46,7 @@ to_analyze <- subset(new_features, new_features$recombination < max_rcr)
 save.image(paste("./windows.",d_name,".RData", sep=""))
 
 
-##### Optional: get individaul ancestry per window ########
+##### Optional: get individual ancestry per window ########
 ## this code scales `ancestry_per_individual`, if retained, to window sizes that match those above
 # fun_get_new_window_ancestry <- function(site, input_ancestry) {
 #   t_ancestry <- subset(input_ancestry, input_ancestry$chr == new_windows$chr[site] & input_ancestry$start >= new_windows$start[site] & input_ancestry$end <= new_windows$end[site])
