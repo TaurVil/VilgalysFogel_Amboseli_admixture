@@ -15,7 +15,7 @@ export PATH=$PATH:~/Programs/cmake/bin/
 module load gcc
 
 
-# Get genotypes called in either reference panel, then remove invariant sites and prepare to remove singletons
+# Get genotypes called in either reference panel, then remove invariant sites and prepare to remove singletons/doubletons
 vcftools --gzvcf ./baboon1k_v1_snpEff_chr$chrom'.vcf.gz' --keep 00_anu.list --keep 00_yel.list --max-alleles 2 --remove-indels --recode --out ./chrom_vcfs/01.raw_biallelic_snps.$chrom.unadmixed --recode-INFO-all
 vcftools --gzvcf ./chrom_vcfs/01.raw_biallelic_snps.$chrom.unadmixed.recode.vcf --max-missing 0.5 --minQ 30 --max-alleles 2 --remove-indels --maf 0.001 --recode --out ./chrom_vcfs/01.$chrom.missing_minQ_biallelic.unadmixed --recode-INFO-all
 vcftools --gzvcf ./chrom_vcfs/01.$chrom.missing_minQ_biallelic.unadmixed.recode.vcf --singletons --out ./chrom_vcfs/01.$chrom.unadmixed

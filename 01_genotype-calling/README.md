@@ -12,7 +12,7 @@ For any questions regarding this content, please contact Jacqueline Robinson (ht
 
 #### Part 2: Produce filtered files of anubis, yellow, and Amboseli baboon ancestry calls
 
-First, we will get genotype calls for putatively unadmixed yellow and anubis baboons. This will require the unfiltered VCF file of baboon genotypes (which will be made available on Zenodo as `baboon_genotypes.raw.CHROMOSOME.vcf.gz`) and lists of unadmixed individuals (`00_anubis.list` and `00_yellow.list`, which can be found in Table S1). We will hard filter these genotypes for sites called in >50% of both yellow and anubis baboons, as well as sites that pass hard filtering criteria. Finally, we will remove singleton and doubleton variants and export files of yellow and anubis genotype calls as `02.yel.$chrom.recode.vcf.gz` and `02.anu.$chrom.recode.vcf`. These files will then be combined into `yellow.vcf.gz` and `anubis.vcf.gz`, and merged into `refpanel.vcf.gz`. 
+First, we will get genotype calls for putatively unadmixed yellow and anubis baboons. This will require the unfiltered VCF file of baboon genotypes (`baboon_genotypes.raw.CHROMOSOME.vcf.gz`; called above and available upon request) and lists of unadmixed individuals (`00_anubis.list` and `00_yellow.list`, which can be found in Table S1). We will hard filter these genotypes for sites called in >50% of both yellow and anubis baboons, as well as sites that pass hard filtering criteria. Finally, we will remove singleton and doubleton variants and export files of yellow and anubis genotype calls as `02.yel.$chrom.recode.vcf.gz` and `02.anu.$chrom.recode.vcf`. These files will then be combined into `yellow.vcf.gz` and `anubis.vcf.gz`, and merged into `refpanel.vcf.gz`. 
 
 ```console
 ## Get calls for unadmixed individuals
@@ -55,7 +55,7 @@ Our results revealed unexpected anubis ancestry in yellow baboons used to found 
 Creating these files requires genotype calls for unadmixed individuals (`yellow.vcf.gz` and `anubis.vcf.gz`, generated above) and tracts of sequence to mask (`yes_intersect_50.bed`, generated in Section 04.2). These genotype calls will be available on Zenodo as `masked_yellow_and_anubis.vcf.gz`. 
 
 ```console
-## we'll use tracts generated in section 04.2, specifically yes_intersect_50.bed. The title `yes_intersect_50` means (i) we are masking regions called introgressed in low coverage individuals using the results from LCLAE, (ii) we're using the intersection of LCLAE and IBDmix for high coverage individuals, and (iii) we're requiring IBD with 50% of source individuals to include a region. 
+## we'll use tracts generated in section 04.2, specifically yes_intersect_50.bed. The title `yes_intersect_50` means (i) we are masking regions called introgressed in low coverage individuals using the results from LCLAE, (ii) we're using the intersection of LCLAE and IBDmix for high coverage individuals, and (iii) we're requiring IBD with 50% of source individuals (i.e. unadmixed yellow or anubis baboons) to include a region. 
 
 ## get tracts to mask per individual
 for samp in `cat 00_refpanel.names`; do grep $samp yes_intersect_50.bed > ./tracts_to_mask/to_remove.$samp.yes_intersect_50.bed; done; echo $samp; done 
@@ -76,7 +76,7 @@ For calling local ancestry with LCLAE and Ancestry HMM, we merged genotype calls
 ```console
 ## Amboseli genotype calls are available from Part 2 as ./amboseli.vcf.gz
 
-## get list of sites in each vcf file
+## get list of sites in the masked, unadmixed baboon panel and that were called in amboseli baboons
 ## make sure both files have the same chromosome prefix (none or `chr`). If one doesn't, it can be removed from the other using `zcat MYVCF.vcf.gz  | sed -e 's/chr//g' | bgzip > ./OUT.vcf.gz`
 vcftools --gzvcf ./masked/masked_yellow_and_anubis.vcf.gz --kept-sites --out ./masked/masked
 vcftools --gzvcf ./amboseli.vcf.gz --kept-sites --out ./masked/amboseli
