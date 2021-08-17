@@ -48,9 +48,9 @@ sbatch --array=1-20 --mem=12G ./run.03.merge.sh
 bcftools concat ./chrom_vcfs/04.merged_shared.*.vcf.gz -O z -o ./merged_shared.vcf.gz
 ```
 
-#### Part 3: Masking introgressed anubis and yellow ancestry in non-Amboseli individuals
+#### Part 3: Masking possibly introgressed anubis and yellow ancestry in non-Amboseli individuals
 
-Our results revealed unexpected anubis ancestry in yellow baboons used to found the SNPRC baboon colony as well as low levels of introgressed ancestry in other unadmixed individuals, potentially consistent with background noise (see Section 4). We therefore sought to mask regions of the genome which contained putative introgressed ancestry in baboons outside of Amboseli, prior to estimate yellow and anubis baboon allele frequencies. To minimize the proportion of introgressed ancestry retained while also ensuring a high density of markers called in yellow and anubis individuals, we masked regions of the genome called as introgressed using LCLAE and those called IBD with heterospecific baboons, using IBDmix with at least 50% of possible individuals (see Section 4). 
+Our results revealed unexpected anubis ancestry in yellow baboons used to found the SNPRC baboon colony as well as low levels of apparently heterospecific ancestry in other unadmixed individuals, potentially consistent with background noise (see Section 4). We therefore sought to mask regions of the genome which contained putative introgressed ancestry in baboons outside of Amboseli, prior to estimate yellow and anubis baboon allele frequencies. To minimize the proportion of introgressed ancestry retained while also ensuring a high density of markers called in yellow and anubis individuals, we masked regions of the genome called as introgressed using LCLAE and those called IBD with heterospecific baboons, using IBDmix with at least 50% of possible individuals (see Section 4). 
 
 Creating these files requires genotype calls for unadmixed individuals (`yellow.vcf.gz` and `anubis.vcf.gz`, generated above) and tracts of sequence to mask (`yes_intersect_50.bed`, generated in Section 04.2). These genotype calls will be available on Zenodo as `masked_yellow_and_anubis.vcf.gz`. 
 
