@@ -26,7 +26,7 @@ t <- cor.test(to_analyze$mean_ancestry, to_analyze$fixed, method="spearman"); t;
 t <- cor.test(to_analyze$recent_ancestry, to_analyze$fixed, method="spearman"); t; t$p.value
 t <- cor.test(to_analyze$historical_ancestry, to_analyze$fixed, method="spearman"); t; t$p.value
 
-#########  Fst, varying threshold (Supplementary Figure using 250kb) ###########
+#########  Fst, varying threshold (Supplementary Figure using 250 kb) ###########
 results <- as.data.frame(matrix(ncol=6, nrow=11)) ; 
 colnames(results) <- c("fixed_differences", "rho", "lower", "upper", "n_snps", "pvalue")
 results[,1] <- seq(0.5,1,0.05)
