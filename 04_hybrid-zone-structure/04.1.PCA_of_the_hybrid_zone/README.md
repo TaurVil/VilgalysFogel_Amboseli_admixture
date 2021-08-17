@@ -1,7 +1,7 @@
 
 ## Principal Component Analysis
 
-To visualize the genetic variation in our sample, we used principal component analyses to visualize the major axes of variation. Because the number of samples can obscure relationships, we include only high coverage Amboseli genomes (n=9), although all possible reference panel individuals are included. We extract these samples from the merged vcf including both Amboseli and reference panel individuals, after filtering (`merged_shared.vcf.gz`, see Section 01_Genotype_Calling), and generate a 012 genotype matrix from which to estimate the covariance between samples. 
+To visualize the genetic variation in our sample, we used principal component analyses to visualize the major axes of variation. We include only high coverage Amboseli genomes (n=9) along with all possible reference panel individuals. We extract these samples from the merged vcf including both Amboseli and reference panel individuals, after filtering (`merged_shared.vcf.gz`, see Section 01_Genotype_Calling), and generate a 012 genotype matrix from which to estimate the covariance between samples. 
 
 ```console
 ## filter for select individuals, and output as 012 genotype matrix
@@ -11,9 +11,9 @@ vcftools --gzvcf merged_shared.allchroms.vcf.gz --keep 00_anu.list --keep 00_yel
 In R, we will then process these data to get the covariance between samples and run PCA. 
 ```console
 library(data.table)
-fread("~/Baboon/Paper1b_demographicinference/for_pca.012") -> d; t(d) -> d; d[-1,] -> d; d[d==-1] <- NA
+fread("./for_pca.012") -> d; t(d) -> d; d[-1,] -> d; d[d==-1] <- NA
 
-fread("~/Baboon/Paper1b_demographicinference/for_pca.012.indv", head=F) -> names
+fread("./for_pca.012.indv", head=F) -> names
 names$missing <- colSums(is.na(d))
 ## Add in the population where each animal originated 
 names$source <- c(rep("Amboseli",9), rep("SNPRCanubis_founders",24), rep("Mara", 7), rep("WNPRC",6), rep("BGDPanubis",4), rep("SNPRCyellow_founders",7), rep("Mikumi",15))

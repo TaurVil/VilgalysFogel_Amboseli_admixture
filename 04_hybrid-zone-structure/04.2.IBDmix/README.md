@@ -26,16 +26,16 @@ We run IBDmix in parallel across chromosomes. For each run, we first grab genoty
 
 ```console 
 ## have "source" files which contain the source individuals we want to iterate calling local ancestry over: 00_yellow_sources.list, 00_anubis_sources.list
-## for each chromosome, run "run_IBDmix.sh"
+## for each chromosome, run "run.00.IBDmix.sh"
 mkdir ./IBDmix_by_chrom; mkdir ./chrom_vcfs
-sbatch --array=1-20 --mem=16G run_IBDmix.sh
+sbatch --array=1-20 --mem=16G run.00.IBDmix.sh
 ```
 
 ### Estimate the mean proportion of the genome IBD between each test individual and source population
 Following suggestions in Chen et al., we filter for tracts of IBD at least 50 kb in length and with a LOD score greater than 10 in order to estimate the proportion of the genome shared between yellow and anubis baboons. For each baboon, we then estimate the proportion of the genome which is IBD with each possible source indivdual, and summarize these data for each baboon as the mean amount of IBD with each potential source population. These results are used in Fig 1C and Supplementary Tables, and are stored as `ibdmix_anubis_estimates.txt` and `ibdmix_yellow_estimates.txt`. 
 
 ```console
-./r01_mean_IBD.R
+./run.01.mean_IBD.R
 ```
 
 ### Identify tracks of introgressed ancestry 
@@ -45,7 +45,7 @@ We return tracts for each individual that are likely to contain heterospecific a
 
 ```console
 ## get the tracts that are IBD for each sample
-./r02a_concensus_IBD_tracts.R
+./run.02a.concensus_IBD_tracts.R
 # saved as an RData object (`./IBDmix_tracts.RData`) and six text files (`./RESULTS/ibdmix_tracts.SPECIES.THRESHOLD.txt`), with species as either "anubis" or "yellow" and thresholds as either 30, 50, or 70% of possible source individuals. 
 ```
 
@@ -53,7 +53,7 @@ If IBD is a signature of gene flow, we expect that results from IBDmix should ov
 
 ```console
 ## integrate IBDmix results with LCLAE results to get the overlap between the two approaches, both genome-wide and at base pair resolution
-./r02b_IBD_and_LCLAE.R
+./run.02b.IBD_and_LCLAE.R
 ```
 
 Based on the above results, we conclude that there is likely previously undetected gene flow between anubis and yellow baboons which may affect our ability to call local ancestry. We therefore mask regions of the genome which contain possible gene flow between our reference panel individuals, using the intersection of local ancestry results using LCLAE and IBDmix requiring 50% of source individuals. With these criteria we increase the density of ancestry informative markers, decrease the occurrence of pedigree inconsistencies, and rarely drop additional informative markers from our dataset. A masked vcf file (`masked_yellow_and_anubis.vcf.gz`) is available on Zenodo and produced in Section 01.3 from `yes_intersect_50.bed`, which we create here. We also confirmed results were highly consistent using masked and unmasked genotypes (>90% similarity in local ancestry, all major results agree), or alternate masking criteria such as not filtering LCLAE tracts or using more/less stringent IBDmix criteria. 
@@ -61,8 +61,8 @@ Based on the above results, we conclude that there is likely previously undetect
 ```console
 ## get file of tracts to mask
 
-## for IBDmix, use ibdmix_tracts.anubis.50.txt and ibdmix_tracts.yellow.50.txt, which were produced by ./r02b_IBD_and_LCLAE.R and are included in the RESULTS directory
-## for LCLAE, use "./RESULTS/lclae.txt" which can be produced using ./r02b_IBD_and_LCLAE.R and the LCLAE output files contained in the DATA directory
+## for IBDmix, use ibdmix_tracts.anubis.50.txt and ibdmix_tracts.yellow.50.txt, which were produced by ./run.02b.IBD_and_LCLAE.R and are included in the RESULTS directory
+## for LCLAE, use "./RESULTS/lclae.txt" which can be produced using ./run.02b.IBD_and_LCLAE.R and the LCLAE output files contained in the DATA directory
 
 ## attach 'chr' to the IBDmix tracts (which just have the chromosome number). LCLAE already has the `chr`
 for f in `ls ./ibdmix_tracts.*`; do sed -i s/^/chr/g $f; sed -i s/chrchr/chr/g $f; echo $f; done 
@@ -83,12 +83,12 @@ rm -r masking_tracts
 ```
 
 ### For comparison to the SNPRC "yellow" baboon founders, estimate IBD between Amboseli and all baboon species
-We repeated the above analyses for nine high coverage Amboseli baboons to serve as a positive control of what , using all baboon species as possible sources of ancestry. The files to run IBDmix are included here as `00_amboseli.list`, `00_amboseli_sources.list`, and `run_IBDmix_amboseli.sh`. Allele sharing between Amboseli baboons and each population was estimating using the follow R code. Unlike above, we do not focus on where in the genome these tracts are located but rather simply estimate a mean proportion of the genome which is IBD between each Amboseli baboon and other baboon species. These data are summarized in `ibdmix_amboseli_estimates.txt` and used in Fig 1C. 
+We repeated the above analyses for nine high coverage Amboseli baboons to serve as a positive control of what , using all baboon species as possible sources of ancestry. The files to run IBDmix are included here as `00_amboseli.list`, `00_amboseli_sources.list`, and `run.00.IBDmix_amboseli.sh`. Allele sharing between Amboseli baboons and each population was estimating using the follow R code. Unlike above, we do not focus on where in the genome these tracts are located but rather simply estimate a mean proportion of the genome which is IBD between each Amboseli baboon and other baboon species. These data are summarized in `ibdmix_amboseli_estimates.txt` and used in Fig 1C. 
 
 ```console
-./run_IBDmix_amboseli.sh
+./run.00.IBDmix_amboseli.sh
 
-./01b_mean_IBD_amboseli.R
+./run.01b.mean_IBD_amboseli.R
 ```
 
 ### For comparison to the SNPRC "yellow" baboon founders, estimate IBD between Amboseli and all baboon species
