@@ -104,7 +104,7 @@ for (n in yel$name) {
 plot(yel$lclae ~ rowMeans(yel[,2:29]), xlab="mean IBDmix", ylab="LCLAE", frame=F, col='blue', pch=16, ylim=c(0,.4)); abline(a=0,b=1,col='red')
 summary(lm(yel$lclae ~ rowMeans(yel[,2:29]))); abline(lm(yel$lclae ~ rowMeans(yel[,2:29])))
 
-## for each individual, get the proportion yellow/anubis IBD from IBDmix30,50,and 70
+## for each individual, get the proportion yellow/anubis IBD from IBDmix 30, 50, and 70
 anu$ibd70 <- anu$ibd50 <- anu$ibd30 <- NA
 for (i in 1:nrow(anu)) {
   tmp_anu <- anu$name[i]
