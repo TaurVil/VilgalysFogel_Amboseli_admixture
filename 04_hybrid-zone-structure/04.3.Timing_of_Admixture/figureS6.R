@@ -6,7 +6,7 @@ library(ggplot2)
 # Load DATES results
 dates <- read.table("./RESULTS/DATES_results.txt", header=T)
 
-# Load ancestry tracts generated using masked SNPRC individuals for the reference panel (used in main text analyses) available in the Duke Data Repository at XXX
+# Load ancestry tracts for Amboseli individuals
 tracts <- read.table("amboseli_LCLAE_tracts.txt", header=T)
 
 # Remove tracts <1 kb in length
@@ -39,7 +39,7 @@ mean(dates[dates$hybrid_status=="historical",]$DATES_estimate) # for historicall
 # define our tract types for plotting
 tract_types <- c(`2` = "homozygous anubis\n ancestry tracts", `1`="heterozygous yellow-anubis\nancestry tracts", `0`="homozygous yellow\n ancestry tracts")
 
-# Get tract lengths for the the historically and recently admixed examples individuals
+# Get tract lengths for the historically and recently admixed example individuals
 tmp <- tracts[tracts$table_s1_id=="AMB_310" | tracts$table_s1_id=="AMB_301",]
 
 tmp$table_s1_id <-droplevels(tmp$table_s1_id)
@@ -47,7 +47,7 @@ tmp$table_s1_id <-droplevels(tmp$table_s1_id)
 # Add a factor variable version of ancestry state for plotting
 tmp$state2 <- as.factor(tmp$state)
 
-# Plot log 10 of tract lengths colored by the hybrid status (recent (blue/purple) vs. historical (brown)) of the individual
+# Plot log 10 of tract lengths colored by the individual's hybrid status (recent = blue/purple; historical = brown)
 ggplot(tmp, aes(x=log10(length2), fill=table_s1_id, alpha=0.90)) + geom_density() + facet_grid(as.factor(state2)~., labeller = as_labeller(tract_types)) + scale_x_continuous(name="log10(ancestry tract length)") +  theme_classic() + theme(axis.text=element_text(size=25, colour = "black"),axis.title = element_text(size=25), strip.text=element_text(size=25), legend.position = "none") + scale_fill_manual(values=c("#5B507A", "#AD7748")) 
 
 ggsave("figS6B.png")
