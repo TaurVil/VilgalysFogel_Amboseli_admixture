@@ -21,7 +21,7 @@ IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL; for (chrom in 1
 IBD_anubis <- IBD_anubis[order(IBD_anubis$ID,IBD_anubis$source,IBD_anubis$chrom,IBD_anubis$start),]
 
 # convert files to a per-segment readout with how many times each segment is called as IBD in possible source individuals
-# for yellow baboons, only use SNPRC anubis baboons and the unadmixed indivdaul from Aberdares as source individuals
+# for yellow baboons, only use SNPRC anubis baboons and the unadmixed individual from Aberdares as source individuals
 # for anubis baboons, only use Mikumi yellow baboons as the source individuals
 library(IRanges); library(data.table)
 res_collapsed <- NULL; for (i in 1:nrow(yel)) {
