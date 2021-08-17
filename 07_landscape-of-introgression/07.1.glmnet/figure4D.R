@@ -8,8 +8,8 @@ library(tidyr)
 # Figure 4D
 #############################################################################################################################
 
-# Load 4C results
-results <- read.table("fig4BC_final_data/glmnet_results.txt", header=T)
+# Load glmnet results
+results <- read.table("glmnet_results.txt", header=T)
 
 # Convert data from wide to long format for easier plotting
 results2 <- results %>% pivot_longer(everything(), names_to=c("predictor"), values_to=c("estimate"))
