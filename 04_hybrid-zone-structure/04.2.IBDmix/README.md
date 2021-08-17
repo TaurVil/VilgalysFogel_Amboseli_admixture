@@ -86,7 +86,7 @@ rm -r masking_tracts
 We repeated the above analyses for nine high coverage Amboseli baboons to serve as a positive control of what , using all baboon species as possible sources of ancestry. The files to run IBDmix are included here as `00_amboseli.list`, `00_amboseli_sources.list`, and `run.00.IBDmix_amboseli.sh`. Allele sharing between Amboseli baboons and each population was estimating using the follow R code. Unlike above, we do not focus on where in the genome these tracts are located but rather simply estimate a mean proportion of the genome which is IBD between each Amboseli baboon and other baboon species. These data are summarized in `ibdmix_amboseli_estimates.txt` and used in Fig 1C. 
 
 ```console
-./run.00.IBDmix_amboseli.sh
+./run.00b.IBDmix_amboseli.sh
 
 ./run.01b.mean_IBD_amboseli.R
 ```
