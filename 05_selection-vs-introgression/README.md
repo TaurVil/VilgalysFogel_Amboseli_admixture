@@ -49,7 +49,7 @@ For each window size, test for signatures of selection between introgressed ance
 ./r04b.results_250kb.R
 ## results for the main text, SI, and plot for supplementary figure S7 (note Fig S7 in the text uses 250 kb windows)
 
-./r05.plot_results.R
+./figures2_3DEF.R
 ## plotting the results per 250 kb window for Fig 2 and Fig 3D-F
 ## this uses the main data file, which can also be exported by 02.scale_to_larger_windows.R with a window size of 250 kb, and the file of human data from `windows.human.250kb.RData`.
 ```
