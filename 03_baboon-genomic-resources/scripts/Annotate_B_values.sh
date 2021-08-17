@@ -7,7 +7,7 @@
 	cp ./recombination/anubisSW.* ./
 
 	module load R; R
-    read.table("~/genomes/panubis1/Panubis1.0.fa.fai") -> lengths
+    read.table("~/genomes/panubis1/Panubis1.0.fa.fai") -> lengths # indexed Panubis1.0 genome 
 	library(data.table) 
 	# give lengths the length we'll be aiiming for in centiMorgans 
 	# These are the chromosome lengths from Cox et al. 2006
@@ -15,7 +15,7 @@
 	lengths$M[1:20] <- c(172,115,100,164,113,111,116,93,88,88,91,126,77,76,69,89,77,84,63,63) 
 	
 	map <- NULL; for (i in 1:20) { 
-		name <- paste("anubisSW.",i,".txt", sep="") 
+		name <- paste("anubisSNPRC.",i,".txt", sep="") 
         #name <- paste("output.",i,".txt", sep="") 
 		d <- fread(name) 
 		colnames(d)[1:6] <- c("left_snp", "right_snp", "mean", "lower", "median", "upper")
@@ -64,7 +64,7 @@
     map2$contrib <- (map2$right_snp - map2$left_snp)*map2$mean
     map2$l <- (map2$right_snp - map2$left_snp)
     sum(map2$contrib)/sum(map2$l)
-	write.table(map2, "../panubis1_n24_genetic_map_CoxTotalLength.txt", row.names=F, col.names=T, sep="\t", quote=F)
+	write.table(map2, "./panubis1_n24_genetic_map_CoxTotalLength.txt", row.names=F, col.names=T, sep="\t", quote=F)
 
 # get chromosome info file 
 	cd /data/tunglab/tpv/B_values_GrahamCode/panubis1/; cp /data/tunglab/shared/genomes/panubis1/Panubis1.0.fa.fai ./chromInfo.txt 
@@ -73,8 +73,8 @@
 # make separate conserved feature file for each chromosome 
 	mkdir constrained_regions; cd constrained_regions; R
     library(data.table) 
-	read.table("/data/tunglab/shared/genomes/panubis1/Panubis1.0.fa.fai") -> lengths
-	fread("/data/tunglab/tpv/my_genomes/panubis1/Panubis1_chromnumbers.gtf", header=F) -> d
+	read.table("~/genomes/panubis1/Panubis1.0.fa.fai") -> lengths
+	fread("~/genomes/panubis1/Panubis1_chromnumbers.gtf", header=F) -> d # gtf file available from NCBI, modified to remove the chromosome prefix `chr`
     d$V1 <- paste("chr", d$V1,sep=""); subset(d, d$V3 == 'exon') -> d
 	for (i in 1:20) {
 		subset(d, d$V1 == lengths$V1[i]) -> d2 
@@ -87,7 +87,7 @@
         d2 <- subset(d2, d2$V5 - d2$V4 >=3)
 		name=paste(lengths$V1[i], "_panubis1_exons.bed", sep="")
 		write.table(d2[,-c(2:3,6:8)],name,col.names=F, row.names=F, sep="\t", quote=F)}
-	fread("/data/tunglab/tpv/my_genomes/panubis1/Panubis1_chromnumbers.gtf", header=F) -> d
+	fread("~/genomes/panubis1/Panubis1_chromnumbers.gtf", header=F) -> d # gtf file available from NCBI, modified to remove the chromosome prefix `chr`
 	d$V1 <- paste("chr", d$V1,sep=""); d <- subset(d, d$V3 == "gene")
     subset(d, d$V7 == '+') -> forw; subset(d, d$V7 == '-') -> rev
 	rev$V5 <- rev$V5 + 1e4; forw$V4 <- forw$V4 - 1e4 #add 10kb promoter

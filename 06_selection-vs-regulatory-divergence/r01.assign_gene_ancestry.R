@@ -120,7 +120,7 @@ rm(tracts, calc_mean_ancestry_per_window)
 rcr<- NULL
 for (k in 1:20) { #For each chromosome
   # n24 SW anubis recombination rates. These values can be found on GitHub in the 03_Resources folder under Recombination
-  name=paste("./anubisSW.",k,".txt",sep="")
+  name=paste("./anubisSNPRC.",k,".txt",sep="")
   fread(name) -> RCR; c(colnames(RCR)[-1],"fill") -> colnames(RCR); rm(name)
   
   rcr_chrom <- subset(empty_windows, empty_windows$chr == paste("chr",k,sep=""))

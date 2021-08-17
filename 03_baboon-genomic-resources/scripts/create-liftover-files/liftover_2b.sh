@@ -1,5 +1,4 @@
 #!/bin/bash
-#$ -wd /data/tunglab/tpv/scratch/make_liftover
 #$ -l h_rt=24:00:00,mem_free=4G
 #$ -N liftover2
 #$ -V
@@ -9,17 +8,17 @@
 # USAGE:
 
 # Define variables from previous script
-export MAINDIR=/data/tunglab/tpv/my_genomes/liftover/panubis1_to_hg38
-export FASTADIR_NEW=/data/tunglab/shared/genomes/hg38_bwa/
+export MAINDIR=./panubis1_to_hg38
+export FASTADIR_NEW=~/genomes/hg38_bwa/
 export NEW=hg38.fa
-export FASTADIR_OLD=/data/tunglab/shared/genomes/panubis1
+export FASTADIR_OLD=~/genomes/panubis1
 export OLD=Panubis1.0.fa
 export tileSize=11
 export OOC=${MAINDIR}/fasta_old/${OLD%.fa*}.${tileSize}.ooc
 
 REPORTDIR=${MAINDIR}/reports; mkdir $REPORTDIR
 
-# Submit blat job for each chunk   ---- this is the original code from Jacqueline which we need to modify for hardac
+# Submit blat job for each chunk   
 for f in `ls ${MAINDIR}/fasta_new_split/*.fa` ; do
 CHR=`basename ${f%.*}`
 cd ${MAINDIR}/fasta_new_chunk/${CHR}_chunks

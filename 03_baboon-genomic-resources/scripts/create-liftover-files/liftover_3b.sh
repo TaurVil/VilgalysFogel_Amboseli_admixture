@@ -6,17 +6,17 @@
 # LiftOver pipeline, step 3: creating final chain files from fragmented .psl files
 
 # USAGE -- HARDAC
-# export MAINDIR=/data/tunglab/tpv/my_genomes/liftover/panubis1_to_hg38
+# export MAINDIR=./panubis1_to_hg38
 # cd ${MAINDIR}/fasta_new_split
 # NUMJOBS=$(ls *.fa | wc -l)
-# SCRIPT=/data/tunglab/tpv/my_genomes/liftover/panubis1_to_hg38/liftover_3.sh
+# SCRIPT=./panubis1_to_hg38/liftover_3.sh
 # sbatch -a 1-${NUMJOBS} --mem=28G ${SCRIPT}
 
 #Pulling these from previous scripts --HARDAC
-MAINDIR=/data/tunglab/tpv/my_genomes/liftover/panubis1_to_hg38
-FASTADIR_NEW=/data/tunglab/shared/genomes/hg38_bwa/
+MAINDIR=./panubis1_to_hg38
+FASTADIR_NEW=~/genomes/hg38_bwa/
 NEW=hg38.fa
-FASTADIR_OLD=/data/tunglab/shared/genomes/panubis1
+FASTADIR_OLD=~/genomes/panubis1
 OLD=Panubis1.0.fa
 
 #Get chromosome/scaffold name-- HARDAC

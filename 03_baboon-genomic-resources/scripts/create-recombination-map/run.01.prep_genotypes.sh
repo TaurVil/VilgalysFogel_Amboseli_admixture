@@ -32,5 +32,5 @@ vcftools --gzvcf SNPRCanubis.$chrom.recode.vcf --recode-INFO-all --remove-filter
 bgzip SNPRCanubis.$chrom.hwe.recode.vcf ; tabix SNPRCanubis.$chrom.hwe.recode.vcf.gz
 
 
-## SNPs that could be reciprocally lifted over with the human genome? We'll ignore this, assuming the quality of the baboon genome is sufficient. 
+## Pfeifer 2020 only used SNPs that could be reciprocally lifted over with the human genome. We'll not include this filter, assuming the quality of the baboon genome is sufficient. 
 ## Remove fixed alleles: done earlier with the maf frequency

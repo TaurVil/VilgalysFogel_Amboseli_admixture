@@ -1,11 +1,11 @@
 ## To annotate enhancers in the baboon genome without direct experimental data, we'll liftover human enhancers to the baboon genome. We'll require 1:1 mapping such that each baboon enhancer maps back to the human genome in the same position which it originated from. Overall, we properly lift over 113k enhancers to the baboon genome, out of 188k human enhancers and 146k which initially lifted over to the baboon genome. 
 
 ######### Liftover enhancers
-cd ~/my_genomes/humans
+cd ~/genomes/humans
 wget https://www.encodeproject.org/files/ENCFF995VPI/@@download/ENCFF995VPI.bed.gz
 gunzip ENCFF995VPI.bed.gz; mv ENCFF995VPI.bed H3K4me1_peaks.bed
 
-cd ~/my_genomes/panubis1
+cd ~/genomes/panubis1
 cut -f 1-4 ../humans/H3K4me1_peaks.bed > ./human_enhancer.bed
 
 module load ucsc

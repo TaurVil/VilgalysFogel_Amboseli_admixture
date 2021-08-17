@@ -6,14 +6,14 @@
 # LiftOver pipeline, step 4: merging chain files, netting, and creating final chain
 
 # USAGE:
-# SCRIPT=/data/tunglab/tpv/scratch/make_liftover/liftover_4.sh
+# SCRIPT=./liftover_4.sh
 # sbatch ${SCRIPT}
 
 #HARDAC locations
-MAINDIR=/data/tunglab/tpv/my_genomes/liftover/hg38_to_panubis1
-FASTADIR_OLD=/data/tunglab/shared/genomes/hg38_bwa/
+MAINDIR=./hg38_to_panubis1
+FASTADIR_OLD=~/genomes/hg38_bwa/
 OLD=hg38.fa
-FASTADIR_NEW=/data/tunglab/shared/genomes/panubis1
+FASTADIR_NEW=~/genomes/panubis1
 NEW=Panubis1.0.fa
 
 #Load HARDAC MODULES

@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -wd /data/tunglab/tpv/my_genomes/liftover/hg38_to_panubis1
+#$ -wd ./hg38_to_panubis1
 #$ -l h_rt=24:00:00,mem_free=4G
 #$ -N liftover1
 #$ -V
@@ -14,13 +14,13 @@ module load ucsc; module load blat ; module load samtools
 # run this script 
 
 # Main directory location
-MAINDIR=/data/tunglab/tpv/my_genomes/liftover/hg38_to_panubis1
+MAINDIR=./hg38_to_panubis1
 
 # Specify old and new genomes
-FASTADIR_OLD=/data/tunglab/shared/genomes/hg38_bwa/
+FASTADIR_OLD=~/genomes/hg38_bwa/
 OLD=hg38.fa
 
-FASTADIR_NEW=/data/tunglab/shared/genomes/panubis1/
+FASTADIR_NEW=~/genomes/panubis1/
 NEW=Panubis1.0.fa
 
 

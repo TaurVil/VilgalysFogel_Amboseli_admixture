@@ -59,7 +59,7 @@ all2 -> empty_windows; empty_windows$B <- (empty_windows$B_exons/1000*empty_wind
 all2<- NULL
 for (k in 1:20) { #For each chromosome
   # Recombination rates for 24 SNPRC anubis baboons
-  name=paste("../03_baboon-genomic-resources/Resources/Recombination_Rates/anubisSW.",k,".txt",sep="")
+  name=paste("../03_baboon-genomic-resources/Resources/Recombination_Rates/anubisSNPRC.",k,".txt",sep="")
   fread(name) -> RCR; c(colnames(RCR)[-1],"fill") -> colnames(RCR); rm(name)
   
   rcr_chrom <- subset(empty_windows, empty_windows$chr == paste("chr",k,sep=""))
