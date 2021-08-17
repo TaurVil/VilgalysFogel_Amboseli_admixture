@@ -36,7 +36,6 @@ Having simulated ancestry tracts, we will now get genotypes for each individual.
 ```console
 # get allele frequencies for yellow and anubis individuals that make up the reference panel
 # apply to each chromosome we simulated data for (e.g. chr17-20)
-# write as list of targetted chromosomes `01_targetted_chroms.bed`
 # this is done using vcftools' `freq` command: vcftools --gzvcf masked_yellow_and_anubis.vcf.gz --keep 00_SNPRCanubis.list --chr CHROM --freq --out CHROM.anubis
 
 # get genotype calls, by simulated individual and chromosome

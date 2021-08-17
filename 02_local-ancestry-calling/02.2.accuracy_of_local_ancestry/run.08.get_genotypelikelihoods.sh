@@ -19,4 +19,4 @@ vcftools --vcf CommonCalls.$coverage.vcf --max-alleles 2 --recode --out CommonCa
 bcftools annotate -x ^INFO/DP,^FORMAT/GT,^FORMAT/AD,^FORMAT/DP,^FORMAT/GQ,^FORMAT/PL CommonCalls.biallelic.$coverage.recode.vcf | sed 's/|/\//g' > merged.$coverage.forgenolik.vcf
 
 sed '/^#/d' merged.$coverage.forgenolik.vcf | cut -f 1,2,10- | sed -e 's/:/ /g' | sed -e 's/\./999/g' | /data/tunglab/tpv/Programs/LCLAE/filtbaboon1b 56 > genolik.$coverage.genolik
-## 70 is the total number of samples between reference individuals and individuals to call  (25 samples, 24 anubis, 7 yellow)
+## 56 is the total number of samples between reference individuals and individuals to call  (25 simulated samples, 24 anubis, 7 yellow)

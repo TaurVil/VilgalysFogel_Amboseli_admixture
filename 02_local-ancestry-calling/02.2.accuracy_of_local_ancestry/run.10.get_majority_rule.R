@@ -10,17 +10,17 @@ getmode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-#get data for the same
+# get data from LCLAE output
 fread("./raw_calls/DISTANCE.DIFFERENCE.INDIV.COVERAGE.txt") -> indv
 colnames(indv) <- c('chrom', 'snp', 'call')
 indv$indiv <- "INDIV"
-read.delim("~/genomes/panubis1/Panubis1.0.fa.fai", header=F) -> chroms; subset(chroms, chroms$V1 %in% unique(indv$chrom)) -> chroms
+read.delim("~/genomes/panubis1/Panubis1.0.fa.fai", header=F) -> chroms; subset(chroms, chroms$V1 %in% unique(indv$chrom)) -> chroms # index from the Panubis1 genome
 
-#We're going to get ancestry tracts for each chrom individually (going through the intermediary of majority rule)
-#Then, at the end of each chromosome, we'll merge the tracts for that chromosome with the building list of all tracts for that individual
+# get ancestry tracts for each chromosome, calling majority rule along the way
+# merge into single file per individual
 
-# Value sets the window size
-# Mode sets the minimum percentage for a call to be made using majority rule
+# value sets the window size
+# mode sets the minimum percentage for a call to be made using majority rule
 # min_n sets the minimum number of SNPs within the window to make a call
 # exclude refers to how much of the start/end of each chromosome to ignore
 value=DISTANCE
@@ -32,7 +32,9 @@ for (j in 1:nrow(chroms)) {
   subset(indv, indv$chrom == chroms[j,1]) -> tmp
   ## If we don't make any calls, just skip to the next chromosome
   if (nrow(tmp) > 0) {
-    ## Index and setkeys for match. Then run match to get sets of sites within $VALUE of each SNP. Then get the mode of all calls, the total number of calls, and the number of calls which were the mode.
+    ## Index and setkeys as pre-requisites for for match
+    ## Run match to get sets of sites within `value` of each SNP
+    ## Get the mode of all calls, the total number of calls, and the number of calls which were the mode
     tmp[,loc_Dummy := snp]; tmp[,.(snp, call)] -> tmp2
     tmp2[,loc_Plus100 := snp + value]; tmp2[,loc_Minus100 := snp - value]
     setkey(tmp,snp,loc_Dummy); setkey(tmp2,loc_Minus100, loc_Plus100)
@@ -43,7 +45,7 @@ for (j in 1:nrow(chroms)) {
     rm(Matches); gc(); rm(tmp2)
     print("done with matches!")
     i1$perc <- i1$n_mode/i1$n
-    ##remove sites where there is not a concensus call by majority rule, or not enough sites to make a confident call
+    ##remove sites where there is not a consensus call by majority rule, or not enough sites to make a confident call
     subset(tmp, i1$perc >= mode_n & i1$n >= min_n) -> tmp; subset(i1, i1$perc >= mode_n & i1$n >= min_n) -> i1
     if (nrow(i1) > 0) {
       ##Merge majority rule calls for this chromosome to the growing file.
@@ -56,13 +58,12 @@ for (j in 1:nrow(chroms)) {
       modes$nxt_chrom <- c(as.character(modes$chrom[-1]),modes$chrom[nrow(modes)])
       modes$nxt_state <- c(modes$mode[-1],modes$call[nrow(modes)])
       
-      #Keep only sites where this site is different than the next one.
-      ##aka, first row is now the first break point
+      # Keep only sites where this site is different than the next one.
       subset(modes, !(modes$mode == modes$nxt_state & modes$chrom == modes$nxt_chrom)) -> blocks
       blocks[,.(chrom, nxt_chrom, snp, nxt, mode, nxt_state)] -> blocks
       
-      ##nxt_state is the one that defines that block
-      ###Let's add the first block from position 1 to the first break pt
+      ## nxt_state is the one that defines that block
+      ## add the first block from position 1 to the first break pt
       first <- as.data.frame(t(matrix(c(blocks$chrom[1], blocks$chrom[1], 1, blocks$snp[1], modes$mode[1], blocks$mode[1]))))
       colnames(first) <- colnames(blocks); rbind(first, blocks) -> blocks; rm(first)
       
@@ -71,6 +72,7 @@ for (j in 1:nrow(chroms)) {
       
       blocks$chrom <- blocks$nxt_chrom <- as.character(chroms[j,1])
       
+      # output and reimport to clear formatting and reset character types
       write.table(blocks, "./tmp2.DISTANCE.DIFFERENCE.INDIV.COVERAGE.txt", row.names=F, col.names=T, sep="\t")
       read.delim("./tmp2.DISTANCE.DIFFERENCE.INDIV.COVERAGE.txt") -> blocks
       
@@ -88,8 +90,7 @@ for (j in 1:nrow(chroms)) {
       blocks$length <- as.numeric(blocks$nxt_brk) - as.numeric(blocks$brk)
       #blocks$length[1] <- NA; blocks$length[nrow(blocks)-1] <- NA
       
-      ## Removed uncertainty because we really don't need this now that I'm not doing as much methods testing.
-      #uncertainty of the break points to each side
+      # uncertainty of the break points for each tract (i.e. distance to nearest SNP)
       blocks$u_prev <- as.numeric(blocks$nxt) - as.numeric(blocks$snp)
       blocks$u_prev[1] <- NA
       blocks$u_next <- c(as.numeric(blocks$u_prev[-1]),NA)
@@ -103,7 +104,7 @@ for (j in 1:nrow(chroms)) {
       t$end <- as.numeric(as.character(t$end))
       t$start <- as.numeric(as.character(t$start))
       
-      # we'll fix the extrmes of t so we crop the first and last 'exclude'bp from the chromosome
+      # crop the first and last 'exclude'bp from the chromosome
       t <- subset(t, t$start <= (chroms[j,2]-exclude) & t$end >= exclude)
       t$start[t$start < exclude] <- exclude
       t$end[t$end > (chroms[j,2]-exclude)] <- (chroms[j,2]-exclude)

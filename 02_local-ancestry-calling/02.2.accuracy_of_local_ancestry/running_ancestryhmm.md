@@ -1,6 +1,6 @@
 **Ancestry HMM (Corbett-Detig & Nielsen 2017 _PLOS Genetics_)** uses a hidden markov model and read counts per allele (read depth, extracted from a vcf file) to identify local ancestry. Our simulations reveal that it performs best on high coverage data and worse than LCLAE on low coverage individuals like most of the dataset we sample. Nevertheless, ancestry calls using Ancestry HMM are able to recapitulate all major analyses including signatures of selection against anubis introgression. 
 
-Here we provide code to call local ancestry using Ancestry HMM which was applied to both simulated and Amboseli individuals. In the first code chunk we prepare a data file for Ancestry HMM starting with a vcf file of reference and test individuals. In part 2, we then run Ancestry HMM and create ancestry tracts from the posterior calls. The resulting files have five columns (chromosome, start, end, ancestry state, length) and can be used instead of LCLAE calls in future sections. 
+Here we provide code to call local ancestry using Ancestry HMM which was applied to both simulated and Amboseli individuals. In the first code chunk we prepare a data file for Ancestry HMM starting with a vcf file of reference and test individuals. In part 2, we then run Ancestry HMM and create ancestry tracts from the posterior calls. The resulting files have five columns (chromosome, start, end, ancestry state, length) and can be used in place of LCLAE ancestry calls for later analyses (e.g. estimating mean anubis ancestry). 
 
 ```console 
 ## start with merged vcf file containing test and reference individuals
@@ -50,7 +50,6 @@ library(data.table); fread("data.panel") -> d
 ref1 <- d$V4/rowSums(d[,3:4]); ref2 <- d$V6/rowSums(d[,5:6])
 d2 <- subset(d, abs(ref2-ref1) > 0.2)
 write.table(d2, "filtered.panel", row.names=F, col.names=F, sep="\t", quote=F)
-
 ```
 
 
@@ -67,7 +66,10 @@ module load libtool; libtool --version
 # cd Ancestry_HMM/src/
 # make
 
-~/Programs/Ancestry_HMM/Ancestry_HMM-master/src/ancestry_hmm -i filtered.panel -s test.samples -a 2 0.25 0.75 -p 1 100000 0.75 -p 0 -100 0.25 --fixed
+~/Programs/Ancestry_HMM/src/ancestry_hmm -i filtered.panel -s test.samples -a 2 0.25 0.75 -p 1 100000 0.75 -p 0 -100 0.25 --fixed
+# -a 2 0.25 0.75 says there are 2 ancestral populations contributing 25% and 75% of ancestry to the population
+# -p for each admixture pulse has 3 parameters referring to (i) the source population, (ii) how many generations ago they enterred the population (for negative values) or the effective population size (for positive values and the ancestral population), and (iii) the proportion of modern ancestry contributed by that pulse
+# --fixed notes that the timing of admixture is set
 
 # Create ancestry tracts from posterior calls
 # array_for_get_ancestry.sh with INDIV and CHROM, which calls get_ancestryHMM_tracts.R 
@@ -76,7 +78,6 @@ for chrom in `cat 00chroms`; do sed -e s/CHROM/$chrom/g get_ancestryHMM_tracts.R
 
 # Convert tracts to HMM tracts
 for i in `cat 00_ambo_names.list`; do cat tracts/*${i}* > HMMtracts/${i}.txt; done 
-
 ```
 
 
@@ -100,7 +101,6 @@ chmod 777 get.$name.$chr.R
 module load R
 ./get.$name.$chr.R
 rm get.$name.$chr.R
-
 ```
 
 ```console
@@ -135,6 +135,4 @@ blocks$end <- c(blocks$start[-1],chr_length)
 blocks$length <- blocks$end - blocks$start
 toprint <- blocks[,c(1,6,7,5,8)]
 write.table(toprint, "./tracts/CHROM_INDIV.tracts", row.names=F, col.names=F, sep="\t", quote=F)
-
-
 ```

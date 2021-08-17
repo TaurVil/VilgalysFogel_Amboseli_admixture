@@ -3,7 +3,7 @@
 
 library(data.table); library(plyr)
 fread("NAME.output.txt", fill=T) -> data
-read.delim("~/genomes/panubis1/Panubis1.0.fa.fai",header=F) -> lengths
+read.delim("~/genomes/panubis1/Panubis1.0.fa.fai",header=F) -> lengths # index of the Panubis1 genome
 
 # Column 1: number of generations for the output
 # Column 2: 0, sub-population 0
@@ -41,8 +41,7 @@ for (i in unique(data$V5)) {
         res <- as.data.frame(matrix(ncol=2,nrow=nrow(d)))
         res$chrom <- lengths[i+17,1]; res[,2] <- d$V9; res[,1] <- c(0,res[-nrow(res),2]); res$ancestry  <- NA
         for (j in 1:nrow(d)) {
-                tmp  = subset(d, d$V9 == res$V2[j] |  (d$V9 >= res$V2[j]  & d$V8 < res$V2[j]) ); tmp
-                # the tract that ends there | (or) the end is later
+                tmp  = subset(d, d$V9 == res$V2[j] |  (d$V9 >= res$V2[j]  & d$V8 < res$V2[j]) )
                 nrow(tmp) -> res$rows[j]
                 sum(tmp$V7) -> res$ancestry[j]
                 #if (j %in% seq(from=10,to=1e7,by=100)) {print(j)}
