@@ -1,4 +1,4 @@
-## Get windows for 25kb tracts based on the chromosome lengths (in resources)
+## Get windows for 25 kb tracts based on the chromosome lengths (in resources)
 
 ## We'll add features, but keep calling it `empty_windows` until the end when it's renamed `windows_25kb`. 
 ## We'll have a separate object for ancestry: `ancestry_windows`
@@ -58,7 +58,7 @@ all2 -> empty_windows; empty_windows$B <- (empty_windows$B_exons/1000*empty_wind
 ## add in recombination rates
 all2<- NULL
 for (k in 1:20) { #For each chromosome
-  # Recombination rates for 24 SNPRC anubis baboons
+  # Recombination rates from 24 SNPRC anubis founder baboons
   name=paste("../03_baboon-genomic-resources/Resources/Recombination_Rates/anubisSW.",k,".txt",sep="")
   fread(name) -> RCR; c(colnames(RCR)[-1],"fill") -> colnames(RCR); rm(name)
   
@@ -79,7 +79,7 @@ for (k in 1:20) { #For each chromosome
 }; rm(k)
 all2 -> empty_windows
 
-## add in number of variable sites, and number of highly differentiated sites
+## add in the number of variable sites and the number of highly differentiated sites
 
 ### Read in allele frequencies and calculate Fst
 load("./allele_frequencies.reference.masked.RData")
@@ -162,7 +162,7 @@ rm(empty_windows, a_data, distance)
 
 rm(calc_mean_ancestry_per_window)
 
-## convert ancestry per individual into the mean ancestry for the population, recent, and historical individuals
+## convert ancestry per individual into the mean ancestry for the population, recently admixed individuals, and historically admixed individuals
 ## divide the mean by 2, because per individual is the number of alleles
 empty_windows -> features
 
@@ -181,6 +181,4 @@ f2 <- NULL; for (chrom in unique(features$chr)) {
 f2 -> features; rm(f2, ancestry_per_individual)
 
 ## Save R object for future steps
-
-
 save.image("./windows.25kb.RData")
