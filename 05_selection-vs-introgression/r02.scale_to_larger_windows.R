@@ -11,7 +11,7 @@ distance <- 5e6
 load("./windows.25kb.RData")
 
 #########   Convert 25kb tracts to new tract lengths tracts       ###########
-lengths <- read.delim("../03_baboon-genomic-resources/Panubis1_chromlengths.txt", header=F)
+lengths <- read.delim("../03_baboon-genomic-resources/Resources/Panubis1_chromlengths.txt", header=F)
 new_windows <- NULL; for (i in 1:20) {
   max <- lengths$V2[i]
   rows <- ceiling(max/distance)#; print(i); print(rows)

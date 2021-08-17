@@ -9,7 +9,7 @@ library(Rgb);library(data.table);library(parallel)
 lengths <- read.delim("./Panubis1_chromlengths.txt", header=F)
 
 ## read in Panubis1 gtf file
-gtf <- read.gtf("./GCF_008728515.1_Panubis1.0_genomic.gtf")
+gtf <- read.gtf("./GCF_008728515.1_Panubis1.0_genomic.gtf") # available from NCBI
 
 ## identify protein coding genes from the gtf file 
 genes <- subset(gtf, gtf$feature == "gene" & gtf$gene_biotype == "protein_coding")

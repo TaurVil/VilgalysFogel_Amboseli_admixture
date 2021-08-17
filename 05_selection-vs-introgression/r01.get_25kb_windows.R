@@ -6,7 +6,7 @@
 distance <- 2.5e4
 library(data.table); library(parallel)
 
-lengths <- read.delim("../03_baboon-genomic-resources/Panubis1_chromlengths.txt", header=F)
+lengths <- read.delim("../03_baboon-genomic-resources/Resources/Panubis1_chromlengths.txt", header=F)
 
 empty_windows <- NULL 
 for (i in 1:20) {
@@ -82,7 +82,7 @@ all2 -> empty_windows
 ## add in number of variable sites, and number of highly differentiated sites
 
 ### Read in allele frequencies and calculate Fst
-load("~/Github/allele_frequencies.reference.masked.RData")
+load("./allele_frequencies.reference.masked.RData")
 ## get overall yellow and anubis calls rather than split by population
 calls[,1:8] -> calls; gc()
 calls <- subset(calls, calls$n_all_anubis >= 10 & calls$n_all_yellow >= 10); gc()
