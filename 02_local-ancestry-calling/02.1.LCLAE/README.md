@@ -2,7 +2,7 @@
 
 This folder contains instructions and scripts for generating local ancestry calls and tracts from genotype data using LCLAE (Wall et al. 2016 Molecular Ecology: https://doi.org/10.1111/mec.13684, https://github.com/jdwall02/LCLAE). You must download LCLAE for these scripts (available here: https://github.com/jdwall02/LCLAE)
 
-FIrst, we will need an input file of genotype calls from Amboseli baboons as well as yellow baboons and anubis baboons masked for putative introgression. This vcf (`amboseli_with_masked_refpanel.vcf.gz`) can be produced from `masked_yellow_and_anubis.vcf.gz`, which will be available on Zenodo (see also Section 01.3), and `amboseli.vcf.gz` (see section 01.2). We will convert these genotype data into genotype likelihoods using LCLAE's `filtbaboon2b` function. In the script run.01.LCLAE_get_genolik.sh, you will need to specify the total number of individuals in the vcf after calling the filtbaboon1b function (currently XXX is used as a placeholder for this number).
+FIrst, we create an input file of genotype calls from Amboseli baboons as well as yellow baboons and anubis baboons masked for putative introgression. This vcf (`amboseli_with_masked_refpanel.vcf.gz`) can be produced from `masked_yellow_and_anubis.vcf.gz`, which is available on Zenodo (doi://10.5281/zenodo.5199534; see section 01.3), and `amboseli.vcf.gz` (see section 01.2). We convert these genotype data into genotype likelihoods using LCLAE's `filtbaboon2b` function. In the script run.01.LCLAE_get_genolik.sh, XXX needs to be replaced with the number of individuals in the vcf file. 
 
 ```console 
 # get list of individuals in the vcf file in the order that they appear in the vcf file
@@ -16,7 +16,7 @@ sbatch --array=1-20 --mem=100 run.01.LCLAE_get_genolik.sh
 
 ```
 
-After generating genotype likelihood files, we will define the reference individuals LCLAE will use (n=24 anubis and 7 yellow baboons used to found the SNPRC baboon colony), creating the files `ref_anubis.h` and `ref_yellow.h`. 
+After generating genotype likelihood files, we define the reference individuals LCLAE will use (n=24 anubis and 7 yellow baboons used to found the SNPRC baboon colony), creating the files `ref_anubis.h` and `ref_yellow.h`. 
 
 ```console
 # define our reference individuals
@@ -40,7 +40,7 @@ sed -i -e 's/^/24 /' ref_anubis.h
 sed -i -e 's/^/7 /' ref_yellow.h
 ```
 
-Next, we will call local ancestry using LCLAE's `filtbaboon2c` and `geno_lik2` functions, for each individual and each chromosome, using a sliding window approach. Again, in these scripts, you will need to specify the total number of individuals in the vcf after calling the filtbaboon2c function (currently XXX is used as a placeholder for this number). After running LCLAE for each individual-chromosome combination, post-process the output files by: (1) adding the appropriate chromosome number as a column in each file, (2) merging all chromosomes for each individual into a single file per individual, (3) replacing the individual's sample number with their id in the file name, (4) adding the individual's id as a column in the file, (5) using majority rule for calling the ancestry state at each ancestry informative site, and (6) assembling ancestry tracts. The resulting ancestry tracts for all Amboseli individuals will be made available on Zenodo as `amboseli_LCLAE_tracts.txt`. 
+Next, we call local ancestry using LCLAE's `filtbaboon2c` and `geno_lik2` functions, for each individual and each chromosome, using a sliding window approach. Again, in these scripts,the total number of individuals in the vcf needs to be specified after calling the filtbaboon2c function (currently XXX is used as a placeholder for this number). After running LCLAE for each individual-chromosome combination, we post-process the output files by: (1) adding the appropriate chromosome number as a column in each file, (2) merging all chromosomes for each individual into a single file per individual, (3) replacing the individual's sample number with their id in the file name, (4) adding the individual's id as a column in the file, (5) using majority rule for calling the ancestry state at each ancestry informative site, and (6) assembling ancestry tracts. The resulting ancestry tracts for all Amboseli individuals are available on Zenodo (doi://10.5281/zenodo.5199534) as `amboseli_LCLAE_tracts.txt`. 
 
 ```console 
 # run LCLAE's filtbaboon2c and geno_lik2 to call local ancestry for each chromosome and individual
