@@ -77,6 +77,6 @@ sbatch --mem=500 run.04b.FST_SNPRCref.sh
 sbatch --mem=200 run.04c.Recomb.R
 ```
 
-#### Results from the pedigree inconsistencies (script labelled with a run.05...)
+#### Pedigree inconsistency results (script labelled with a run.05...)
 
 Finally, in a directory containing all files generated up to this point, run `run.05.pedigree_inconsistencies_results.R` which calculates, compares, and plots the proportion of ancestry state inconsistencies in pedigree trios using ancestry calls from the SNPRC reference panel and the Wall et al. reference panel supplemented with higher coverage individuals. It also runs a model to evaluate what predicts ancestry state inconsistencies across sites. Finally, it evaluates the proportion of ancestry state inconsistencies per pedigree trio and whether the minimum coverage of individuals in the trio might contribute to it. 
