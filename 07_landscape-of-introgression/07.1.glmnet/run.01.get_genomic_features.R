@@ -4,8 +4,8 @@
 ############################
 ## Load in data
 ############################
-d_name <- '250kb' ## window size
-load(paste("./VilgalysFogel_main_data_file.",d_name,"_windows.RData", sep=""))
+load(paste("./VilgalysFogel_main_data_file.250kb_windows.RData", sep=""))
+distance='250kb'
 
 ## clean up some unnecessary pieces
 rm(d_name, distance, masking, max_rcr, n, unfiltered_for_recombination_rate, ids) 
