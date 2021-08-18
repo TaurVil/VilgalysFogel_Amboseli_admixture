@@ -4,18 +4,14 @@
 
 For each sample, sequentially run WGSproc steps 1-7 to trim, map, and call genotypes per individual and then perform joint genotype calling. These jobs can be submitted together using run.baboonWGS_wynton_remotesubmit_20190814_single_highcov.sh. 
 
-The resulting genotyping calls will be available on Zenodo as `baboon_genotypes.raw.CHROMOSOME.vcf.gz`. 
-
-Note that we performed joint genotyping with other samples that were subsequently removed before downstream analysis detailed in this directory. We do not anticipate that the inclusion of other samples during the joint genotyping step affects our results given our subsequent filtering and processing before analysis.
-
-For any questions regarding this content, please contact Jacqueline Robinson (https://jarobinsonresearch.com). 
+Joint genotype files are titled `baboon_genotypes.raw.CHROMOSOME.vcf.gz` and are available upon request or can be generated from fastq files uploaded to NCBI, but are not uploaded due to file size constraints for processed files. We are also happy to provide subsets of the dataset (i.e. just yellow or anubis baboons) upon request. Note that we performed joint genotyping with other samples that were subsequently removed before downstream analysis detailed in this directory.  
 
 #### Part 2: Produce filtered files of anubis, yellow, and Amboseli baboon ancestry calls
 
-First, we will get genotype calls for putatively unadmixed yellow and anubis baboons. This will require the unfiltered VCF file of baboon genotypes (`baboon_genotypes.raw.CHROMOSOME.vcf.gz`; called above and available upon request) and lists of unadmixed individuals (`00_anubis.list` and `00_yellow.list`, which can be found in Table S1). We will hard filter these genotypes for sites called in >50% of both yellow and anubis baboons, as well as sites that pass hard filtering criteria. Finally, we will remove singleton and doubleton variants and export files of yellow and anubis genotype calls as `02.yel.$chrom.recode.vcf.gz` and `02.anu.$chrom.recode.vcf`. These files will then be combined into `yellow.vcf.gz` and `anubis.vcf.gz`, and merged into `refpanel.vcf.gz`. 
+First, we get genotype calls for putatively unadmixed yellow and anubis baboons. This requires unfiltered VCF files of baboon genotypes (`baboon_genotypes.raw.CHROMOSOME.vcf.gz`; called above and available upon request) and lists of unadmixed individuals (`00_anubis.list` and `00_yellow.list`, which can be found in Table S1). We hard filter these genotypes for sites called in >50% of both yellow and anubis baboons, as well as sites that pass hard filtering criteria (GATK best practices). Finally, we remove singleton and doubleton variants and export files of yellow and anubis genotype calls as `02.yel.$chrom.recode.vcf.gz` and `02.anu.$chrom.recode.vcf`. These files are combined into `yellow.vcf.gz` and `anubis.vcf.gz`, and merged into `refpanel.vcf.gz`. 
 
 ```console
-## Get calls for unadmixed individuals
+## get calls for unadmixed individuals
 sbatch --array=1-20 --mem=12G ./run.01.get_nonAmboseli_calls.sh
 
 ## merge vcfs for unadmixed yellow and anubis baboons
