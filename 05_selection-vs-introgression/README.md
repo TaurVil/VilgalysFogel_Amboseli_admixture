@@ -12,17 +12,17 @@ We will do this in two parts. First, we will calculate each feature for non-over
 ## get non-overlapping 25 kb windows across the genome and genomic features for them (we'll scale these smaller windows up to larger sizes for analyses)
 ## requires information on ancestry, recombination, B values, and the number of variable sites per window. 
 ## ancestry will be from amboseli_LCLAE_tracts.txt, available on Zenodo. With this code, we exclude excludes tracts less than 1 kb. 
-## B values and recombination are called from files available in Section 03. Information on variable sites was too large to be included on GitHub, but may be generated from the code available in Section 03 and is provided for each window in the produced RData file. 
+## B values and recombination are called from files available in Section 03. Information on variable sites was too large to be included on GitHub, but may be generated from the code available in Section 03 and is provided for each window 25kb window in `windows.25kb.RData`. 
 
-./r01.get_25kb_windows.R
+./run.01.get_25kb_windows.R
 ## produces `windows.25kb.RData`, which has for each window, the genomic features (features) which includes columns for the mean ancestry of all Amboseli baboons, of recently admixed baboons, and of baboons containing only historical admixture. Information about recent ancestry is included as a copy of table S1 (ids) and a matrix with the mean ancestry per recently admixed individual and chromosome (recent) is also included. 
-## this code can also be modified to print out the ancestry per individual and window. This isn't included because of memory limitations, but can be done by retaining `ancestry_per_individual`. This can then be scaled to arbitrary window sizes using the code appended at the end of `r02.scale_to_larger_windows.R`. 
+## this code can also be modified to print out the ancestry per individual and window. This isn't included because of memory limitations, but can be done by retaining `ancestry_per_individual`. This can then be scaled to arbitrary window sizes using the code appended at the end of `run.02.scale_to_larger_windows.R`. 
 ```
 
 Scale up from 25 kb windows to larger window sizes that are multiples of 25. 
 
 ```console
-./r02.scale_to_larger_windows.R 
+./run.02.scale_to_larger_windows.R 
 ## adjust the disance `distance` and output distance name `d_name` at the top of the script
 ```
 
@@ -33,20 +33,20 @@ To provide context for our findings, we compared our results from baboons to evi
 ```console
 ## create matrix with genomic and ancestry information for 250 kb windows along the human genome. Processing these data involves previously published data files (the sources of these data are described in detail in the Supplementary Methods). 
 ## these data are saved in `windows.human.250kb.RData`
-./r03.human_data.R
+./run.03.human_data.R
 
 ## get results for the human data which recapitulate those previously reported
-./r03b.human_results.R
+./run.03b.human_results.R
 
 ```
 
 #### Test for associations between genomic features and mean ancestry
 
-For each window size, test for signatures of selection between introgressed ancestry and the number of fixed differences between yellow and anubis baboons, B values, and recombination rate. Although they can also be recapitulated from scripts r02 and r04, we also include a specific script `r04b.results_250kb.R` which recapitulates the main results presented in the text. 
+For each window size, test for signatures of selection between introgressed ancestry and the number of fixed differences between yellow and anubis baboons, B values, and recombination rate. Although they can also be recapitulated from scripts `run.02.scale_to_larger_windows.R` and `run.04.results.R`, we also include a specific script `run.04b.results_250kb.R` which recapitulates results presented in the main text using `VilgalysFogel_main_data_file.250kb_windows.RData`. 
 
 ```console 
-./r04.results.R
-./r04b.results_250kb.R
+./run.04.results.R
+./run.04b.results_250kb.R
 ## results for the main text, SI, and plot for supplementary figure S7 (note Fig S7 in the text uses 250 kb windows)
 
 ./figures2_3DEF.R

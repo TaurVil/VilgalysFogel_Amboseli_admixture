@@ -82,6 +82,7 @@ all2 -> empty_windows
 ## add in number of variable sites, and number of highly differentiated sites
 
 ### Read in allele frequencies and calculate Fst
+## reference allele frequencies were calculated as described in Sectio 03
 load("./allele_frequencies.reference.masked.RData")
 ## get overall yellow and anubis calls rather than split by population
 calls[,1:8] -> calls; gc()
