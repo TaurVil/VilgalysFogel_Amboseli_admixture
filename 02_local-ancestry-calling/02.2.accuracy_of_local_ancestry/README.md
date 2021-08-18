@@ -68,9 +68,9 @@ To control for sampling error in the reference panel, we also resampled a refere
 
 At this point, we have genotypes for each coverage titled `tmp.COVERAGE.vcf.gz`. We will now call local ancestry for these simulated individuals. 
 
-To do so, we used LCLAE (Wall et al. 2016), ADLIBS (Schaefer et al. 2017), and Ancestry HMM (Corbett-Detig et al. 2017). Out of these three methods, LCLAE performed the best for low coverage data and is therefore the focus of this section. Our pipeline for running Ancestry HMM and ADLIBS are described separately in `running_adlibs.md` and `running_ancestryhmm.md`. Nevertheless, we summarize the results of these different analyses and, in the next section of this README, provide data and code necessary to recapitulate Fig. S2. 
+To do so, we used LCLAE (Wall et al. 2016), ADLIBS (Schaefer et al. 2017), and Ancestry HMM (Corbett-Detig et al. 2017). Out of these three methods, LCLAE performed the best for low coverage data and is therefore the focus of this section. Our pipelines for running Ancestry HMM and ADLIBS are described separately in `running_adlibs.md` and `running_ancestryhmm.md`. Nevertheless, we summarize the results of these different analyses and, in the next section of this README, provide data and code necessary to recapitulate Fig. S2. 
 
-**LCLAE (Wall et al. 2016)** uses genotype likelihoods extracted from a merged vcf file containing the reference and unadmixed individuals. After discovering LCLAE outperformed other programs on low coverage data, we proceeded to optimize our parameter choices to call local ancestry data by performing a grid search of the window size and minimum difference in allele frequency used for LCLAE. All LCLAE local ancestry calls on simulated data are produced using the code below. 
+**LCLAE (Wall et al. 2016)** uses genotype likelihoods extracted from a merged vcf file containing the reference and unadmixed individuals. 
 
 ```console
 # get anubis and yellow genotypes for chromosomes 17-20 from the filtered files in Section 01. Combine into `refpanel.vcf.gz`
