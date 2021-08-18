@@ -1,10 +1,10 @@
 ## Landscape of introgression
 
-In other parts of this Github (Sections 5 & 6), we show that genomic features are related to the extent of introgressed anubis ancestry in the Amboseli baboons. Here, we take this a step further and ask how much of the total variation in introgressed anubis ancestry can be predicted from genomic features (Section 07.1) using a machine learning approach (elastic net regression). We also ask whether these same genomic features can be used to predict the change in introgressed anubis ancestry over time (Section 07.2)
+In other parts of this code repository (Sections 5 & 6), we show that genomic features are related to the extent of introgressed anubis ancestry in the Amboseli baboons. Here, we take this a step further and ask how much of the total variation in introgressed anubis ancestry can be predicted from genomic features (Section 07.1) using a machine learning approach (elastic net regression). We also ask whether these same genomic features can be used to predict the change in introgressed anubis ancestry over time (Section 07.2)
 
 #### 07.1: using glmnet to predict anubis introgression across the genome
 
-This sub folder contains the data, scripts, and results of using machine learning approaches (elastic net regression using glmnet) to test how much of the total variation in introgressed anubis ancestry can be predicted using genomic features. We note that several features in our dataset are correlated with one another; thus the predictors used produce the best predictive power but it is difficult to interpret which correlated variable directly drives the patterns we observe. 
+This subfolder contains the data, scripts, and results of using glmnet to test how much of the total variation in introgressed anubis ancestry can be predicted using genomic features (elastic net regression using glmnet: Hastie & Qian 2014 _Glmnet vignette_). We note that several features in our dataset are correlated with one another; thus the predictors used produce the best predictive power but it is difficult to interpret which correlated variable directly drives the patterns we observe. 
 
 ```console 
 ## step 1: integrate genomic features matrix
@@ -39,6 +39,6 @@ This directory contains an R script and data files for evaluating whether genomi
 
 This analysis uses 3 data files:
 * **100kb_ancestry_and_features.RData**: contains 100 kb windows of the genome with ancestry calls per individual (`window_by_individual`) and genomic features generated in Section 04 (`new_windows` with columns for B values, `B`, and recombination rate, `rcr`). This file also includes the maximum recombination rate to consider (`max_rcr`), which is 100x the median recombination rate for 100 kb windows of the genome. 
-* **amboseli.demographic.info.txt**: contains demographic data for Amboseli individuals with confirmed ids, including the first and last years they were present in the population. Note that other demographic data used in other scripts are also included in this data frame but which we won't use here (their sex, entry type (B = born into a study group, O = first observed in a new study group, or I = immigrating into a study group), genome_wide_anubis_ancestry)
+* **amboseli.demographic.info.txt**: contains demographic data for Amboseli individuals with confirmed ids, including the first and last years they were present in the population. Note that other demographic data used in other scripts are also included in this data frame but which we won't use here (their sex, entry type (B=born into a study group, O=first observed in a new study group, or I=immigrating into a study group), and genome-wide anubis ancestry)
 * **FST**: to get these estimates, use the script `4bFST_SNPRCref.sh` in "VilgalysFogel_Amboseli_admixture/02_local-ancestry-calling/02.3.pedigree_trios/" but substituting 100000 for window size --fst-window-size in place of 35000.
 
