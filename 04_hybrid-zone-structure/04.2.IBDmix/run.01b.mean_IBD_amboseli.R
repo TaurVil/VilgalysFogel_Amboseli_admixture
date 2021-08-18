@@ -1,7 +1,7 @@
 library(data.table); library(ggplot2)
 min_length <- 50000; min_lod <- 10 # thresholds for minimum length and LOD score
 
-# Read in chromosome file, with the chromosome names and length
+# Read in chromosome file, with the chromosome names and length. This is the first two columns of the Panubis1 genome idex
 read.delim("~/genomes/panubis1/chromInfo.txt", header=F) -> chroms; colnames(chroms)[1:2] <- c("name", "length")
 
 # Read in lists of test (Amboseli) and source (all other baboon) individuals
@@ -15,7 +15,7 @@ IBD_ambo <- NULL; for (i in 1:nrow(sources)) { tmp <- NULL; for (chrom in 1:20) 
   rbind(IBD_ambo,tmp) -> IBD_ambo; rm(tmp); print(i) }; rm(i, chrom, data, name)
 IBD_ambo <- IBD_ambo[order(IBD_ambo$ID,IBD_ambo$source,IBD_ambo$chrom,IBD_ambo$start),]
 
-# For each individual, calculate the proportion ancestry for each source individual
+# For each individual, calculate percent of the genome IBD with each source individual
 colnames(samples) <- colnames(sources) <- "name"
 for (i in samples$name) { for (j in sources$name) { subset(IBD_ambo, IBD_ambo$ID == i & IBD_ambo$source == j) -> tmp
     samples[[paste(j)]][samples$name == i] <- sum(tmp$length)/sum(chroms$length) } }; rm(tmp, i,j)

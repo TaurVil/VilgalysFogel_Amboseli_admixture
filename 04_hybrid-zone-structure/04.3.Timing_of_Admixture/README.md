@@ -1,9 +1,9 @@
 
 ## Estimate the timing of admixture in high coverage Amboseli baboons 
 
-We used DATES (Distribution of Ancestry Tracts of Evolutionary Signals; Narasimhan et al. 2019 _Science_, https://github.com/priyamoorjani/DATES) to estimate the time of admixture based on the decay in genetic ancestry between locations. It takes as inputs a genotype file (eigenstrat format), information on the population to which each individual belongs, and a configuration file. It returns estimates for how many generations prior to the present admixture occurred. DATES uses high coverage genomes, so we focus on the 9 Amboseli individuals for whom we have >10x sequencing coverage.  
+We used DATES (Distribution of Ancestry Tracts of Evolutionary Signals; Narasimhan et al. 2019 _Science_, https://github.com/priyamoorjani/DATES) to estimate the time of admixture based on the decay in genetic ancestry between locations. It takes as inputs a genotype file (eigenstrat or ancestrymap format), information on the population to which each individual belongs, and a configuration file. It returns estimates for how many generations prior to the present admixture occurred. DATES uses high coverage genomes, so we focus on the 9 Amboseli individuals for whom we have >10x sequencing coverage.  
 
-Because admixed individuals and missing genotype data can affect DATES, we used the high coverage Mikumi yellow baboons and SNPRC anubis baboon founders to call DATES. Unlike with LCLAE, we were unable to use SNPRC yellow baboon founders because the missing genotypes from masking anubis ancestry would negatively affect DATES. We will get these genotypes from the combined vcf file, then filter for biallelic SNPs and convert to the ancestry map format.  
+Because admixed individuals in the reference and missing genotype data can affect DATES, we used the high coverage Mikumi yellow baboons and SNPRC anubis baboon founders as a reference panel. Unlike with LCLAE, we were unable to use SNPRC yellow baboon founders because the missing genotypes from masking anubis ancestry would negatively affect DATES. We will get these genotypes from `anubis.vcf.gz` and `yellow.vcf.gz`, then filter for biallelic SNPs and convert to the ancestry map format.  
 
 ```console 
 ## grab the samples we will use from the genotype calls produced in Section 01.2
@@ -16,7 +16,7 @@ plink --vcf tmp.ref.for_plink.recode.vcf --snps-only --maf 0.05 --recode --out p
 
 ## the snp file needs to be reformated to add chromosome positions in cM as well as the physical positions. 
 ## lengths of each chromosome in cM come from Cox et al. 2006 (object `d` in the R script)
-module load R; ./r01.get_genetic_positions.R
+module load R; ./run.01.get_genetic_positions.R
 
 ```
 
@@ -27,15 +27,15 @@ vcftools --keep 00_amboseli.list --vcf ./amboseli.vcf.gz --recode --out tmp.ambo
 plink --vcf tmp.ambo.for_plink.recode.vcf --snps-only --recode --out plink.ambo 
 ~/Programs/EIG-6.1.4/bin/convertf -p par.PED.ANCESTRYMAP2
 
-sed -e "s/ref/ambo/g" ./r01.get_genetic_positions.R > ./r01b.get_genetic_positions_ambo.R
-./r01b.get_genetic_positions_ambo.R; rm r01b.get_genetic_positions_ambo.R
+sed -e "s/ref/ambo/g" ./run.01.get_genetic_positions.R > ./run.01b.get_genetic_positions_ambo.R
+./run.01b.get_genetic_positions_ambo.R; rm run.01b.get_genetic_positions_ambo.R
 ```
 
-DATES provides a function to merge ANCESTRYMAP files, after which we need to do some reformatting to make sure SNPs are included in all samples and sequential. 
+DATES provides a function to merge ANCESTRYMAP files, after which we need to do some reformatting to make sure SNPs are included in all samples and are ordered sequential. 
 
 ```console
 ~/Programs/DATES-master/example/mergeit -p par.mergeit > mergeit.log 
-./r02.fix_merged_file.R
+./run.02.fix_merged_file.R
 ~/Programs/EIG-6.1.4/bin/convertf -p par.convertf.order
 ```
 

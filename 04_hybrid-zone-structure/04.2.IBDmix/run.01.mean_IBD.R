@@ -1,13 +1,14 @@
 library(data.table); library(ggplot2)
 min_length <- 50000; min_lod <- 10
 
+## chrom info is just a file of chromosomes and chromosomes lengths, which can be pulled from the fasta file index
 read.delim("~/genomes/panubis1/chromInfo.txt", header=F) -> chroms; colnames(chroms)[1:2] <- c("name", "length") # Read in chromosome file 
 
 #### read in file of test and source individuals ###############
 read.delim("./DATA/00_yellow_sources.list", header=F) -> yel_source; read.delim("./DATA/00_yel.list", header=F) -> yel
 read.delim("./DATA/00_anubis_sources.list", header=F) -> anu_source; read.delim("./DATA/00_anu.list", header=F) -> anu
 
-# For each source individual, and each chromosome within a source individual, read in the resulting data file. These files are available upon request or can be generated from the above scripts. 
+# For each source individual, and each chromosome within a source individual, read in the resulting data file. These files are available upon request or can be generated from run.00.IBDmix.sh. 
 IBD_yellow <- NULL; for (i in 1:nrow(yel_source)) { tmp <- NULL; for (chrom in 1:20) {
     name=paste("./IBDmix_by_chrom/yellow.relative_to_",yel_source[i,1],".",chrom,".txt",sep="")
     fread(name) -> data; data$length <- data$end - data$start; data$source <- yel_source[i,1]
@@ -22,7 +23,7 @@ IBD_anubis <- NULL; for (i in 1:nrow(anu_source)) { tmp <- NULL;  for (chrom in 
   rbind(IBD_anubis,tmp) -> IBD_anubis; rm(tmp); print(i) }; rm(i, chrom, name)
 IBD_anubis <- IBD_anubis[order(IBD_anubis$ID,IBD_anubis$source,IBD_anubis$chrom,IBD_anubis$start),]
 
-# For each individual, calculate the proportion ancestry for each source individual
+# For each individual, calculate percent of the genome IBD with each source individual
 colnames(yel) <- colnames(yel_source) <- "name"
 for (i in yel$name) { for (j in yel_source$name) {
     subset(IBD_yellow, IBD_yellow$ID == i & IBD_yellow$source == j) -> tmp

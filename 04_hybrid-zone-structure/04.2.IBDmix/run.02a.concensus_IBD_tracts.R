@@ -1,6 +1,6 @@
 library(data.table)
 
-# read in chromosome file 
+# read in chromosome file (first two columns of Panubis1 fasta index)
 read.delim("~/genomes/panubis1/chromInfo.txt", header=F) -> chroms; colnames(chroms)[1:2] <- c("name", "length")
 # read in file of test and source individuals 
 read.delim("./DATA/00_yellow_sources.list", header=F) -> yel_source; read.delim("./DATA/00_yel.list", header=F) -> yel
