@@ -19,7 +19,7 @@ Obtain fastq files for high coverage individuals from Amboseli and unadmixed pop
 # For newly published data, we provide the SAMN accession numbers which are listed in "SAMN_list_newly_published" which can be used to create an "SRR_newly_published" list for use in the command below
 # for f in `cat SRR_newly_published`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.SRRs1.sh >> g.$f.sh; sbatch --mem=32000 --out=mapping.$f.out g.$f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
 rm g*sh
-# below, we'll refer to these individuals by their id (AMB_xxx or MIK_xxx) so rename these mapped files. for example,
+# below, we'll refer to these individuals by their id (AMB_xxx or MIK_xxx, see new_list) so rename these mapped files. for example,
 mv mapped.SRRxxx.bam mapped.AMB_xxx.bam 
 
 # Map previously published data available on NCBI
@@ -61,7 +61,7 @@ For each individual, call genotypes using GATK.
 
 ```console
 # Make new list including all of the samples we will analyze
-cat SRR_list* >> tmp # grab list of all SRR file names
+cat SRR_list* new_list >> tmp # grab list of all file names
 cat SRRs* >> tmp2 # grab list of all SRR file names that were merged
 awk 'NR==FNR{a[$0];next} !($0 in a)' tmp2 tmp >> tmp3 # remove all SRR file names that were merged because there were multiple files per individual
 awk '{print $1}' fastqs_per_indiv* >> tmp4
