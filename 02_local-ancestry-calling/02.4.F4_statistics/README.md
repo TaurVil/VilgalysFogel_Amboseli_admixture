@@ -16,7 +16,7 @@ Obtain fastq files for high coverage individuals from Amboseli and unadmixed pop
 
 ```console
 # Map to MacaM using bowtie2
-# For newly published data, we provide the SAMN accession numbers which are listed in SAMN_list_newly_published which can be used to create an "SRR_newly_published" for use in the command below
+# For newly published data, we provide the SAMN accession numbers which are listed in "SAMN_list_newly_published" which can be used to create an "SRR_newly_published" list for use in the command below
 # for f in `cat SRR_newly_published`; do sed -e s/NAME/$f/g run.01a.bowtie2_map_macam.SRRs1.sh >> g.$f.sh; sbatch --mem=32000 --out=mapping.$f.out g.$f.sh; done # for high coverage Amboseli data (excluding data from NCBI SRA BioProject PRJNA295782) and Mikumi data where paired-end reads are labeled as R1 and R2
 rm g*sh
 # below, we'll refer to these individuals by their id (AMB_xxx or MIK_xxx) so rename these mapped files. for example,
