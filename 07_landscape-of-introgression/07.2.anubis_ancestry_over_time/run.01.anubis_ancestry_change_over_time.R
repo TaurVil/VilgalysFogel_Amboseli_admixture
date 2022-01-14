@@ -136,4 +136,5 @@ all_data <- merge(all_data, new_windows2, by=c("chr", "start", "end"))
 summary(lm(annual_anubis_change_beta~starting_pop_avg_anubis_admix_1979+log10(rcr)+WEIGHTED_FST+B, data=all_data))
 
 # Write model output to csv file
-write.csv(summary((lm(annual_anubis_change_beta~starting_pop_avg_anubis_admix_1979+log10(rcr)+WEIGHTED_FST+B, data=all_data))$coef, file="tableS6_results.csv")
+write.csv(summary(lm(annual_anubis_change_beta~starting_pop_avg_anubis_admix_1979+log10(rcr)+WEIGHTED_FST+B, data=all_data))$coef, file="tableS6_results.csv")
+
