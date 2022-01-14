@@ -24,7 +24,6 @@ ggsave("fig4A_main.png")
 
 # inset is produced based on a qq plot using all permutations. Code and data are not provided here due to memory constraints, but it is included when running r05.mash_linear_models.R
 
-
 #############################################################################################################################
 # Figure 4B
 #############################################################################################################################
