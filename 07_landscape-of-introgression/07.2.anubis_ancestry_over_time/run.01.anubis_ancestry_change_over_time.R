@@ -126,6 +126,12 @@ subset(all_data, is.na(N_VARIANTS)) # looks like it is because there are no vari
 # chr4_34625000 chr4 34500000 34750000 34625000 
 # nrow(subset(tracts, chrom=="chr4" & start<34500000 & end>34750000)) # 245
 
+# 2. Recombination rate and B values - in the new_windows data frame but need to remove windows with recombination rates > 100 x median rcr (denoted by "max_rcr" value in RData file)
+new_windows2 <- new_windows[new_windows$rcr<max_rcr,]
+
+# Merge recombination rate and B values with all_data data frame
+all_data <- merge(all_data, new_windows2, by=c("chr", "start", "end"))
+
 # Run linear model evaluating whether the change in anubis ancestry over time is predicted by the starting anubis frequency in 1979, FST, log10 transformed mean recombination rate, and B values
 summary(lm(annual_anubis_change_beta~starting_pop_avg_anubis_admix_1979+log10(rcr)+WEIGHTED_FST+B, data=all_data))
 
