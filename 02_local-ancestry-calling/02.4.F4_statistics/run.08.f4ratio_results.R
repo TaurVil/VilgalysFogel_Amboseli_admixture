@@ -51,7 +51,7 @@ tmp <- f4 %>% group_by(chrom, X) %>% summarize(mean=mean(alpha), sd=sd(alpha))
 
 summary(tmp$mean)
 summary(tmp$sd)
-round(min(tmp$sd),3) # 0.04
+round(min(tmp$sd),3) # 0.004
 round(max(tmp$sd),3) # 0.037
 
 # Plot the average alpha (anubis ancestry proportion) per chromosome
