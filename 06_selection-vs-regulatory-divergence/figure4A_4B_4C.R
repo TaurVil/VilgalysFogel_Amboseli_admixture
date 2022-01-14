@@ -54,8 +54,8 @@ subset(results, bootstrap_pval<0.05)$quantile
 
 # Plot rho plus/minus SD
 ggplot(data=results) +
-  geom_pointrange(aes(x=quantile, y=rho_DE, ymin=rho_DE - sd_DE, ymax=rho_DE + sd_DE), fill="#366B7D", color="#366B7D",alpha=0.8, size=1, shape=21, stroke=1.5) +
-  geom_pointrange(aes(x=quantile+0.01, y=rho_nDE, ymin=rho_nDE -  sd_nDE, ymax=rho_nDE + sd_nDE), fill="#5C438A", color="#5C438A",alpha=0.8, size=1, shape=21, stroke=1.5) +
+  geom_pointrange(aes(x=quantile, y=rho_DE, ymin=rho_DE - sd_DE, ymax=rho_DE + sd_DE), fill="#0192CB", color="#0192CB", size=1, shape=21, stroke=1.5) +
+  geom_pointrange(aes(x=quantile+0.01, y=rho_nDE, ymin=rho_nDE -  sd_nDE, ymax=rho_nDE + sd_nDE), fill="#965F8E", color="#965F8E", size=1, shape=21, stroke=1.5) +
   scale_x_continuous(name="proportion of genes", labels=c("0.1" = "top 10%\nvs.\nbottom 10%", "0.15" = "15%", "0.2" = "top 20%\nvs.\nbottom 20%", "0.25" = "25%","0.3" = "top 30%\nvs.\nbottom 30%", "0.35" = "35%","0.4" = "top 40%\nvs.\nbottom 40%"), breaks=seq(0.1,0.4, 0.05)) + scale_y_continuous("Spearman's rho", limits=c(0, 0.2)) +  theme_classic() +  theme(text=element_text(size=20), axis.text = element_text(color="black"), axis.text.x = element_text(face="italic", size=12), axis.title.x=element_text(vjust=-1)) + annotate("text", x = 0.15, y = 0.18, label = "*", size=8) +  annotate("text", x = 0.2, y = 0.18, label = "*", size=8) -> c
 
 ggsave("fig4C.png")
