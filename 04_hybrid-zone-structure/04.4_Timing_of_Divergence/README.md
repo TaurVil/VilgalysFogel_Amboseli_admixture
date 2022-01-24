@@ -29,7 +29,7 @@ for f in `cat 00_yellow.list`; do for g in `cat 00_anubis.list | grep -v '1_'`; 
 
 ```
 
-Once all output files have been obtained, we will process them in R to get a single data object, included here as XXXX (**ARIELLE: FILL IN WITH WHAT NAME YOU WANT**) 
+Once all output files have been obtained, we will process them in R to get a single data object, included here as XXXX (**ARIELLE: FILL IN WITH WHAT NAME YOU WANT**), and create figure S7.
 
 ```console
 # in R
