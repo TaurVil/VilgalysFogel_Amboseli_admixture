@@ -7,5 +7,6 @@ This directory contains three complementary analyses that explore the structure 
 1. **Principal component analyses** to explore the genetic similarity between the different baboon populations we sampled. 
 2. **IBDmix**, a reference-free method, to detect shared ancestry between samples without assuming that any individuals are unadmixed. 
 3. **DATES** to estimate the timing of gene flow between yellow and anubis baboons. 
+4. **pseudo-hybrid PSMC**, to estimate when gene flow ceased between yellow and anubis baboons outside of the modern hybrid zone. 
 
 Each of these directories includes an additional README describing the analyses in more detail and providing the data and scripts to recapitulate figures and the main results. 
