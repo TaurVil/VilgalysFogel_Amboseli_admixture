@@ -29,7 +29,7 @@ for f in `cat 00_yellow.list`; do for g in `cat 00_anubis.list | grep -v '1_'`; 
 
 ```
 
-Once all output files have been obtained, we will process them in R to get a single data object (see code below), included here as PSMC_results.RData. This data object can then be used to create figure S7 (`figureS7.R`).
+Once all output files have been obtained, we will process them in R to get a single data object (see code below), included here as PSMC_results.RData. This data object can then be used to create figure S7 in R using the script `figureS7.R`.
 
 ```console
 # in R
