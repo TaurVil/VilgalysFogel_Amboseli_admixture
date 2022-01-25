@@ -2,7 +2,7 @@
 
 ## Estimate the timing of divergence between yellow and anubis baboons far from the hybrid zone
 
-Applied to a F1 hybrid, pairwise sequential Markovian coalescence (PSMC: Li & Durbin, 2011 _Nature_) can be used to infer when gene flow ceased between two populations as this corresonds to a rapid increase in the effect population size to values approaching an infinitely large population (Cahill et al. 2016 _Proc B_). We therefore created pseudo-hybrid individuals by combining haploid genomes from a SNPRC anubis baboon and Mikumi yellow baboon, populations which to the best of our knowledge have not experienced admixture, and estimated population size over time, and estimate the effective population size over time to confirm that the ancestors of yellow and anubis baboons did cease exchanging gene flow for some period in time. As expected, we observed a near-asymptotic increase in estimated effective population size, consistent with historical cessation of gene flow between species. 
+Applied to a F1 hybrid, pairwise sequential Markovian coalescence (PSMC: Li & Durbin, 2011 _Nature_) can be used to infer when gene flow ceased between two populations as this corresonds to a rapid increase in the effect population size to values approaching an infinitely large population (Cahill et al. 2016 _Proc B_). We therefore created pseudo-hybrid individuals by combining haploid genomes from a SNPRC anubis baboon and Mikumi yellow baboon, populations which to the best of our knowledge have not experienced admixture, and estimated the effective population size over time to confirm that the ancestors of yellow and anubis baboons ceased exchanging gene flow for some period of time. As expected, we observed a near-asymptotic increase in estimated effective population size, consistent with historical cessation of gene flow between species. 
 
 ```console 
 # following README available at https://github.com/jacahill/hPSMC
@@ -29,7 +29,7 @@ for f in `cat 00_yellow.list`; do for g in `cat 00_anubis.list | grep -v '1_'`; 
 
 ```
 
-Once all output files have been obtained, we will process them in R to get a single data object, included here as XXXX (**ARIELLE: FILL IN WITH WHAT NAME YOU WANT**), and create figure S7.
+Once all output files have been obtained, we will process them in R to get a single data object (see code below), included here as PSMC_results.RData, and create figure S7.
 
 ```console
 # in R
