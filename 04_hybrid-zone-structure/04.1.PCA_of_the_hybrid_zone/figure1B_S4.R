@@ -39,14 +39,16 @@ summary(pcrat)
 
 names_tmp$source2 <- factor(names_tmp$source, levels=c("Amboseli", "Mikumi", "Aberdares", "SNPRC")) 
 
-b <- ggplot(data=tmp) + geom_point(aes(PC1, PC2,  col=factor(names_tmp$source2[-c(34:46,58:60,65)]), fill=factor(names_tmp$source2[-c(34:46,58:60,65)])), shape=21, size=4, alpha=0.8, stroke=1.5) + theme_classic() + theme(text=element_text(size=18), legend.position = "none", axis.text = element_text(color="black"))  + scale_fill_manual(values = c("Amboseli"="darkorange2", "Aberdares"="#009E73", "SNPRC"="grey70", "Mikumi"="gold1")) + scale_color_manual(values = c("Amboseli"="darkorange2", "Aberdares"="springgreen4", "SNPRC"="grey55", "Mikumi"="gold2")) + scale_x_continuous(name="PC1 (84% variance explained)") + scale_y_continuous(name="PC2 (2% variance explained)"); b
+b <- ggplot(data=tmp) + geom_point(aes(PC1, PC2,  col=factor(names_tmp$source2[-c(34:46,58:60,65)]), fill=factor(names_tmp$source2[-c(34:46,58:60,65)])), shape=21, size=4, alpha=0.8, stroke=1.5) + theme_classic() + theme(text=element_text(size=18, family="Helvetica"), legend.position = "none", axis.text = element_text(color="black"))  + scale_fill_manual(values = c("Amboseli"="darkorange2", "Aberdares"="#009E73", "SNPRC"="grey70", "Mikumi"="gold1")) + scale_color_manual(values = c("Amboseli"="darkorange2", "Aberdares"="springgreen4", "SNPRC"="grey55", "Mikumi"="gold2")) + scale_x_continuous(name="PC1 (84% variance explained)") + scale_y_continuous(name="PC2 (2% variance explained)"); b
 # get legend
 ggplot(data=tmp) + geom_point(aes(PC1, PC2,  col=factor(names_tmp$source2[-c(34:46,58:60,65)]), fill=factor(names_tmp$source2[-c(34:46,58:60,65)])), shape=21, size=4, alpha=0.8, stroke=1.5) + theme_classic() + theme(text=element_text(size=25), legend.position = "right", legend.title = element_blank(), axis.text = element_text(color="black"))  + scale_fill_manual(values = c("Amboseli"="darkorange2", "Aberdares"="#009E73", "SNPRC"="grey70", "Mikumi"="gold1")) + scale_color_manual(values = c("Amboseli"="darkorange2", "Aberdares"="springgreen4", "SNPRC"="grey55", "Mikumi"="gold2")) + scale_x_continuous(name="PC1 (0.84)") + scale_y_continuous(name="PC2 (0.02)")
 
-# zoom in on "yellow-like" individuals
-ggplot(data=tmp) + geom_point(aes(factor(as.factor(names_tmp$source2[-c(34:46,58:60,65)]), levels=c("Mikumi",  "SNPRC", "Amboseli", "Aberdares")), PC1, col=factor(names_tmp$source2[-c(34:46,58:60,65)]), fill=factor(names_tmp$source2[-c(34:46,58:60,65)])), size=4, alpha=0.8, shape=21, stroke=1.5) + coord_flip() + theme_classic() + theme(text=element_text(size=19), legend.position = "none", axis.text = element_text(color="black"), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank()) + scale_fill_manual(values = c("Amboseli"="darkorange2", "Aberdares"="#009E73", "SNPRC"="grey70", "Mikumi"="#FFED4F")) + scale_color_manual(values = c("Amboseli"="darkorange2", "Aberdares"="springgreen4", "SNPRC"="grey55", "Mikumi"="gold1")) + scale_y_continuous(limits=c(-7.8,-6))
-
 ggsave("fig1B.png")
+
+# zoom in on "yellow-like" individuals
+ggplot(data=tmp) + geom_point(aes(factor(as.factor(names_tmp$source2[-c(34:46,58:60,65)]), levels=c("Aberdares", "Amboseli","SNPRC","Mikumi")), PC1, col=factor(names_tmp$source2[-c(34:46,58:60,65)]), fill=factor(names_tmp$source2[-c(34:46,58:60,65)])), size=4, alpha=0.8, shape=21, stroke=1.5) + coord_flip() + theme_classic() + theme(text=element_text(size=28, family="Helvetica"), legend.position = "none", axis.text = element_text(color="black"), axis.title.y = element_blank(), axis.text.y = element_text(angle=30), axis.ticks.y = element_blank()) + scale_fill_manual(values = c("Amboseli"="darkorange2", "Aberdares"="#009E73", "SNPRC"="grey70", "Mikumi"="#FFED4F")) + scale_color_manual(values = c("Amboseli"="darkorange2", "Aberdares"="springgreen4", "SNPRC"="grey55", "Mikumi"="gold1")) + scale_y_continuous(limits=c(-7.8,-6)) + scale_x_discrete(limits=c("Amboseli", "SNPRC", "Mikumi"))
+
+ggsave("fig1B_inset.png")
 
 # Combine 1B and 1C for Figure 1
 #library(patchwork)
