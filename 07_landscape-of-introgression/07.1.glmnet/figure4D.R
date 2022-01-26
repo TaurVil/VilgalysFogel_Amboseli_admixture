@@ -27,7 +27,7 @@ ggplot(data = results2, aes(x=reorder(predictor, estimate), y=estimate)) +
   geom_jitter(fill="grey60", color="grey50", size=3, alpha=0.3, shape=21, stroke=1.5) +
   geom_boxplot(width=0.3, size=0.75, outlier.color = NA) +
   scale_x_discrete(labels=c("number.of.SNVs" = "number of SNVs", "recombination.rate" = "recombination rate", "highly.differentiated.sites" = "highly differentiated sites", "B" = "B statistic")) + scale_y_continuous(name="standardized\neffect size", breaks = seq(-0.03,0.03, by=0.01)) +
-  theme_classic() + theme(text=element_text(size=20), axis.text = element_text(color="black"), axis.title.y = element_blank(), axis.text.y = element_text(size=15)) +
+  theme_classic() + theme(text=element_text(size=20, family="Helvetica"), axis.text = element_text(color="black"), axis.title.y = element_blank(), axis.text.y = element_text(size=15, family="Helvetica")) +
   coord_flip() -> d
 
 ggsave("fig4D.png")
