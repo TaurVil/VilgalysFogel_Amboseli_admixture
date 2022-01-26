@@ -105,7 +105,7 @@ min(ancestry_change$year_count) # all genomic windows used 42 years (what we exp
 
 # Add genomic features to the ancestry_change data frame so we can evaluate whether the change in anubis ancestry over time is not only predicted by the starting anubis frequency in 1979, but also FST, mean recombination rate, and B values
 # 1. FST - to get these estimates, use the script 4bFST_SNPRCref.sh in "VilgalysFogel_Amboseli_admixture/02_local-ancestry-calling/02.3.pedigree_trios/" but substituting 100000 for window size --fst-window-size in place of 35000.
-fst <- read.table("fst_masked_unmerged_SWref_100kbwin_500bpstep.windowed.weir.fst", header=T) 
+fst <- read.table("fst_masked_unmerged_SNPRCref_100kbwin_500bpstep.windowed.weir.fst", header=T) 
 # Remove mean FST as we will use weighted Fst (although results are qualitatively similar whether you use one measure or the other)
 fst <- fst[c(1:5)] 
 # Get the center position for each 100 kb window
