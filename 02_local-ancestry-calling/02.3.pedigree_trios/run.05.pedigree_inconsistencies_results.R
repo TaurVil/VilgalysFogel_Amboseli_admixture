@@ -131,7 +131,7 @@ inconsistent_maskedSNPRCref <- inconsistent_final
 rm(fst, aims, inconsistent, inconsistent_error, inconsistent2, inconsistent3, calls_record)
 
 # How do the pedigree inconsistency results compare when using the Wall et al. reference panel?
-# Mostly repeat lines 30-131 for the Wall et al. data (can skip including AIMs, FST, and rcr which are commented out - if you want to include these covariates, can use the same rcr calls so we can just merge the Wall et al. data with the rcr data frames)
+# Mostly repeat lines 30-131 for the Wall et al. data (can skip including AIMs, FST, and rcr which are commented out - if you want to include these covariates, can use the same rcr calls so we can just merge the Wall et al. data with the rcr data frame)
 load("inconsistent_local_ancestry_calls_pedigree_trios_unmaskedWallref.Rd", verbose=T) # Ancestry state inconsistency results 
 #fst <- read.table("fst_unmasked_unmerged_Wallref_35kbwin_500bpstep.windowed.weir.fst", header=T)
 #aims <- read.table("all.for_pedigree_trios_AIM_count_unmaskedWallref_pedigree_trios.txt", header=F) # Ancestry informative marker (AIM) counts
