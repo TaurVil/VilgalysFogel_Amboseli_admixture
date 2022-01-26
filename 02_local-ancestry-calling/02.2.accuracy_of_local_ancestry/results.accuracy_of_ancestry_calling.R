@@ -3,6 +3,17 @@ library(data.table); library(ggplot2); library(reshape2)
 
 load("./DATA/ACCURACY_OF_ANCESTRY_CALLING.RData")
 
+for (i in 1:25) {
+  agreement$agreement[agreement$name == unique(agreement$name)[i] & 
+                        agreement$cov == '10x' & agreement$method=="LCLAE"] <- 
+    windowsize$agreement[windowsize$name == unique(agreement$name)[i] & 
+                           windowsize$cov == '10x' & windowsize$distance == 35]
+  agreement$agreement[agreement$name == unique(agreement$name)[i] & 
+                        agreement$cov == '1x' & agreement$method=="LCLAE"] <- 
+    windowsize$agreement[windowsize$name == unique(agreement$name)[i] & 
+                           windowsize$cov == '1x' & windowsize$distance == 35]
+}
+
 ## Plot comparing methods
 A <- ggplot(agreement, aes(x=method, y=agreement, color=cov)) + 
   geom_boxplot(outlier.shape=NA, show.legend=F, aes(color=factor(cov))) + 
