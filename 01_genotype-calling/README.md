@@ -22,7 +22,7 @@ bcftools concat ./chrom_vcfs/02.yel.*.vcf.gz -O z -o ./yellow.vcf.gz; tabix ./ye
 ## create merged file
 bcftools merge ./anubis.vcf.gz ./yellow.vcf.gz -O z -o ./refpanel.vcf.gz
 
-## get the depth of coverage per SNP for each file
+## get the mean depth per individual for each vcf
 module load vcftools
 vcftools --gzvcf ./anubis.vcf.gz --depth --out anubis
 vcftools --gzvcf ./yellow.vcf.gz --depth --out yellow
