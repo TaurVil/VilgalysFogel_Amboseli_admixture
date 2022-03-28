@@ -83,7 +83,8 @@ all2 -> empty_windows
 
 ### Read in allele frequencies and calculate Fst
 ## reference allele frequencies were calculated as described in Sectio 03
-load("./allele_frequencies.reference.masked.RData")
+load("./allele_frequencies.reference.masked.RData"); all -> calls; rm(all)
+
 ## get overall yellow and anubis calls rather than split by population
 calls[,1:8] -> calls; gc()
 calls <- subset(calls, calls$n_all_anubis >= 10 & calls$n_all_yellow >= 10); gc()
@@ -123,7 +124,6 @@ all2 <- NULL; for (k in 1:20) {
 }; rm(k)
 all2 -> empty_windows
 
-
 ## Create table of mean ancestry per individual per window
 calc_mean_ancestry_per_window <- function(window) {
   subset(t2, t2$start <= walker$end[window] & t2$end > walker$start[window]) -> tmp2
@@ -133,13 +133,27 @@ calc_mean_ancestry_per_window <- function(window) {
   return(sum(tmp2$l*tmp2$state)/sum(tmp2$l))
 }
 
-a_data <- fread("./amboseli_LCLAE_tracts.txt"); colnames(a_data) <- c("chr", "start", "end", "state", "length", "u_prev", "u_after", "id")
+a_data <- fread("./amboseli_LCLAE_tracts.txt"); colnames(a_data) <- c('id',"chr", "start", "end", "state", "length", "u_prev", "u_after", "length2")
 n <- length(unique(a_data$id))
+
+mean_ancestry_by_chromosome <- as.data.frame(matrix(ncol=n, nrow=20))
+colnames(mean_ancestry_by_chromosome) <- unique(a_data$id)
+for (i in 1:length(unique(a_data$chr))) {
+  tmp_chr <- unique(a_data$chr)[i]
+  row.names(mean_ancestry_by_chromosome)[i] <- tmp_chr
+  
+  for (j in unique(a_data$id)) {
+    tmp_data <- a_data[a_data$id == j & a_data$chr == tmp_chr,]
+    tmp_data$length <- tmp_data$end - tmp_data$start
+    mean_ancestry_by_chromosome[[j]][i] <- sum(tmp_data$length*tmp_data$state)/sum(tmp_data$length)/2
+  }
+  print(tmp_chr)
+  rm(tmp_chr, j, tmp_data)
+}; rm(i)
+
 ## remove ancestry tracts less than 1kb long
 a_data$length <- a_data$end - a_data$start; a_data <- subset(a_data, a_data$length >= 1000)
-
-ancestry_per_individual <- NULL; 
-for (i in 1:20) {
+ancestry_per_individual <- NULL; for (i in 1:20) {
   tmp <- subset(a_data, a_data$chr == paste('chr',i,sep=""))
   win <- subset(empty_windows, empty_windows$chr == paste('chr',i,sep=""))
   
@@ -159,29 +173,37 @@ for (i in 1:20) {
   rbind(ancestry_per_individual,walker) -> ancestry_per_individual; rm(walker)
 }; rm(i)
 
-rm(empty_windows, a_data, distance)
-
-rm(calc_mean_ancestry_per_window)
+rm(a_data, distance, all2, calc_mean_ancestry_per_window)
+save.image("tmp_with_indiv_ancestry.RData")
 
 ## convert ancestry per individual into the mean ancestry for the population, recent, and historical individuals
 ## divide the mean by 2, because per individual is the number of alleles
-empty_windows -> features
+empty_windows -> features; rm(empty_windows)
+
+ancestry_per_individual <- ancestry_per_individual[,-c(1:3)]
+
+ids <- read.delim("./table_s1.txt")
+ids <- ids[ids$population == 'Amboseli',]
+recent <- ids$id[ids$hybrid_statusc == 'recent']
 
 features$mean_ancestry <- rowMeans(ancestry_per_individual)/2
-tmp <- ids$table_s1_id[ids$recent_hybridsc == 'historical']
+tmp <- ids$id[ids$hybrid_statusc == 'historical']
 features$historical_ancestry <- rowMeans(ancestry_per_individual[,colnames(ancestry_per_individual) %in% tmp])/2
 ## for recent ancestry, only include individuals with >40% anubis ancestry on that chromosome
-f2 <- NULL; for (chrom in unique(features$chr)) {
-  tmp <- rownames(recent)[recent[,chrom] > 0.4]
-  tmp_features <- features[features$chr == chrom,]
-  tmp_ancestry <- ancestry_per_individual[features$chr == chrom,]
-  tmp_features$recent_ancestry <- rowMeans(tmp_ancestry[, colnames(tmp_ancestry) %in% tmp])/2
+f2 <- NULL; for (i in 1:20) {
+  tmp_chrom <- unique(features$chr)[i]
+  tmp_chrom_anc <- mean_ancestry_by_chromosome[row.names(mean_ancestry_by_chromosome) == tmp_chrom, names(mean_ancestry_by_chromosome) %in% recent]
+  tmp_rec_samps <- names(tmp_chrom_anc)[tmp_chrom_anc[1,] > 0.4]
+  
+  tmp_ancestry <- ancestry_per_individual[features$chr == tmp_chrom,colnames(ancestry_per_individual) %in% tmp_rec_samps]
+  
+  tmp_features <- features[features$chr == tmp_chrom,]
+  tmp_features$recent_ancestry <- rowMeans(tmp_ancestry)/2
   rbind(f2, tmp_features) -> f2; rm(tmp_features)
-  rm(tmp_ancestry, tmp)
-}; rm(chrom)
+  rm(tmp_ancestry, tmp_chrom, tmp_chrom_anc, tmp_rec_samps)
+}; rm(i)
 f2 -> features; rm(f2, ancestry_per_individual)
+rm(recent)
 
 ## Save R object for future steps
-
-
 save.image("./windows.25kb.RData")
