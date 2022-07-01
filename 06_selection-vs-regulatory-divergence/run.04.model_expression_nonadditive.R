@@ -1,8 +1,8 @@
 ## model non-additive effects in the expression data
 library('EMMREML'); library('minpack.lm'); library(gap); library(cobs); library(segmented)
 
-dataset="eLife"
-load(paste("./expression_data_for_models.", dataset, ".RData", sep=""))
+dataset="TruCulture"
+load(paste("./DATA/expression_data_for_models.", dataset, ".RData", sep=""))
 
 #######################################
 ## regress out the mixed effect, producing "resids" for the residuals
@@ -97,7 +97,7 @@ for (k in 1:10) {
   if (k==1) {res -> perm_nonadditive} else {rbind(res, perm_nonadditive) -> perm_nonadditive}
   rm(res, i); print(k)
 }; rm(k)
-rm(segmented.mod, lin.mod, d.test, Age, Global.Ancestry, Sex, rediduals, ids, data, gene_lengths, residuals)
+rm(segmented.mod, lin.mod, d.test, Age, Global.Ancestry, Sex, ids, data, gene_lengths, residuals)
 
 #######################################
 ## clean and save data file
@@ -117,6 +117,6 @@ if (dataset == "eLife") {
   loc_anc -> la_eLife; rm(loc_anc)
 }
 
-save.image(paste("./expression_piecewise.", dataset, ".RData", sep=""))
+save.image(paste("./RESULTS/expression_piecewise.", dataset, ".RData", sep=""))
 
 

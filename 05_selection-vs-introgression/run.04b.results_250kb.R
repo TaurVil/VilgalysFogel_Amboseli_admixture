@@ -2,8 +2,6 @@
 library(data.table); library(ggplot2); library(parallel); library(DescTools); library(ppcor)
 
 #########   Chunk for metadata       ###########
-#### block size
-d_name <- '5Mb'
 
 #########   Chunk to get data       ###########
 load("../VilgalysFogel_main_data_file.250kb_windows.RData")

@@ -44,7 +44,7 @@ empty_windows$start[empty_windows$length < 50000] <- empty_windows$middle[genes$
 empty_windows$end[empty_windows$length < 50000] <- empty_windows$middle[genes$length < 50000]+25000
 empty_windows$start[empty_windows$start < 1] <- 1
 
-# make sure none of the genes are now longer than the chromosomes
+# make sure none of the genes are not longer than the chromosomes
 empty_windows$start <- apply(cbind(empty_windows$start,1),1,max)
 for (i in 1:20) {
   maxlength <- lengths$V2[i] 

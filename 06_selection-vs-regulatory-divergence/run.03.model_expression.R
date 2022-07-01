@@ -2,7 +2,7 @@
 library('EMMREML'); library('minpack.lm'); library(gap); library(cobs)
 
 dataset="eLife"
-load(paste("./expression_data_for_models.", dataset, ".RData", sep=""))
+load(paste("./DATA/expression_data_for_models.", dataset, ".RData", sep=""))
 
 #######################################
 ## run models using EMMREML

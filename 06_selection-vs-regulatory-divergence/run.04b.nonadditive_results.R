@@ -2,8 +2,8 @@
 ## load in results. 
 ## define function for FDR calculation
 #######################################
-dataset="eLife"; load(paste("./expression_piecewise.", dataset, ".RData", sep=""))
-dataset="TruCulture"; load(paste("./expression_piecewise.", dataset, ".RData", sep=""))
+dataset="eLife"; load(paste("./RESULTS/expression_piecewise.", dataset, ".RData", sep=""))
+dataset="TruCulture"; load(paste("./RESULTS/expression_piecewise.", dataset, ".RData", sep=""))
 rm(dataset)
 
 library(cobs); perm.fdr=function(input_df,perm_df,Pvals_col_name,name){

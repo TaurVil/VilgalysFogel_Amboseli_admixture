@@ -96,14 +96,14 @@ if (nrow(i1) > 0) {
   #blocks$length[1] <- NA; blocks$length[nrow(blocks)-1] <- NA
   
   # remove uncertainty because we really don't need this now that I'm not doing as much methods testing. 
-  #uncertainty of the break points to each side
+  # uncertainty of the break points to each side
   blocks$u_prev <- (as.numeric(blocks$nxt) - as.numeric(blocks$snp))/2
   blocks$u_prev[1] <- NA
   blocks$u_next <- c(as.numeric(blocks$u_prev[-1]),NA)
   ## blocks u_prev is the number of bases at the start of that tract which were inferred (i.e. before the first AIM with that ancestry call)
   ## blocks u_next is the same thing for the end of that tract
   
-  #Blocks starts at the first SNP and goes to the last one. 
+  # Blocks starts at the first SNP and goes to the last one. 
   
   t <- blocks[, c(1, 7, 8, 6, 9:11)]
   colnames(t) <- c("chrom", "start", "end", "state", "length", "prev_inferred", "after_inferred")

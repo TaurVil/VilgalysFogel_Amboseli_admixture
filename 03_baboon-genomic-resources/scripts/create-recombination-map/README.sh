@@ -11,7 +11,7 @@ sbatch --array=1-20 --mem=12G ./run.01.prep_genotypes.sh
 module load bcftools; bcftools concat ./SNPRCanubis.*.hwe.vcf.gz -O z -o ./SNPRCanubis.vcf.gz
 
 ## Phase with beagle
-module load java; \java -Xmx4g -jar ~/Programs/beagle.08Jun17.d8b.jar gt=./SNPRCanubis.vcf.gz out=./SNPRCanubis_beagle ne=40000; tabix SNPRCanubis_beagle.vcf.gz
+module load java; java -Xmx4g -jar ~/Programs/beagle.08Jun17.d8b.jar gt=./SNPRCanubis.vcf.gz out=./SNPRCanubis_beagle ne=40000; tabix SNPRCanubis_beagle.vcf.gz
 
 # Break up into individual chromosomes
 for f in `seq 1 20`; do vcftools --gzvcf SNPRCanubis_beagle.vcf.gz --chr $f --recode --out $f.SNPRCanubis ; bgzip $f.SNPRCanubis.recode.vcf; tabix $f.SNPRCanubis.recode.vcf.gz; done
