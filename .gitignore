@@ -1,0 +1,6 @@
+
+*.Rhistory
+/03_baboon-genomic-resources/Resources/Recombination_Rates/*txt
+*.pdf
+*.RData
+*.RData
