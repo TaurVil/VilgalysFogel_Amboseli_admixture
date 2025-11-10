@@ -1,0 +1,11 @@
+ind1:   ambo.v2.ind
+snp1:   ambo.v2.snp
+geno1:  ambo.ancestrymapgeno
+ind2:   n46.v2.ind
+snp2:   n46.v2.snp
+geno2:   n46.ancestrymapgeno
+indoutfilename:   family_packed.ind
+snpoutfilename:   family_packed.snp
+genooutfilename:  family_packed.geno
+outputformat:  packedancestrymap
+hashcheck: NO
