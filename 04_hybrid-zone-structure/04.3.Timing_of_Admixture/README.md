@@ -41,6 +41,8 @@ DATES provides a function to merge ANCESTRYMAP files, after which we need to do 
 
 Finally, we will run DATES itself to estimate the timing of admixture. 
 
+Parameters for the final analysis are included in `./DATA/par.dates`. We tested additional parameters including maxdis of 1 and 0.3, and a mincount of 1. 
+
 ```console
 ## Load relevant packages
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Programs/gsl-2.3/lib:~/Programs/fftw-3.3.3/lib
