@@ -24,8 +24,8 @@ module load java/1.8.0_45-fasrc01; module load vcftools
 java -jar ~/Programs/GenomeAnalysisTK.jar -T VariantFiltration -R $path_genome -V test.$coverage.vcf.gz -filterName "FS" --filterExpression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" -o ./tmp.$coverage.vcf.gz
 
 rm test.$coverage.vcf.gz
-vcftools --gzvcf tmp.$coverage.vcf.gz --recode --out tmp.$coverage --max-alleles 2 --recode-INFO-all --remove-filtered-all
+vcftools --gzvcf tmp.$coverage.vcf.gz --recode --out tmp.$coverage --max-alleles 2 --minQ 30 --recode-INFO-all --remove-filtered-all
 
-rm tmp.$coverage.vcf.gz; mv tmp.$coverage.recode.vcf test.$coverage.vcf; bgzip test.$coverage.vcf; tabix test.$coverage.vcf.gz
+rm tmp.$coverage.vcf.gz; mv tmp.$coverage.recode.vcf filt.$coverage.vcf; bgzip filt.$coverage.vcf; tabix filt.$coverage.vcf.gz
 
 rm 02.$coverage.list;
